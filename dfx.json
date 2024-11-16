@@ -11,9 +11,22 @@
       "type": "custom",
       "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz"
     },
+    "icp_ledger_canister": {
+      "type": "custom",
+      "candid": "https://raw.githubusercontent.com/dfinity/ic/a62848817cec7ae50618a87a526c85d020283fd9/rs/ledger_suite/icp/ledger.did",
+      "wasm": "https://download.dfinity.systems/ic/a62848817cec7ae50618a87a526c85d020283fd9/canisters/ledger-canister.wasm.gz",
+      "remote": {
+        "id": {
+          "ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
+        }
+      }
+    },
     "nekotip_backend": {
       "main": "src/nekotip_backend/main.mo",
-      "type": "motoko"
+      "type": "motoko",
+      "dependencies": [
+        "icp_ledger_canister"
+      ]
     },
     "nekotip_frontend": {
       "dependencies": [
