@@ -1,9 +1,10 @@
+import path from 'path'
 import { fileURLToPath, URL } from 'url'
+
 import react from '@vitejs/plugin-react'
+import dotenv from 'dotenv'
 import { defineConfig } from 'vite'
 import environment from 'vite-plugin-environment'
-import dotenv from 'dotenv'
-import path from 'path'
 
 dotenv.config({ path: '../../.env' })
 
