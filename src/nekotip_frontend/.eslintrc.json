@@ -1,0 +1,83 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "plugins": [
+    "unused-imports",
+    "simple-import-sort",
+    "react",
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "no-undef": "warn",
+    "no-unused-vars": "warn",
+    "react/no-unescaped-entities": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+
+    "simple-import-sort/exports": "error",
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [
+          // Node.js builtins
+          [
+            "^(assert|buffer|child_process|cluster|console|constants|crypto|dgram|dns|domain|events|fs|http|https|module|net|os|path|punycode|querystring|readline|repl|stream|string_decoder|sys|timers|tls|tty|url|util|vm|zlib|freelist|v8|process|async_hooks|http2|perf_hooks)(/.*|$)"
+          ],
+
+          // React-related packages come first
+          ["^react"],
+
+          // Other third-party packages
+          ["^@?\\w"],
+
+          // Internal packages
+          ["^data(/.*|$)"],
+          ["^hooks(/.*|$)"],
+          [
+            "^(@|components|constants|contexts|data|helpers|utils|views)(/.*|$)"
+          ],
+
+          // Side effect imports
+          ["^\\u0000"],
+
+          // Parent imports
+          ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
+
+          // Other relative imports
+          ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
+
+          // Style imports
+          ["^.+\\.s?css$"]
+        ]
+      }
+    ],
+
+    "react/react-in-jsx-scope": "off", // For Vite with React 17+, not required anymore
+    "react/jsx-uses-react": "off", // For React 17+ (no need to import React)
+    "react/jsx-uses-vars": "error" // Ensures JSX elements are used properly
+  },
+  "env": {
+    "es6": true,
+    "browser": true, // Vite typically runs in the browser environment
+    "node": true // For Node.js specific features
+  },
+  "settings": {
+    "react": {
+      "version": "detect" // Automatically detects React version
+    }
+  }
+}
