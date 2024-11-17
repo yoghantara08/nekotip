@@ -1,6 +1,10 @@
 import HashMap "mo:base/HashMap";
 
 module {
+  public type Users = HashMap.HashMap<Principal, User>;
+  public type Contents = HashMap.HashMap<Text, Content>;
+  public type Transactions = HashMap.HashMap<Text, Transaction>;
+
   public type User = {
     id : Principal;
     username : Text;
@@ -17,8 +21,6 @@ module {
     walletBalance : [(Text, Nat)];
     createdAt : Int;
   };
-
-  public type Users = HashMap.HashMap<Principal, User>;
 
   public type Socials = {
     twitter : ?Text;
@@ -70,23 +72,22 @@ module {
     price : Nat;
     contentHash : Text;
     isExclusive : Bool;
-    createdAt : Int;
     likes : [Principal];
     comments : [Comment];
     thumbnailHash : ?Text;
     category : Category;
     unlockedBy : [Principal];
+    createdAt : Int;
+    updatedAt : ?Int;
   };
-
-  // public type Contents
 
   public type Comment = {
     id : Text;
-    userId : Principal;
-    content : Text;
-    timestamp : Int;
-    replies : [Comment];
-    likes : [Principal];
+    commenter : Principal;
+    contentId : Text;
+    text : Text;
+    createdAt : Int;
+    updatedAt : ?Int;
   };
 
   public type Transaction = {

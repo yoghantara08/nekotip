@@ -26,6 +26,8 @@ module UserService {
 
   // GET FOLLOWING
 
+  // GET REFERRALS
+
   // UTILS
   public func generateReferral(principal : Principal) : async Text {
     let principalText = Principal.toText(principal);
