@@ -8,7 +8,6 @@ import ManageProfilePage from './pages/user/creator/ManageProfilePage'
 import MyFollowersPage from './pages/user/creator/MyFollowersPage'
 import MyReferrals from './pages/user/creator/MyReferralsPage'
 import MySupporterPage from './pages/user/creator/MySupporterPage'
-import OverviewPage from './pages/user/creator/OverviewPage'
 import WalletPage from './pages/user/creator/WalletPage'
 import DiscoverPage from './pages/user/supporter/DiscoverPage'
 import FollowedCreatorsPage from './pages/user/supporter/FollowedCreatorsPage'
@@ -33,11 +32,7 @@ function App() {
         <Route path="/dashboard/support-given" element={<SupportGivenPage />} />
 
         {/* CREATOR DASHBOARD */}
-        <Route path="/dashboard" element={<OverviewPage />} />
-        <Route
-          path="/dashboard/manage-profile"
-          element={<ManageProfilePage />}
-        />
+        <Route path="/dashboard" element={<ManageProfilePage />} />
         <Route
           path="/dashboard/content-management"
           element={<ContentManagement />}
