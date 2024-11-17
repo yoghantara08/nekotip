@@ -1,10 +1,11 @@
+import HashMap "mo:base/HashMap";
+
 module {
   public type User = {
     id : Principal;
     username : Text;
     name : Text;
     bio : Text;
-    isCreator : Bool;
     profilePic : ?Text;
     bannerPic : ?Text;
     socials : Socials;
@@ -13,9 +14,11 @@ module {
     following : [Principal];
     referralCode : Text;
     referredBy : ?Principal;
-    walletBalance : Nat;
+    walletBalance : [(Text, Nat)];
     createdAt : Int;
   };
+
+  public type Users = HashMap.HashMap<Principal, User>;
 
   public type Socials = {
     twitter : ?Text;
@@ -74,6 +77,8 @@ module {
     category : Category;
     unlockedBy : [Principal];
   };
+
+  // public type Contents
 
   public type Comment = {
     id : Text;
