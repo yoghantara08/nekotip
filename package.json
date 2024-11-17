@@ -15,9 +15,5 @@
   "type": "module",
   "workspaces": [
     "src/nekotip_frontend"
-  ],
-  "dependencies": {
-    "@reduxjs/toolkit": "^2.3.0",
-    "react-redux": "^9.1.2"
-  }
+  ]
 }
