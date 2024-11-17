@@ -11,6 +11,9 @@ module {
     categories : ?[Category];
     followers : [Principal];
     following : [Principal];
+    referralCode : Text;
+    referredBy : ?Principal;
+    walletBalance : Nat;
     createdAt : Int;
   };
 
@@ -66,7 +69,19 @@ module {
     isExclusive : Bool;
     createdAt : Int;
     likes : [Principal];
-    comments : [(Principal, Text)];
+    comments : [Comment];
+    thumbnailHash : ?Text;
+    category : Category;
+    unlockedBy : [Principal];
+  };
+
+  public type Comment = {
+    id : Text;
+    userId : Principal;
+    content : Text;
+    timestamp : Int;
+    replies : [Comment];
+    likes : [Principal];
   };
 
   public type Transaction = {
@@ -75,14 +90,19 @@ module {
     to : Principal;
     amount : Nat;
     transactionType : TransactionType;
-    contentId : ?Text; // null if type #donation
-    comment : ?Text; // null if type #contentPurchase
+    contentId : ?Text;
+    supportComment : ?Text;
+    platformFee : Nat;
+    referralFee : ?Nat;
     timestamp : Int;
   };
 
   public type TransactionType = {
     #donation;
     #contentPurchase;
+    #withdrawal;
+    #referralPayout;
+    #platformFee;
   };
 
   public type Error = {
@@ -91,5 +111,19 @@ module {
     #NotAuthorized;
     #InsufficientFunds;
     #InvalidInput;
+    #InvalidTransaction;
+    #ContentNotAvailable;
+    #InvalidReferralCode;
+    #SystemError;
+  };
+
+  public type PlatformStats = {
+    totalUsers : Nat;
+    totalCreators : Nat;
+    totalContent : Nat;
+    totalTransactions : Nat;
+    totalVolume : Nat;
+    platformFees : Nat;
+    referralPayouts : Nat;
   };
 };
