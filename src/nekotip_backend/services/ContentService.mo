@@ -1,0 +1,23 @@
+module ContentService {
+  // POST CONTENT
+
+  // EDIT CONTENT
+
+  // DELETE CONTENT
+
+  // POST COMMENT
+
+  // LIKE/UNLIKE CONTENT
+
+  // GET COMMENTS
+
+  // EDIT COMMENT
+
+  // DELETE COMMENT
+
+  // GET ALL CONTENT
+
+  // GET CREATOR CONTENT LIST
+
+  // GET CONTENT BY ID
+};
