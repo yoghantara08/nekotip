@@ -8,18 +8,19 @@ module {
   public type User = {
     id : Principal;
     username : Text;
-    name : Text;
-    bio : Text;
-    profilePic : ?Text;
-    bannerPic : ?Text;
-    socials : Socials;
-    categories : ?[Category];
+    referralCode : Text;
+    depositAddress : Text;
     followers : [Principal];
     following : [Principal];
-    referralCode : Text;
-    referredBy : ?Principal;
-    walletBalance : [(Text, Nat)];
     createdAt : Int;
+
+    bio : ?Text;
+    socials : ?Socials;
+    name : ?Text;
+    profilePic : ?Text;
+    bannerPic : ?Text;
+    referredBy : ?Principal;
+    categories : ?[Category];
   };
 
   public type Socials = {
@@ -109,18 +110,6 @@ module {
     #withdrawal;
     #referralPayout;
     #platformFee;
-  };
-
-  public type Error = {
-    #NotFound;
-    #AlreadyExists;
-    #NotAuthorized;
-    #InsufficientFunds;
-    #InvalidInput;
-    #InvalidTransaction;
-    #ContentNotAvailable;
-    #InvalidReferralCode;
-    #SystemError;
   };
 
   public type PlatformStats = {

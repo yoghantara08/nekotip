@@ -1,4 +1,4 @@
-module ContentService {
+module {
   // POST CONTENT
 
   // EDIT CONTENT
