@@ -3,6 +3,7 @@ import Nat32 "mo:base/Nat32";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
 import Error "mo:base/Error";
+import Array "mo:base/Array";
 import Prim "mo:prim";
 import ledger "canister:icp_ledger_canister";
 import Types "../types/Types";
@@ -14,6 +15,7 @@ module {
     userId : Principal,
     username : Text,
     depositAddress : Text,
+    referralCode : ?Text,
   ) : async Types.User {
 
     // Input validation
@@ -48,18 +50,28 @@ module {
         };
         // If user doesn't exist, create new user
         case null {
+          var referredBy : ?Principal = null;
+
+          // Handle referral
+          switch (referralCode) {
+            case null {};
+            case (?code) {
+              referredBy := findUserByReferralCode(users, code);
+            };
+          };
+
           // Generate referral code
-          let referralCode = await generateReferral(userId);
+          let newReferralCode = await generateReferral(userId);
           let createdAt = getMilliseconds(Time.now());
 
           let newUser : Types.User = {
             id = userId;
             username = username;
-            referralCode = referralCode;
+            referralCode = newReferralCode;
             depositAddress = depositAddress;
             followers = [];
             following = [];
-            isCreator = false;
+            referrals = [];
             createdAt = createdAt;
             bio = null;
             socials = null;
@@ -72,6 +84,15 @@ module {
 
           // Add new user to the hashmap
           users.put(userId, newUser);
+
+          // Update referrer's referrals if applicable
+          switch (referredBy) {
+            case null {};
+            case (?refId) {
+              updateReferrerReferrals(users, refId, userId);
+            };
+          };
+
           newUser;
         };
       };
@@ -149,11 +170,6 @@ module {
           case (?newCategories) { ?newCategories };
         };
 
-        let isCreator = switch (updateData.isCreator) {
-          case (null) { user.isCreator };
-          case (?newIsCreator) { newIsCreator };
-        };
-
         let updatedUser : Types.User = {
           id = user.id;
           referralCode = user.referralCode;
@@ -162,6 +178,7 @@ module {
           following = user.following;
           createdAt = user.createdAt;
           referredBy = user.referredBy;
+          referrals = user.referrals;
 
           // UPDATE FIELD
           username = username;
@@ -171,7 +188,6 @@ module {
           profilePic = profilePic;
           bannerPic = bannerPic;
           categories = categories;
-          isCreator = isCreator;
         };
 
         users.put(userId, updatedUser);
@@ -179,10 +195,6 @@ module {
       };
     };
   };
-
-  // GET USERS
-
-  // GET USER BY PRINCIPAL ID
 
   // FOLLOW/UNFOLLOW USER
 
@@ -208,6 +220,28 @@ module {
     let referral = extract(hashedText, 0, 8);
 
     return referral;
+  };
+
+  private func findUserByReferralCode(users : Types.Users, code : Text) : ?Principal {
+    for ((id, user) in users.entries()) {
+      if (user.referralCode == code) {
+        return ?id;
+      };
+    };
+    null;
+  };
+
+  private func updateReferrerReferrals(users : Types.Users, referrerId : Principal, newUserId : Principal) {
+    switch (users.get(referrerId)) {
+      case (?referrer) {
+        let updatedReferrer = {
+          referrer with
+          referrals = Array.append(referrer.referrals, [newUserId])
+        };
+        users.put(referrerId, updatedReferrer);
+      };
+      case null {};
+    };
   };
 
   private func extract(t : Text, i : Nat, j : Nat) : Text {

@@ -9,11 +9,11 @@ module {
   public type User = {
     id : Principal;
     username : Text;
-    referralCode : Text;
     depositAddress : Text;
+    referralCode : Text;
     followers : [Principal];
     following : [Principal];
-    isCreator : Bool;
+    referrals : [Principal];
     createdAt : Int;
 
     bio : ?Text;

@@ -23,12 +23,21 @@ actor class NekoTip() = this {
   public shared (msg) func authenticateUser(
     username : Text,
     depositAddress : Text,
+    referralCode : ?Text,
   ) : async Types.User {
-    return await UserService.authenticateUser(users, msg.caller, username, depositAddress);
+    return await UserService.authenticateUser(users, msg.caller, username, depositAddress, referralCode);
   };
 
   public shared (msg) func updateUserProfile(updateData : Types.UserUpdateData) : async Types.User {
     return await UserService.updateUserProfile(users, msg.caller, updateData);
+  };
+
+  public query func getUsers() : async [Types.User] {
+    return Iter.toArray(users.vals());
+  };
+
+  public query func getUserById(userId : Principal) : async ?Types.User {
+    return users.get(userId);
   };
 
   public shared (msg) func getAccountBalance() : async Nat {

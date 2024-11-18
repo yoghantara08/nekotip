@@ -5,11 +5,13 @@ import { ISerializedUser } from '@/types/user.types';
 interface userState {
   user: ISerializedUser | null;
   isAuthenticated: boolean;
+  referralCode: string;
 }
 
 const initialState: userState = {
   user: null,
   isAuthenticated: false,
+  referralCode: '',
 };
 
 export const userSlice = createSlice({
@@ -22,10 +24,14 @@ export const userSlice = createSlice({
     setIsAuthenticated: (state, action: PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;
     },
+    setReferralCode: (state, action: PayloadAction<string>) => {
+      state.referralCode = action.payload;
+    },
   },
 });
 
-export const { setUser, setIsAuthenticated } = userSlice.actions;
+export const { setUser, setIsAuthenticated, setReferralCode } =
+  userSlice.actions;
 const userReducer = userSlice.reducer;
 
 export default userReducer;

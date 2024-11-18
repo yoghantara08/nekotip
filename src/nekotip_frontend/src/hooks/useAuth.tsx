@@ -17,7 +17,7 @@ const useAuth = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { updateUser } = useUser();
+  const { updateUser, referralCode } = useUser();
   const { getActor } = useActor();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +33,11 @@ const useAuth = () => {
   const authenticateUser = async (username: string, depositAddress: string) => {
     try {
       const actor = await getActor();
-      const user = await actor.authenticateUser(username, depositAddress);
+      const user = await actor.authenticateUser(
+        username,
+        depositAddress,
+        referralCode ? [referralCode] : [],
+      );
 
       return user;
     } catch (error) {

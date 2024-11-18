@@ -1,37 +1,53 @@
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { serializeUser } from '@/lib/utils';
 import { AppDispatch, RootState } from '@/store';
-import { setIsAuthenticated, setUser } from '@/store/reducers/userSlice';
+import { setReferralCode, setUser } from '@/store/reducers/userSlice';
 
-import { User } from '../../../declarations/nekotip_backend/nekotip_backend.did';
+import {
+  User,
+  UserUpdateData,
+} from '../../../declarations/nekotip_backend/nekotip_backend.did';
+
+import useActor from './useActor';
 
 const useUser = () => {
-  const { user, isAuthenticated } = useSelector(
-    (state: RootState) => state.user,
-  );
+  const { user, referralCode } = useSelector((state: RootState) => state.user);
   const dispatch: AppDispatch = useDispatch();
+
+  const { getActor } = useActor();
 
   const updateUser = (user: User | null) => {
     if (user) dispatch(setUser(serializeUser(user)));
     return;
   };
 
-  const updateAuthentication = (status: boolean) => {
-    dispatch(setIsAuthenticated(status));
+  const updateUserProfile = async (updateData: UserUpdateData) => {
+    try {
+      const actor = await getActor();
+      const updatedUser = await actor.updateUserProfile(updateData);
+
+      updateUser(updatedUser);
+    } catch (error) {
+      console.error('Failed to update user profile:', error);
+      throw error;
+    }
   };
 
-  const logoutUser = () => {
-    updateUser(null);
-    updateAuthentication(false);
-  };
+  const updateReferralCode = useCallback(
+    (code: string) => {
+      dispatch(setReferralCode(code));
+    },
+    [dispatch],
+  );
 
   return {
     user,
-    isAuthenticated,
+    referralCode,
     updateUser,
-    updateAuthentication,
-    logoutUser,
+    updateUserProfile,
+    updateReferralCode,
   };
 };
 

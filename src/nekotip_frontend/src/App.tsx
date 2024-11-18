@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useSearchParams } from 'react-router-dom';
 
 import ProtectedRoute from './components/features/ProtectedRoute/ProtectedRoute';
 import useAuth from './hooks/useAuth';
+import useUser from './hooks/useUser';
 import ContentPage from './pages/ContentPage';
 import ExplorePage from './pages/ExplorePage';
 import LandingPage from './pages/LandingPage';
@@ -19,11 +20,19 @@ import SupportGivenPage from './pages/user/supporter/SupportGivenPage';
 import ViewedProfilePage from './pages/user/ViewedProfilePage';
 
 function App() {
+  const [searchParams] = useSearchParams();
+
   const { isAuthenticated, checkSession } = useAuth();
+  const { updateReferralCode } = useUser();
 
   useEffect(() => {
     checkSession();
   }, [checkSession]);
+
+  useEffect(() => {
+    const referralCode = searchParams.get('referral');
+    updateReferralCode(referralCode ?? '');
+  }, [searchParams, updateReferralCode]);
 
   return (
     <Routes>
