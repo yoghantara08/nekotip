@@ -9,7 +9,7 @@ import { INTERNET_IDENTITY_URL } from '@/constant/common';
 import { AppDispatch, RootState } from '@/store';
 import { setIsAuthenticated } from '@/store/reducers/userSlice';
 
-import useCanister from './useCanister';
+import useActor from './useActor';
 import useUser from './useUser';
 
 const useAuth = () => {
@@ -18,7 +18,7 @@ const useAuth = () => {
   const navigate = useNavigate();
 
   const { updateUser } = useUser();
-  const { getActor } = useCanister();
+  const { getActor } = useActor();
 
   const [isLoading, setIsLoading] = useState(false);
 

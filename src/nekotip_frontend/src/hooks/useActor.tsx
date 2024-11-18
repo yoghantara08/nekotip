@@ -6,7 +6,7 @@ import { BACKEND_CANISTER_ID, DFX_NETWORK } from '@/constant/common';
 import { idlFactory } from '../../../declarations/nekotip_backend';
 import { _SERVICE } from '../../../declarations/nekotip_backend/nekotip_backend.did';
 
-const useCanister = () => {
+const useActor = () => {
   let authClient: AuthClient | null = null;
 
   const createActorInstance = async (): Promise<Actor> => {
@@ -41,4 +41,4 @@ const useCanister = () => {
   return { getActor };
 };
 
-export default useCanister;
+export default useActor;
