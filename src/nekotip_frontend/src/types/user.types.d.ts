@@ -11,8 +11,9 @@ export interface ISerializedUser {
   depositAddress: string;
   referredBy: string | null;
   bannerPic: string | null;
-  followers: string[];
-  following: string[];
+  followersCount: number;
+  followingCount: number;
+  referralsCount: number;
   profilePic: string | null;
 }
 

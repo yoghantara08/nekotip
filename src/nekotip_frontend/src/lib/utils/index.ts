@@ -27,8 +27,9 @@ export const serializeUser = (user: User): ISerializedUser => {
     depositAddress: user.depositAddress,
     referredBy: user.referredBy[0]?.toText() ?? null,
     bannerPic: user.bannerPic[0] ?? null,
-    followers: user.followers.map((p) => p.toText()),
-    following: user.following.map((p) => p.toText()),
+    followersCount: user.followers.length,
+    followingCount: user.following.length,
+    referralsCount: user.referrals.length,
     profilePic: user.profilePic[0] ?? null,
   };
 };
