@@ -4,6 +4,7 @@ import Text "mo:base/Text";
 import Time "mo:base/Time";
 import Error "mo:base/Error";
 import Array "mo:base/Array";
+import Result "mo:base/Result";
 import Prim "mo:prim";
 import ledger "canister:icp_ledger_canister";
 import Types "../types/Types";
@@ -197,12 +198,65 @@ module {
   };
 
   // FOLLOW/UNFOLLOW USER
+  public func toggleFollow(
+    users : Types.Users,
+    currentUserId : Principal,
+    userToToggleId : Principal,
+  ) : async Result.Result<Text, Text> {
 
-  // GET FOLLOWERS
+    // Input validation
+    if (Principal.isAnonymous(currentUserId) or Principal.isAnonymous(userToToggleId)) {
+      return #err("Anonymous principals are not allowed");
+    };
 
-  // GET FOLLOWING
+    if (currentUserId == userToToggleId) {
+      return #err("You cannot follow/unfollow yourself");
+    };
 
-  // GET REFERRALS
+    try {
+      switch (users.get(currentUserId), users.get(userToToggleId)) {
+        case (?currentUser, ?userToToggle) {
+          let isFollowing = Array.indexOf(userToToggleId, currentUser.following, Principal.equal);
+
+          if (isFollowing == null) {
+            // Follow user
+            let updatedCurrentUser = {
+              currentUser with
+              following = Array.append(currentUser.following, [userToToggleId])
+            };
+            let updatedUserToToggle = {
+              userToToggle with
+              followers = Array.append(userToToggle.followers, [currentUserId])
+            };
+
+            users.put(currentUserId, updatedCurrentUser);
+            users.put(userToToggleId, updatedUserToToggle);
+
+            #ok("You are now following " # userToToggle.username);
+          } else {
+            // Unfollow user
+            let updatedCurrentUser = {
+              currentUser with
+              following = Array.filter(currentUser.following, func(id : Principal) : Bool { id != userToToggleId })
+            };
+            let updatedUserToToggle = {
+              userToToggle with
+              followers = Array.filter(userToToggle.followers, func(id : Principal) : Bool { id != currentUserId })
+            };
+
+            users.put(currentUserId, updatedCurrentUser);
+            users.put(userToToggleId, updatedUserToToggle);
+
+            #ok("You have unfollowed " # userToToggle.username);
+          };
+        };
+        case (null, _) { #err("Current user not found") };
+        case (_, null) { #err("User to follow/unfollow not found") };
+      };
+    } catch (err) {
+      #err("System error occurred during follow/unfollow operation: " # Error.message(err));
+    };
+  };
 
   // GET ICP BALANCE
   public func getAccountBalance(principalId : Principal) : async Nat {
