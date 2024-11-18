@@ -1,24 +1,31 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+import { ISerializedUser } from '@/types/user.types';
 
 interface userState {
-  principal: string
+  user: ISerializedUser | null;
+  isAuthenticated: boolean;
 }
 
 const initialState: userState = {
-  principal: '',
-}
+  user: null,
+  isAuthenticated: false,
+};
 
 export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setPrincipal: (state, action: PayloadAction<string>) => {
-      state.principal = action.payload
+    setUser: (state, action: PayloadAction<ISerializedUser | null>) => {
+      state.user = action.payload;
+    },
+    setIsAuthenticated: (state, action: PayloadAction<boolean>) => {
+      state.isAuthenticated = action.payload;
     },
   },
-})
+});
 
-export const { setPrincipal } = userSlice.actions
-const userReducer = userSlice.reducer
+export const { setUser, setIsAuthenticated } = userSlice.actions;
+const userReducer = userSlice.reducer;
 
-export default userReducer
+export default userReducer;

@@ -1,17 +1,38 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
 
-import { AppDispatch, RootState } from '@/store'
-import { setPrincipal } from '@/store/reducers/userSlice'
+import { serializeUser } from '@/lib/utils';
+import { AppDispatch, RootState } from '@/store';
+import { setIsAuthenticated, setUser } from '@/store/reducers/userSlice';
+
+import { User } from '../../../declarations/nekotip_backend/nekotip_backend.did';
 
 const useUser = () => {
-  const { principal } = useSelector((state: RootState) => state.user)
-  const dispatch: AppDispatch = useDispatch()
+  const { user, isAuthenticated } = useSelector(
+    (state: RootState) => state.user,
+  );
+  const dispatch: AppDispatch = useDispatch();
 
-  const updatePrincipal = (principal: string) => {
-    dispatch(setPrincipal(principal))
-  }
+  const updateUser = (user: User | null) => {
+    if (user) dispatch(setUser(serializeUser(user)));
+    return;
+  };
 
-  return { principal, updatePrincipal }
-}
+  const updateAuthentication = (status: boolean) => {
+    dispatch(setIsAuthenticated(status));
+  };
 
-export default useUser
+  const logoutUser = () => {
+    updateUser(null);
+    updateAuthentication(false);
+  };
+
+  return {
+    user,
+    isAuthenticated,
+    updateUser,
+    updateAuthentication,
+    logoutUser,
+  };
+};
+
+export default useUser;
