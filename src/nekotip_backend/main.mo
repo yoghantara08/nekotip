@@ -27,6 +27,10 @@ actor class NekoTip() = this {
     return await UserService.authenticateUser(users, msg.caller, username, depositAddress);
   };
 
+  public shared (msg) func updateUserProfile(updateData : Types.UserUpdateData) : async Types.User {
+    return await UserService.updateUserProfile(users, msg.caller, updateData);
+  };
+
   public shared (msg) func getAccountBalance() : async Nat {
     return await UserService.getAccountBalance(msg.caller);
   };

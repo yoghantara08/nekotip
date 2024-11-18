@@ -5,6 +5,7 @@ module {
   public type Contents = HashMap.HashMap<Text, Content>;
   public type Transactions = HashMap.HashMap<Text, Transaction>;
 
+  // USER TYPES
   public type User = {
     id : Principal;
     username : Text;
@@ -12,6 +13,7 @@ module {
     depositAddress : Text;
     followers : [Principal];
     following : [Principal];
+    isCreator : Bool;
     createdAt : Int;
 
     bio : ?Text;
@@ -20,7 +22,18 @@ module {
     profilePic : ?Text;
     bannerPic : ?Text;
     referredBy : ?Principal;
-    categories : ?[Category];
+    categories : ?[Text];
+  };
+
+  public type UserUpdateData = {
+    username : ?Text;
+    bio : ?Text;
+    socials : ?Socials;
+    name : ?Text;
+    profilePic : ?Text;
+    bannerPic : ?Text;
+    categories : ?[Text];
+    isCreator : ?Bool;
   };
 
   public type Socials = {
@@ -34,37 +47,7 @@ module {
     facebook : ?Text;
   };
 
-  public type Category = {
-    #Animation;
-    #Art;
-    #Blogging;
-    #ComicsAndCartoons;
-    #Commissions;
-    #Community;
-    #Cosplay;
-    #DanceAndTheatre;
-    #Design;
-    #DrawingAndPainting;
-    #Education;
-    #FoodAndDrink;
-    #Gaming;
-    #HealthAndFitness;
-    #Lifestyle;
-    #Money;
-    #Music;
-    #News;
-    #Other;
-    #Photography;
-    #Podcast;
-    #ScienceAndTech;
-    #Social;
-    #Software;
-    #Streaming;
-    #Translator;
-    #VideoAndFilm;
-    #Writing;
-  };
-
+  // CONTENT TYPES
   public type Content = {
     id : Text;
     creatorId : Principal;
@@ -76,7 +59,7 @@ module {
     likes : [Principal];
     comments : [Comment];
     thumbnailHash : ?Text;
-    category : Category;
+    category : [Text];
     unlockedBy : [Principal];
     createdAt : Int;
     updatedAt : ?Int;
@@ -91,6 +74,7 @@ module {
     updatedAt : ?Int;
   };
 
+  // TRANSACTION TYPES
   public type Transaction = {
     id : Text;
     from : Principal;
@@ -112,6 +96,7 @@ module {
     #platformFee;
   };
 
+  // STATISTIC TYPES
   public type PlatformStats = {
     totalUsers : Nat;
     totalCreators : Nat;

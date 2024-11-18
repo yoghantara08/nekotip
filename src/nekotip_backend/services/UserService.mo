@@ -31,19 +31,11 @@ module {
     };
 
     // Check if username already exists
-    for ((_, user) in users.entries()) {
+    for ((id, user) in users.entries()) {
       if (Text.equal(user.username, username)) {
-        // Only throw error if it's a new user trying to use existing username
-        switch (users.get(userId)) {
-          case null {
-            throw Error.reject("Username already exists");
-          };
-          case (?existingUser) {
-            // If same user is authenticating again, this is fine
-            if (existingUser.id != userId) {
-              throw Error.reject("Username already exists");
-            };
-          };
+        // If the username matches but belongs to a different user, throw an error
+        if (id != userId) {
+          throw Error.reject("USERNAME_TAKEN: The username '" # username # "' is already in use.");
         };
       };
     };
@@ -67,6 +59,7 @@ module {
             depositAddress = depositAddress;
             followers = [];
             following = [];
+            isCreator = false;
             createdAt = createdAt;
             bio = null;
             socials = null;
@@ -87,15 +80,105 @@ module {
     };
   };
 
-  // EDIT PROFILE
+  // UPDATE USER PROFILE
+  public func updateUserProfile(
+    users : Types.Users,
+    userId : Principal,
+    updateData : Types.UserUpdateData,
+  ) : async Types.User {
+    // Check if principal is valid
+    if (Principal.isAnonymous(userId)) {
+      throw Error.reject("Anonymous principals are not allowed");
+    };
 
-  // CHANGE PROFILE PICTURE
+    switch (users.get(userId)) {
+      case (null) {
+        throw Error.reject("User not found!");
+      };
+      case (?user) {
+        let username = switch (updateData.username) {
+          case (null) { user.username };
+          case (?newUsername) {
+            if (Text.size(newUsername) < 3 or Text.size(newUsername) > 20) {
+              throw Error.reject("Username must be between 3 and 20 characters");
+            };
 
-  // CHANGE BANNER PICTURE
+            if (newUsername != user.username) {
+              for ((id, existingUser) in users.entries()) {
+                if (id != userId and Text.equal(existingUser.username, newUsername)) {
+                  throw Error.reject("USERNAME_TAKEN: The username '" # newUsername # "' is already in use.");
+                };
+              };
+            };
+            newUsername;
+          };
+        };
 
-  // UPDATE SOCIALS
+        let bio = switch (updateData.bio) {
+          case (null) { user.bio };
+          case (?newBio) {
+            if (Text.size(newBio) > 500) {
+              throw Error.reject("Bio must be 500 characters or less");
+            };
+            ?newBio;
+          };
+        };
 
-  // UPDATE CATEGORY
+        let socials = switch (updateData.socials) {
+          case (null) { user.socials };
+          case (?newSocials) { ?newSocials };
+        };
+
+        let name = switch (updateData.name) {
+          case (null) { user.name };
+          case (?newName) { ?newName };
+        };
+
+        let profilePic = switch (updateData.profilePic) {
+          case (null) { user.profilePic };
+          case (?newProfilePic) { ?newProfilePic };
+        };
+
+        let bannerPic = switch (updateData.bannerPic) {
+          case (null) { user.bannerPic };
+          case (?newBannerPic) { ?newBannerPic };
+        };
+
+        let categories = switch (updateData.categories) {
+          case (null) { user.categories };
+          case (?newCategories) { ?newCategories };
+        };
+
+        let isCreator = switch (updateData.isCreator) {
+          case (null) { user.isCreator };
+          case (?newIsCreator) { newIsCreator };
+        };
+
+        let updatedUser : Types.User = {
+          id = user.id;
+          referralCode = user.referralCode;
+          depositAddress = user.depositAddress;
+          followers = user.followers;
+          following = user.following;
+          createdAt = user.createdAt;
+          referredBy = user.referredBy;
+
+          // UPDATE FIELD
+          username = username;
+          bio = bio;
+          socials = socials;
+          name = name;
+          profilePic = profilePic;
+          bannerPic = bannerPic;
+          categories = categories;
+          isCreator = isCreator;
+        };
+
+        users.put(userId, updatedUser);
+        return updatedUser;
+      };
+    };
+  };
 
   // GET USERS
 
