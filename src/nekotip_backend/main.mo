@@ -2,8 +2,6 @@ import Types "types/Types";
 import HashMap "mo:base/HashMap";
 import Principal "mo:base/Principal";
 import Iter "mo:base/Iter";
-import Buffer "mo:base/Buffer";
-import Array "mo:base/Array";
 import Result "mo:base/Result";
 import Text "mo:base/Text";
 import UserService "services/UserService";
@@ -60,59 +58,18 @@ actor class NekoTip() = this {
   };
 
   // GET FOLLOWERS
-  public query func getFollowers(userId : Principal) : async [Types.User] {
-    switch (users.get(userId)) {
-      case (null) { [] };
-      case (?_user) {
-        let followers = Buffer.Buffer<Types.User>(0);
-        for ((_, otherUser) in users.entries()) {
-          if (Array.indexOf(userId, otherUser.following, Principal.equal) != null) {
-            followers.add(otherUser);
-          };
-        };
-        Buffer.toArray(followers);
-      };
-    };
+  public shared (msg) func getFollowers() : async [Types.User] {
+    return await UserService.getFollowers(users, msg.caller);
   };
 
   // GET FOLLOWING
-  public query func getFollowing(userId : Principal) : async [Types.User] {
-    switch (users.get(userId)) {
-      case (null) { [] };
-      case (?user) {
-        let following = Buffer.Buffer<Types.User>(0);
-        for (followedId in user.following.vals()) {
-          switch (users.get(followedId)) {
-            case (null) {};
-            case (?followedUser) {
-              following.add(followedUser);
-            };
-          };
-        };
-        Buffer.toArray(following);
-      };
-    };
+  public shared (msg) func getFollowing() : async [Types.User] {
+    return await UserService.getFollowing(users, msg.caller);
   };
 
   // GET REFERRALS
-  public query func getReferrals(userId : Principal) : async [Types.User] {
-    switch (users.get(userId)) {
-      case (null) { [] };
-      case (?_user) {
-        let referrals = Buffer.Buffer<Types.User>(0);
-        for ((_, otherUser) in users.entries()) {
-          switch (otherUser.referredBy) {
-            case (null) {};
-            case (?referrerId) {
-              if (Principal.equal(referrerId, userId)) {
-                referrals.add(otherUser);
-              };
-            };
-          };
-        };
-        Buffer.toArray(referrals);
-      };
-    };
+  public shared (msg) func getReferrals() : async [Types.User] {
+    return await UserService.getReferrals(users, msg.caller);
   };
 
   // GET ACCOUNT ICP BALANCE

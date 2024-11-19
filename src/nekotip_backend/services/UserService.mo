@@ -5,6 +5,7 @@ import Time "mo:base/Time";
 import Error "mo:base/Error";
 import Array "mo:base/Array";
 import Result "mo:base/Result";
+import Buffer "mo:base/Buffer";
 import ledger "canister:icp_ledger_canister";
 import Types "../types/Types";
 import Utils "../Utils/Utils";
@@ -254,6 +255,62 @@ module {
       };
     } catch (err) {
       #err("System error occurred during follow/unfollow operation: " # Error.message(err));
+    };
+  };
+
+  // GET FOLLOWERS
+  public func getFollowers(users : Types.Users, userId : Principal) : async [Types.User] {
+    switch (users.get(userId)) {
+      case (null) { [] };
+      case (?_user) {
+        let followers = Buffer.Buffer<Types.User>(0);
+        for ((_, otherUser) in users.entries()) {
+          if (Array.indexOf(userId, otherUser.following, Principal.equal) != null) {
+            followers.add(otherUser);
+          };
+        };
+        Buffer.toArray(followers);
+      };
+    };
+  };
+
+  // GET FOLLOWING
+  public func getFollowing(users : Types.Users, userId : Principal) : async [Types.User] {
+    switch (users.get(userId)) {
+      case (null) { [] };
+      case (?user) {
+        let following = Buffer.Buffer<Types.User>(0);
+        for (followedId in user.following.vals()) {
+          switch (users.get(followedId)) {
+            case (null) {};
+            case (?followedUser) {
+              following.add(followedUser);
+            };
+          };
+        };
+        Buffer.toArray(following);
+      };
+    };
+  };
+
+  // GET REFERRALS
+  public func getReferrals(users : Types.Users, userId : Principal) : async [Types.User] {
+    switch (users.get(userId)) {
+      case (null) { [] };
+      case (?_user) {
+        let referrals = Buffer.Buffer<Types.User>(0);
+        for ((_, otherUser) in users.entries()) {
+          switch (otherUser.referredBy) {
+            case (null) {};
+            case (?referrerId) {
+              if (Principal.equal(referrerId, userId)) {
+                referrals.add(otherUser);
+              };
+            };
+          };
+        };
+        Buffer.toArray(referrals);
+      };
     };
   };
 
