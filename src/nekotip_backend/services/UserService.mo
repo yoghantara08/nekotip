@@ -5,9 +5,9 @@ import Time "mo:base/Time";
 import Error "mo:base/Error";
 import Array "mo:base/Array";
 import Result "mo:base/Result";
-import Prim "mo:prim";
 import ledger "canister:icp_ledger_canister";
 import Types "../types/Types";
+import Utils "../Utils/Utils";
 
 module {
   // LOGIN/REGISTER
@@ -63,7 +63,6 @@ module {
 
           // Generate referral code
           let newReferralCode = await generateReferral(userId);
-          let createdAt = getMilliseconds(Time.now());
 
           let newUser : Types.User = {
             id = userId;
@@ -73,7 +72,7 @@ module {
             followers = [];
             following = [];
             referrals = [];
-            createdAt = createdAt;
+            createdAt = Time.now();
             bio = null;
             socials = null;
             name = null;
@@ -268,10 +267,10 @@ module {
   };
 
   // UTILS
-  public func generateReferral(principal : Principal) : async Text {
+  private func generateReferral(principal : Principal) : async Text {
     let principalText = Principal.toText(principal);
     let hashedText = Nat32.toText(Text.hash(principalText));
-    let referral = extract(hashedText, 0, 8);
+    let referral = Utils.substr(hashedText, 0, 8);
 
     return referral;
   };
@@ -298,29 +297,4 @@ module {
     };
   };
 
-  private func extract(t : Text, i : Nat, j : Nat) : Text {
-    let size = t.size();
-    if (i == 0 and j == size) return t;
-    assert (j <= size);
-    let cs = t.chars();
-    var r = "";
-    var n = i;
-    while (n > 0) {
-      ignore cs.next();
-      n -= 1;
-    };
-    n := j;
-    while (n > 0) {
-      switch (cs.next()) {
-        case null { assert false };
-        case (?c) { r #= Prim.charToText(c) };
-      };
-      n -= 1;
-    };
-    return r;
-  };
-
-  private func getMilliseconds(time : Int) : Int {
-    return time / 1_000_000;
-  };
 };

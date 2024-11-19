@@ -53,16 +53,22 @@ module {
     creatorId : Principal;
     title : Text;
     description : Text;
-    price : Nat;
-    contentHash : Text;
-    isExclusive : Bool;
+    tier : ContentTier;
+    thumbnail : Text;
+    contentImages : [Text];
+    categories : [Text];
     likes : [Principal];
     comments : [Comment];
-    thumbnailHash : ?Text;
-    category : [Text];
     unlockedBy : [Principal];
     createdAt : Int;
     updatedAt : ?Int;
+  };
+
+  public type ContentTier = {
+    #Free;
+    #Tier1; // $30
+    #Tier2; // $15
+    #Tier3; // $5
   };
 
   public type Comment = {
@@ -72,6 +78,18 @@ module {
     text : Text;
     createdAt : Int;
     updatedAt : ?Int;
+  };
+
+  public type ContentPreview = {
+    id : Text;
+    creatorId : Principal;
+    title : Text;
+    description : Text;
+    tier : ContentTier;
+    thumbnail : Text;
+    categories : [Text];
+    likesCount : Nat;
+    commentsCount : Nat;
   };
 
   // TRANSACTION TYPES
