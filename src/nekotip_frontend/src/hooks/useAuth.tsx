@@ -29,28 +29,12 @@ const useAuth = () => {
     [dispatch],
   );
 
-  // Authenticate user with the backend canister
-  const authenticateUser = async (username: string, depositAddress: string) => {
-    try {
-      const actor = await getActor();
-      const user = await actor.authenticateUser(
-        username,
-        depositAddress,
-        referralCode ? [referralCode] : [],
-      );
-
-      return user;
-    } catch (error) {
-      console.error('Authentication failed:', error);
-      throw error; // Re-throw to handle in handleAuthentication
-    }
-  };
-
   // Handle login with internet identity
   const handleLogin = async () => {
     setIsLoading(true);
     try {
       const authClient = await AuthClient.create();
+      const actor = await getActor();
 
       await authClient.login({
         identityProvider: INTERNET_IDENTITY_URL,
@@ -70,16 +54,20 @@ const useAuth = () => {
             const depositAddressHex = accountIdentifier.toHex();
 
             // Authenticate user with the backend canister
-            const user = await authenticateUser(
+            const result = await actor.authenticateUser(
               `user_${principal.toString().slice(0, 8)}`,
               depositAddressHex,
+              referralCode ? [referralCode] : [],
             );
 
-            // Update state
-            updateUser(user);
-            updateAuthentication(true);
-
-            navigate('/dashboard', { replace: true });
+            if ('ok' in result) {
+              // Update state
+              updateUser(result.ok);
+              updateAuthentication(true);
+              navigate('/dashboard', { replace: true });
+            } else {
+              throw new Error(result.err);
+            }
           }
         },
         maxTimeToLive: BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000), // 1 week
@@ -89,7 +77,7 @@ const useAuth = () => {
         },
       });
     } catch (error) {
-      console.error(error);
+      console.error('Login failed:', error);
       logoutUser();
     } finally {
       setIsLoading(false);

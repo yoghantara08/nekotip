@@ -2,7 +2,6 @@ import Principal "mo:base/Principal";
 import Nat32 "mo:base/Nat32";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
-import Error "mo:base/Error";
 import Array "mo:base/Array";
 import Result "mo:base/Result";
 import Buffer "mo:base/Buffer";

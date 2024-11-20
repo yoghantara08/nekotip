@@ -26,9 +26,13 @@ const useUser = () => {
   const updateUserProfile = async (updateData: UserUpdateData) => {
     try {
       const actor = await getActor();
-      const updatedUser = await actor.updateUserProfile(updateData);
+      const result = await actor.updateUserProfile(updateData);
 
-      updateUser(updatedUser);
+      if ('ok' in result) {
+        updateUser(result.ok);
+      } else {
+        throw new Error(result.err);
+      }
     } catch (error) {
       console.error('Failed to update user profile:', error);
       throw error;
