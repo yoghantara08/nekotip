@@ -18,20 +18,20 @@ module {
     username : Text,
     depositAddress : Text,
     referralCode : ?Text,
-  ) : async Types.User {
+  ) : Result.Result<Types.User, Text> {
 
     // Input validation
     if (Text.size(username) < 3 or Text.size(username) > 20) {
-      throw Error.reject("Username must be between 3 and 20 characters");
+      return #err("Username must be between 3 and 20 characters");
     };
 
     if (Text.size(depositAddress) == 0) {
-      throw Error.reject("Deposit address cannot be empty");
+      return #err("Deposit address cannot be empty");
     };
 
     // Check if principal is valid
     if (Principal.isAnonymous(userId)) {
-      throw Error.reject("Anonymous principals are not allowed");
+      return #err("Anonymous principals are not allowed");
     };
 
     // Check if username already exists
@@ -39,67 +39,64 @@ module {
       if (Text.equal(user.username, username)) {
         // If the username matches but belongs to a different user, throw an error
         if (id != userId) {
-          throw Error.reject("USERNAME_TAKEN: The username '" # username # "' is already in use.");
+          return #err("USERNAME_TAKEN: The username '" # username # "' is already in use.");
         };
       };
     };
 
-    try {
-      switch (users.get(userId)) {
-        // If user exists, return their data
-        case (?existingUser) {
-          existingUser;
-        };
-        // If user doesn't exist, create new user
-        case null {
-          var referredBy : ?Principal = null;
-
-          // Handle referral
-          switch (referralCode) {
-            case null {};
-            case (?code) {
-              referredBy := findUserByReferralCode(users, code);
-            };
-          };
-
-          // Generate referral code
-          let newReferralCode = await generateReferral(userId);
-
-          let newUser : Types.User = {
-            id = userId;
-            username = username;
-            referralCode = newReferralCode;
-            depositAddress = depositAddress;
-            followers = [];
-            following = [];
-            referrals = [];
-            createdAt = Time.now();
-            bio = null;
-            socials = null;
-            name = null;
-            profilePic = null;
-            bannerPic = null;
-            referredBy = null;
-            categories = null;
-          };
-
-          // Add new user to the hashmap
-          users.put(userId, newUser);
-
-          // Update referrer's referrals if applicable
-          switch (referredBy) {
-            case null {};
-            case (?refId) {
-              updateReferrerReferrals(users, refId, userId);
-            };
-          };
-
-          newUser;
-        };
+    switch (users.get(userId)) {
+      // If user exists, return their data
+      case (?existingUser) {
+        #ok(existingUser);
       };
-    } catch (_err) {
-      throw Error.reject("System error occurred during authentication");
+      // If user doesn't exist, create new user
+      case null {
+        var referredBy : ?Principal = null;
+
+        // Handle referral
+        switch (referralCode) {
+          case null {};
+          case (?code) {
+            referredBy := findUserByReferralCode(users, code);
+          };
+        };
+
+        // Generate referral code
+        let newReferralCode = generateReferral(userId);
+
+        let newUser : Types.User = {
+          id = userId;
+          username = username;
+          referralCode = newReferralCode;
+          depositAddress = depositAddress;
+          followers = [];
+          following = [];
+          referrals = [];
+          createdAt = Time.now();
+          bio = null;
+          socials = null;
+          name = null;
+          profilePic = null;
+          bannerPic = null;
+          referredBy = null;
+          categories = null;
+        };
+
+        // Add new user to the hashmap
+        users.put(userId, newUser);
+
+        // Update referrer's referrals if applicable
+        switch (referredBy) {
+          case null {};
+          case (?refId) {
+            updateReferrerReferrals(users, refId, userId);
+          };
+        };
+
+        #ok(newUser);
+      };
     };
+
   };
 
   // UPDATE USER PROFILE
@@ -107,28 +104,29 @@ module {
     users : Types.Users,
     userId : Principal,
     updateData : Types.UserUpdateData,
-  ) : async Types.User {
+  ) : Result.Result<Types.User, Text> {
     // Check if principal is valid
     if (Principal.isAnonymous(userId)) {
-      throw Error.reject("Anonymous principals are not allowed");
+      return #err("Anonymous principals are not allowed");
     };
 
     switch (users.get(userId)) {
       case (null) {
-        throw Error.reject("User not found!");
+        return #err("User not found!");
       };
       case (?user) {
+        // USERNAME
         let username = switch (updateData.username) {
           case (null) { user.username };
           case (?newUsername) {
             if (Text.size(newUsername) < 3 or Text.size(newUsername) > 20) {
-              throw Error.reject("Username must be between 3 and 20 characters");
+              return #err("Username must be between 3 and 20 characters");
             };
 
             if (newUsername != user.username) {
               for ((id, existingUser) in users.entries()) {
                 if (id != userId and Text.equal(existingUser.username, newUsername)) {
-                  throw Error.reject("USERNAME_TAKEN: The username '" # newUsername # "' is already in use.");
+                  return #err("USERNAME_TAKEN: The username '" # newUsername # "' is already in use.");
                 };
               };
             };
@@ -136,36 +134,42 @@ module {
           };
         };
 
+        // BIO
         let bio = switch (updateData.bio) {
           case (null) { user.bio };
           case (?newBio) {
             if (Text.size(newBio) > 500) {
-              throw Error.reject("Bio must be 500 characters or less");
+              return #err("Bio must be 500 characters or less");
             };
             ?newBio;
           };
         };
 
+        // SOCIALS
         let socials = switch (updateData.socials) {
           case (null) { user.socials };
           case (?newSocials) { ?newSocials };
         };
 
+        // NAME
         let name = switch (updateData.name) {
           case (null) { user.name };
           case (?newName) { ?newName };
         };
 
+        // PROFILE PIC
         let profilePic = switch (updateData.profilePic) {
           case (null) { user.profilePic };
           case (?newProfilePic) { ?newProfilePic };
         };
 
+        // BANNER PIC
         let bannerPic = switch (updateData.bannerPic) {
           case (null) { user.bannerPic };
           case (?newBannerPic) { ?newBannerPic };
         };
 
+        // CATEGORIES
         let categories = switch (updateData.categories) {
           case (null) { user.categories };
           case (?newCategories) { ?newCategories };
@@ -192,7 +196,7 @@ module {
         };
 
         users.put(userId, updatedUser);
-        return updatedUser;
+        #ok(updatedUser);
       };
     };
   };
@@ -202,7 +206,7 @@ module {
     users : Types.Users,
     currentUserId : Principal,
     userToToggleId : Principal,
-  ) : async Result.Result<Text, Text> {
+  ) : Result.Result<Text, Text> {
 
     // Input validation
     if (Principal.isAnonymous(currentUserId) or Principal.isAnonymous(userToToggleId)) {
@@ -213,53 +217,50 @@ module {
       return #err("You cannot follow/unfollow yourself");
     };
 
-    try {
-      switch (users.get(currentUserId), users.get(userToToggleId)) {
-        case (?currentUser, ?userToToggle) {
-          let isFollowing = Array.indexOf(userToToggleId, currentUser.following, Principal.equal);
+    switch (users.get(currentUserId), users.get(userToToggleId)) {
+      case (?currentUser, ?userToToggle) {
+        let isFollowing = Array.indexOf(userToToggleId, currentUser.following, Principal.equal);
 
-          if (isFollowing == null) {
-            // Follow user
-            let updatedCurrentUser = {
-              currentUser with
-              following = Array.append(currentUser.following, [userToToggleId])
-            };
-            let updatedUserToToggle = {
-              userToToggle with
-              followers = Array.append(userToToggle.followers, [currentUserId])
-            };
-
-            users.put(currentUserId, updatedCurrentUser);
-            users.put(userToToggleId, updatedUserToToggle);
-
-            #ok("You are now following " # userToToggle.username);
-          } else {
-            // Unfollow user
-            let updatedCurrentUser = {
-              currentUser with
-              following = Array.filter(currentUser.following, func(id : Principal) : Bool { id != userToToggleId })
-            };
-            let updatedUserToToggle = {
-              userToToggle with
-              followers = Array.filter(userToToggle.followers, func(id : Principal) : Bool { id != currentUserId })
-            };
-
-            users.put(currentUserId, updatedCurrentUser);
-            users.put(userToToggleId, updatedUserToToggle);
-
-            #ok("You have unfollowed " # userToToggle.username);
+        if (isFollowing == null) {
+          // Follow user
+          let updatedCurrentUser = {
+            currentUser with
+            following = Array.append(currentUser.following, [userToToggleId])
           };
+          let updatedUserToToggle = {
+            userToToggle with
+            followers = Array.append(userToToggle.followers, [currentUserId])
+          };
+
+          users.put(currentUserId, updatedCurrentUser);
+          users.put(userToToggleId, updatedUserToToggle);
+
+          #ok("You are now following " # userToToggle.username);
+        } else {
+          // Unfollow user
+          let updatedCurrentUser = {
+            currentUser with
+            following = Array.filter(currentUser.following, func(id : Principal) : Bool { id != userToToggleId })
+          };
+          let updatedUserToToggle = {
+            userToToggle with
+            followers = Array.filter(userToToggle.followers, func(id : Principal) : Bool { id != currentUserId })
+          };
+
+          users.put(currentUserId, updatedCurrentUser);
+          users.put(userToToggleId, updatedUserToToggle);
+
+          #ok("You have unfollowed " # userToToggle.username);
         };
-        case (null, _) { #err("Current user not found") };
-        case (_, null) { #err("User to follow/unfollow not found") };
       };
-    } catch (err) {
-      #err("System error occurred during follow/unfollow operation: " # Error.message(err));
+      case (null, _) { #err("Current user not found") };
+      case (_, null) { #err("User to follow/unfollow not found") };
     };
+
   };
 
   // GET FOLLOWERS
-  public func getFollowers(users : Types.Users, userId : Principal) : async [Types.User] {
+  public func getFollowers(users : Types.Users, userId : Principal) : [Types.User] {
     switch (users.get(userId)) {
       case (null) { [] };
       case (?_user) {
@@ -275,7 +276,7 @@ module {
   };
 
   // GET FOLLOWING
-  public func getFollowing(users : Types.Users, userId : Principal) : async [Types.User] {
+  public func getFollowing(users : Types.Users, userId : Principal) : [Types.User] {
     switch (users.get(userId)) {
       case (null) { [] };
       case (?user) {
@@ -294,7 +295,7 @@ module {
   };
 
   // GET REFERRALS
-  public func getReferrals(users : Types.Users, userId : Principal) : async [Types.User] {
+  public func getReferrals(users : Types.Users, userId : Principal) : [Types.User] {
     switch (users.get(userId)) {
       case (null) { [] };
       case (?_user) {
@@ -324,7 +325,7 @@ module {
   };
 
   // UTILS
-  private func generateReferral(principal : Principal) : async Text {
+  private func generateReferral(principal : Principal) : Text {
     let principalText = Principal.toText(principal);
     let hashedText = Nat32.toText(Text.hash(principalText));
     let referral = Utils.substr(hashedText, 0, 8);

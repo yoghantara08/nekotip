@@ -33,13 +33,13 @@ actor class NekoTip() = this {
     username : Text,
     depositAddress : Text,
     referralCode : ?Text,
-  ) : async Types.User {
-    return await UserService.authenticateUser(users, msg.caller, username, depositAddress, referralCode);
+  ) : async Result.Result<Types.User, Text> {
+    return UserService.authenticateUser(users, msg.caller, username, depositAddress, referralCode);
   };
 
   // UPDATE USER PROFILE
-  public shared (msg) func updateUserProfile(updateData : Types.UserUpdateData) : async Types.User {
-    return await UserService.updateUserProfile(users, msg.caller, updateData);
+  public shared (msg) func updateUserProfile(updateData : Types.UserUpdateData) : async Result.Result<Types.User, Text> {
+    return UserService.updateUserProfile(users, msg.caller, updateData);
   };
 
   // GET USERS
