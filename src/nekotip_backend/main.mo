@@ -54,22 +54,22 @@ actor class NekoTip() = this {
 
   // FOLLOW/UNFOLLOW USER
   public shared (msg) func toggleFollow(targetFollow : Principal) : async Result.Result<Text, Text> {
-    await UserService.toggleFollow(users, msg.caller, targetFollow);
+    return UserService.toggleFollow(users, msg.caller, targetFollow);
   };
 
   // GET FOLLOWERS
   public shared (msg) func getFollowers() : async [Types.User] {
-    return await UserService.getFollowers(users, msg.caller);
+    return UserService.getFollowers(users, msg.caller);
   };
 
   // GET FOLLOWING
   public shared (msg) func getFollowing() : async [Types.User] {
-    return await UserService.getFollowing(users, msg.caller);
+    return UserService.getFollowing(users, msg.caller);
   };
 
   // GET REFERRALS
   public shared (msg) func getReferrals() : async [Types.User] {
-    return await UserService.getReferrals(users, msg.caller);
+    return UserService.getReferrals(users, msg.caller);
   };
 
   // GET ACCOUNT ICP BALANCE
@@ -87,17 +87,47 @@ actor class NekoTip() = this {
     contentImages : [Text],
     categories : [Text],
   ) : async Result.Result<Types.Content, Text> {
-    return await ContentService.postContent(contents, msg.caller, title, description, tier, thumbnail, contentImages, categories);
+    return ContentService.postContent(contents, msg.caller, title, description, tier, thumbnail, contentImages, categories);
+  };
+
+  // GET ALL CONTENT PREVIEWS (Timeline/Feed/Discover)
+  public shared query func getAllContentPreviews() : async [Types.ContentPreview] {
+    return ContentService.getAllContentPreviews(contents);
   };
 
   // GET CREATOR CONTENT LIST
   public shared (msg) func getCreatorContentList(creatorId : Principal) : async [Result.Result<Types.Content, Types.ContentPreview>] {
-    return await ContentService.getCreatorContent(contents, msg.caller, creatorId);
+    return ContentService.getCreatorContent(contents, msg.caller, creatorId);
   };
 
   // GET CONTENT DETAILS
   public shared (msg) func getContentDetails(contentId : Text) : async Result.Result<Types.Content, ?Types.ContentPreview> {
-    return await ContentService.getContentDetails(contents, msg.caller, contentId);
+    return ContentService.getContentDetails(contents, msg.caller, contentId);
+  };
+
+  // LIKE/UNLIKE CONTENT (TOGGLE LIKE)
+  public shared (msg) func toggleLike(contentId : Text) : async Result.Result<Types.Content, Text> {
+    return ContentService.toggleLike(contents, msg.caller, contentId);
+  };
+
+  // POST COMMENT
+  public shared (msg) func postComment(contentId : Text, comment : Text) : async Result.Result<Types.Comment, Text> {
+    return ContentService.addComment(contents, msg.caller, contentId, comment);
+  };
+
+  // GET COMMENTS
+  public shared (msg) func getContentComments(contentId : Text) : async Result.Result<[Types.Comment], Text> {
+    return ContentService.getContentComments(contents, msg.caller, contentId);
+  };
+
+  // DELETE CONTENT
+  public shared (msg) func deleteContent(contentId : Text) : async Result.Result<(), Text> {
+    return ContentService.deleteContent(contents, msg.caller, contentId);
+  };
+
+  // DELETE COMMENT
+  public shared (msg) func deleteComment(contentId : Text, commentId : Text) : async Result.Result<Types.Content, Text> {
+    return ContentService.deleteComment(contents, msg.caller, contentId, commentId);
   };
 
   // TRANSACTION ENDPOINT ======================================
