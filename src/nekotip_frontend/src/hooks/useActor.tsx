@@ -16,11 +16,10 @@ const useActor = () => {
 
     const identity = authClient.getIdentity();
 
-    const agent = new HttpAgent({ identity });
-
-    if (DFX_NETWORK === 'local') {
-      await agent.fetchRootKey();
-    }
+    const agent = await HttpAgent.create({
+      identity,
+      shouldFetchRootKey: DFX_NETWORK === 'local',
+    });
 
     return Actor.createActor(idlFactory, {
       agent,

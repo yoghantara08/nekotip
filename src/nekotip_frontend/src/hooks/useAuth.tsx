@@ -41,33 +41,35 @@ const useAuth = () => {
         onSuccess: async () => {
           const isAuthenticated = await authClient.isAuthenticated();
 
-          if (isAuthenticated) {
-            const identity = authClient.getIdentity();
-            const principal = identity.getPrincipal();
+          if (!isAuthenticated) {
+            throw new Error('User not authenticated');
+          }
 
-            // Generate Deposit Address
-            const accountIdentifier = AccountIdentifier.fromPrincipal({
-              principal,
-              subAccount: undefined,
-            });
+          const identity = authClient.getIdentity();
+          const principal = identity.getPrincipal();
 
-            const depositAddressHex = accountIdentifier.toHex();
+          // Generate Deposit Address
+          const accountIdentifier = AccountIdentifier.fromPrincipal({
+            principal,
+            subAccount: undefined,
+          });
 
-            // Authenticate user with the backend canister
-            const result = await actor.authenticateUser(
-              `user_${principal.toString().slice(0, 8)}`,
-              depositAddressHex,
-              referralCode ? [referralCode] : [],
-            );
+          const depositAddressHex = accountIdentifier.toHex();
 
-            if ('ok' in result) {
-              // Update state
-              updateUser(result.ok);
-              updateAuthentication(true);
-              navigate('/dashboard', { replace: true });
-            } else {
-              throw new Error(result.err);
-            }
+          // Authenticate user with the backend canister
+          const result = await actor.authenticateUser(
+            `user_${principal.toString().slice(0, 8)}`,
+            depositAddressHex,
+            referralCode ? [referralCode] : [],
+          );
+
+          if ('ok' in result) {
+            // Update state
+            updateUser(result.ok);
+            updateAuthentication(true);
+            navigate('/dashboard', { replace: true });
+          } else {
+            throw new Error(result.err);
           }
         },
         maxTimeToLive: BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000), // 1 week

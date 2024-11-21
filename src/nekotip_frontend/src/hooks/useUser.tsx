@@ -46,12 +46,24 @@ const useUser = () => {
     [dispatch],
   );
 
+  const getICPBalance = async () => {
+    try {
+      const actor = await getActor();
+      const result = await actor.getAccountBalance();
+
+      return result;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return {
     user,
     referralCode,
     updateUser,
     updateUserProfile,
     updateReferralCode,
+    getICPBalance,
   };
 };
 
