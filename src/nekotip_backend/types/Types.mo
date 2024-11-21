@@ -1,9 +1,11 @@
 import HashMap "mo:base/HashMap";
+import Principal "mo:base/Principal";
 
 module {
   public type Users = HashMap.HashMap<Principal, User>;
   public type Contents = HashMap.HashMap<Text, Content>;
   public type Transactions = HashMap.HashMap<Text, Transaction>;
+  public type UserBalances = HashMap.HashMap<Principal, UserBalance>;
 
   // USER TYPES
   public type User = {
@@ -45,6 +47,13 @@ module {
     twitch : ?Text;
     website : ?Text;
     facebook : ?Text;
+  };
+
+  public type UserBalance = {
+    id : Principal;
+    balance : Nat;
+    donatedBalance : Nat;
+    referrerBalance : Nat;
   };
 
   // CONTENT TYPES
@@ -99,6 +108,7 @@ module {
     to : Principal;
     amount : Nat;
     transactionType : TransactionType;
+    txStatus : TxStatus;
     contentId : ?Text;
     supportComment : ?Text;
     platformFee : Nat;
@@ -114,14 +124,16 @@ module {
     #platformFee;
   };
 
-  // STATISTIC TYPES
-  public type PlatformStats = {
-    totalUsers : Nat;
-    totalCreators : Nat;
-    totalContent : Nat;
-    totalTransactions : Nat;
-    totalVolume : Nat;
-    platformFees : Nat;
+  public type TxStatus = {
+    #pending;
+    #completed;
+    #failed;
+  };
+
+  // PLATFORM TYPES
+  public type PlatformBalance = {
+    balance : Nat;
+    totalFees : Nat;
     referralPayouts : Nat;
   };
 };
