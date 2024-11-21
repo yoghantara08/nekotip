@@ -1,30 +1,42 @@
-import Types "types/Types";
+import IC "ic:aaaaa-aa";
 import HashMap "mo:base/HashMap";
 import Principal "mo:base/Principal";
 import Iter "mo:base/Iter";
 import Result "mo:base/Result";
 import Text "mo:base/Text";
+import Cycles "mo:base/ExperimentalCycles";
+import Blob "mo:base/Blob";
+import Debug "mo:base/Debug";
+
+import IcpLedger "canister:icp_ledger_canister";
 import UserService "services/UserService";
 import ContentService "services/ContentService";
+import TransactionService "services/TransactionService";
+import Types "types/Types";
 
 actor class NekoTip() = this {
   private var users : Types.Users = HashMap.HashMap(0, Principal.equal, Principal.hash);
-  private var contents : Types.Contents = HashMap.HashMap<Text, Types.Content>(0, Text.equal, Text.hash);
+  private var contents : Types.Contents = HashMap.HashMap(0, Text.equal, Text.hash);
+  private var userBalances : Types.UserBalances = HashMap.HashMap(0, Principal.equal, Principal.hash);
 
   private stable var usersEntries : [(Principal, Types.User)] = [];
   private stable var contentsEntries : [(Text, Types.Content)] = [];
+  private stable var userBalancesEntries : [(Principal, Types.UserBalance)] = [];
 
   // PREUPGRADE & POSTUPGRADE
   system func preupgrade() {
     usersEntries := Iter.toArray(users.entries());
     contentsEntries := Iter.toArray(contents.entries());
+    userBalancesEntries := Iter.toArray(userBalances.entries());
   };
 
   system func postupgrade() {
     users := HashMap.fromIter<Principal, Types.User>(usersEntries.vals(), 0, Principal.equal, Principal.hash);
     contents := HashMap.fromIter<Text, Types.Content>(contentsEntries.vals(), 0, Text.equal, Text.hash);
+    userBalances := HashMap.fromIter<Principal, Types.UserBalance>(userBalancesEntries.vals(), 0, Principal.equal, Principal.hash);
     usersEntries := [];
     contentsEntries := [];
+    userBalancesEntries := [];
   };
 
   // USERS ENDPOINT ======================================
@@ -131,4 +143,56 @@ actor class NekoTip() = this {
   };
 
   // TRANSACTION ENDPOINT ======================================
+  // Transfer ICP from canister
+  public shared func transfer(amount : Nat64, to : Principal) : async Result.Result<IcpLedger.BlockIndex, Text> {
+    return await TransactionService.transfer(amount, to);
+  };
+
+  public func getIcpUsdRate() : async Text {
+    let host : Text = "api.coingecko.com";
+    let url = "https://" # host # "/api/v3/simple/price?ids=internet-computer&vs_currencies=usd";
+
+    let request_headers = [
+      { name = "User-Agent"; value = "icp-price-feed" },
+      { name = "Accept"; value = "application/json" },
+    ];
+
+    let http_request : IC.http_request_args = {
+      url = url;
+      max_response_bytes = ?2048;
+      headers = request_headers;
+      body = null;
+      method = #get;
+      transform = ?{
+        function = transform;
+        context = Blob.fromArray([]);
+      };
+    };
+
+    Cycles.add<system>(230_949_972_000);
+
+    let http_response : IC.http_request_result = await IC.http_request(http_request);
+
+    Debug.print(debug_show (http_response));
+
+    let decoded_text : Text = switch (Text.decodeUtf8(http_response.body)) {
+      case (null) { "No value returned" };
+      case (?y) { y };
+    };
+
+    decoded_text;
+  };
+
+  private query func transform({
+    context : Blob;
+    response : IC.http_request_result;
+  }) : async IC.http_request_result {
+
+    let _context_array : [Nat8] = Blob.toArray(context);
+
+    {
+      response with headers = []; // not intersted in the headers
+    };
+  };
+
 };
