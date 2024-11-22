@@ -75,6 +75,142 @@ module {
     };
   };
 
+  // UPDATE TRANSACTION
+  // change status, update user balance and track referrals, update platform balance
+  public func updateTransaction(
+    transactions : Types.Transactions,
+    userBalances : Types.UserBalances,
+    platformBalance : Types.PlatformBalance,
+    transactionId : Text,
+    status : Types.TxStatus,
+  ) : async Result.Result<Types.Transaction, Text> {
+    switch (transactions.get(transactionId)) {
+      case (null) {
+        #err("Transaction not found");
+      };
+      case (?transaction) {
+        if (transaction.txStatus == #completed or transaction.txStatus == #failed) {
+          return #err("Transaction already processed");
+        };
+
+        let updatedTransaction = {
+          transaction with
+          txStatus = status;
+        };
+
+        transactions.put(transactionId, updatedTransaction);
+
+        switch (status) {
+          case (#completed) {
+            try {
+              // Update recipient balance
+              await updateRecipientBalance(userBalances, transaction.to, transaction.amount);
+
+              // Update platform balance
+              await updatePlatformBalance(
+                platformBalance,
+                transaction.platformFee,
+                transaction.referralFee,
+              );
+
+              // Handle referral fee if exists
+              switch (transaction.referralFee) {
+                case (?refFee) {
+                  await handleReferralPayment(userBalances, transaction.to, refFee);
+                };
+                case (null) {};
+              };
+
+              #ok(updatedTransaction);
+            } catch (e) {
+              // Revert transaction status if any balance update fails
+              transactions.put(transactionId, transaction);
+              #err("Failed to update balances: " # Error.message(e));
+            };
+          };
+          case (#failed) {
+            #ok(updatedTransaction);
+          };
+          case (#pending) {
+            #err("Cannot update to pending status");
+          };
+        };
+      };
+    };
+  };
+
+  // Update recipient's balance
+  private func updateRecipientBalance(
+    userBalances : Types.UserBalances,
+    recipient : Principal,
+    amount : Nat,
+  ) : async () {
+    switch (userBalances.get(recipient)) {
+      case (null) {
+        let newBalance : Types.UserBalance = {
+          id = recipient;
+          balance = amount;
+          donatedBalance = amount;
+          referrerBalance = 0;
+        };
+        userBalances.put(recipient, newBalance);
+      };
+      case (?balance) {
+        let updatedBalance : Types.UserBalance = {
+          balance with
+          balance = balance.balance + amount;
+          donatedBalance = balance.donatedBalance + amount;
+        };
+        userBalances.put(recipient, updatedBalance);
+      };
+    };
+  };
+
+  // Update platform balance
+  private func updatePlatformBalance(
+    platformBalance : Types.PlatformBalance,
+    fee : Nat,
+    referralFee : ?Nat,
+  ) : async () {
+    let refFeeAmount = switch (referralFee) {
+      case (?amount) amount;
+      case (null) 0;
+    };
+
+    platformBalance.balance += (fee - refFeeAmount);
+    platformBalance.totalFees += fee;
+    platformBalance.referralPayouts += refFeeAmount;
+  };
+
+  // Handle referral payment
+  private func handleReferralPayment(
+    userBalances : Types.UserBalances,
+    recipientId : Principal,
+    referralAmount : Nat,
+  ) : async () {
+    switch (userBalances.get(recipientId)) {
+      case (null) {
+        // Create new balance entry for referrer
+        let newBalance : Types.UserBalance = {
+          id = recipientId;
+          balance = referralAmount;
+          donatedBalance = 0;
+          referrerBalance = referralAmount;
+        };
+        userBalances.put(recipientId, newBalance);
+      };
+      case (?balance) {
+        // Update existing balance
+        let updatedBalance : Types.UserBalance = {
+          balance with
+          balance = balance.balance + referralAmount;
+          referrerBalance = balance.referrerBalance + referralAmount;
+        };
+        userBalances.put(recipientId, updatedBalance);
+      };
+    };
+  };
+
   // ICP transfer function
   public func transfer(amount : Nat64, to : Principal) : async Result.Result<IcpLedger.BlockIndex, Text> {
     let transferArgs : IcpLedger.TransferArgs = {
@@ -99,15 +235,13 @@ module {
     };
   };
 
-  // UNLOCK CONTENT PAYMENT
+  // UNLOCK CONTENT
 
   // WITHDRAW
 
-  // GET TRANSACTION DETAILS
+  // GET SUPPORT GIVEN (DONATION LIST)
 
-  // GET TRANSACTION HISTORY BY PRINCIPAL ID
-
-  // TRACK REFERRAL EARNINGS
+  // GET TRANSACTION LIST
 
   // UTILS
   private func _getPriceFromTier(tier : Types.ContentTier) : Nat {

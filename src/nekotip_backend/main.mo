@@ -8,7 +8,6 @@ import Cycles "mo:base/ExperimentalCycles";
 import Blob "mo:base/Blob";
 import Debug "mo:base/Debug";
 
-import IcpLedger "canister:icp_ledger_canister";
 import UserService "services/UserService";
 import ContentService "services/ContentService";
 import TransactionService "services/TransactionService";
@@ -17,25 +16,35 @@ import Types "types/Types";
 actor class NekoTip() = this {
   private var users : Types.Users = HashMap.HashMap(0, Principal.equal, Principal.hash);
   private var contents : Types.Contents = HashMap.HashMap(0, Text.equal, Text.hash);
+  private var transactions : Types.Transactions = HashMap.HashMap(0, Text.equal, Text.hash);
   private var userBalances : Types.UserBalances = HashMap.HashMap(0, Principal.equal, Principal.hash);
 
   private stable var usersEntries : [(Principal, Types.User)] = [];
   private stable var contentsEntries : [(Text, Types.Content)] = [];
+  private stable var transactionsEntries : [(Text, Types.Transaction)] = [];
   private stable var userBalancesEntries : [(Principal, Types.UserBalance)] = [];
+  private stable var platformBalance : Types.PlatformBalance = {
+    var balance : Nat = 0;
+    var totalFees : Nat = 0;
+    var referralPayouts : Nat = 0;
+  };
 
   // PREUPGRADE & POSTUPGRADE
   system func preupgrade() {
     usersEntries := Iter.toArray(users.entries());
     contentsEntries := Iter.toArray(contents.entries());
+    transactionsEntries := Iter.toArray(transactions.entries());
     userBalancesEntries := Iter.toArray(userBalances.entries());
   };
 
   system func postupgrade() {
     users := HashMap.fromIter<Principal, Types.User>(usersEntries.vals(), 0, Principal.equal, Principal.hash);
     contents := HashMap.fromIter<Text, Types.Content>(contentsEntries.vals(), 0, Text.equal, Text.hash);
+    transactions := HashMap.fromIter<Text, Types.Transaction>(transactionsEntries.vals(), 0, Text.equal, Text.hash);
     userBalances := HashMap.fromIter<Principal, Types.UserBalance>(userBalancesEntries.vals(), 0, Principal.equal, Principal.hash);
     usersEntries := [];
     contentsEntries := [];
+    transactionsEntries := [];
     userBalancesEntries := [];
   };
 
@@ -143,9 +152,14 @@ actor class NekoTip() = this {
   };
 
   // TRANSACTION ENDPOINT ======================================
-  // Transfer ICP from canister
-  public shared func transfer(amount : Nat64, to : Principal) : async Result.Result<IcpLedger.BlockIndex, Text> {
-    return await TransactionService.transfer(amount, to);
+  // CREATE DONATION TX
+  public shared (msg) func initiateDonation(to : Principal, amount : Nat, supportComment : ?Text) : async Result.Result<Types.Transaction, Text> {
+    return await TransactionService.initiateDonation(transactions, users, msg.caller, to, amount, supportComment);
+  };
+
+  // UPDATE TRANSACTION AFTER SUCCESSFULL TRANSFER
+  public shared func updateTransaction(transactionId : Text, status : Types.TxStatus) : async Result.Result<Types.Transaction, Text> {
+    return await TransactionService.updateTransaction(transactions, userBalances, platformBalance, transactionId, status);
   };
 
   public func getIcpUsdRate() : async Text {

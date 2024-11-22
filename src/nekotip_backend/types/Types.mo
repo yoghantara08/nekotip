@@ -132,8 +132,8 @@ module {
 
   // PLATFORM TYPES
   public type PlatformBalance = {
-    balance : Nat;
-    totalFees : Nat;
-    referralPayouts : Nat;
+    var balance : Nat;
+    var totalFees : Nat;
+    var referralPayouts : Nat;
   };
 };
