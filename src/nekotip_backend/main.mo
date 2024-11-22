@@ -153,13 +153,23 @@ actor class NekoTip() = this {
 
   // TRANSACTION ENDPOINT ======================================
   // CREATE DONATION TX
-  public shared (msg) func initiateDonation(to : Principal, amount : Nat, supportComment : ?Text) : async Result.Result<Types.Transaction, Text> {
-    return await TransactionService.initiateDonation(transactions, users, msg.caller, to, amount, supportComment);
+  public shared (msg) func createDonateTx(to : Principal, amount : Nat, supportComment : ?Text) : async Result.Result<Types.Transaction, Text> {
+    return await TransactionService.createDonateTx(transactions, users, msg.caller, to, amount, supportComment);
   };
 
-  // UPDATE TRANSACTION AFTER SUCCESSFULL TRANSFER
-  public shared func updateTransaction(transactionId : Text, status : Types.TxStatus) : async Result.Result<Types.Transaction, Text> {
-    return await TransactionService.updateTransaction(transactions, userBalances, platformBalance, transactionId, status);
+  // COMPLETE DONATE TRANSACTION AFTER SUCCESSFULL TRANSFER
+  public shared func finalizeDonateTx(transactionId : Text, status : Types.TxStatus) : async Result.Result<Types.Transaction, Text> {
+    return await TransactionService.finalizeDonateTx(transactions, userBalances, platformBalance, transactionId, status);
+  };
+
+  // CREATE CONTENT UNLOCK TX
+  public shared (msg) func createContentUnlockTx(contentId : Text, amount : Nat) : async Result.Result<Types.Transaction, Text> {
+    return await TransactionService.createContentUnlockTx(transactions, contents, users, msg.caller, contentId, amount);
+  };
+
+  // COMPLETE CONTENT UNLOCK TRANSACTION AFTER SUCCESSFULL TRANSFER
+  public shared func finalizeContentUnlockTx(transactionId : Text) : async Result.Result<Types.Transaction, Text> {
+    return await TransactionService.finalizeContentUnlockTx(transactions, contents, users, userBalances, platformBalance, transactionId);
   };
 
   public func getIcpUsdRate() : async Text {
@@ -197,7 +207,7 @@ actor class NekoTip() = this {
     decoded_text;
   };
 
-  private query func transform({
+  public query func transform({
     context : Blob;
     response : IC.http_request_result;
   }) : async IC.http_request_result {

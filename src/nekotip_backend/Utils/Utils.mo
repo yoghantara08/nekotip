@@ -37,4 +37,12 @@ module {
     let finalHash = Text.hash(combined);
     return Nat32.toText(finalHash);
   };
+
+  public func calculatePlatformFee(amount : Nat) : Nat {
+    return (amount * 5) / 100;
+  };
+
+  public func calculateReferralPayout(amount : Nat) : Nat {
+    return amount / 2;
+  };
 };

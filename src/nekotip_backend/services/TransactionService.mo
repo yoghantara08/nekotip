@@ -9,12 +9,14 @@ import UserService "UserService";
 import Error "mo:base/Error";
 import Nat64 "mo:base/Nat64";
 import Nat "mo:base/Nat";
+import Array "mo:base/Array";
+import Debug "mo:base/Debug";
 import IcpLedger "canister:icp_ledger_canister";
 
 module {
   // Notes: Always check if user has referrer then cut 5% from 5% platform fee and give to referrer
   // DONATION
-  public func initiateDonation(
+  public func createDonateTx(
     transactions : Types.Transactions,
     users : Types.Users,
     from : Principal,
@@ -42,10 +44,10 @@ module {
           return #err("Insufficient ICP balance");
         };
 
-        let platformFee = (amount * 5) / 100;
+        let platformFee = Utils.calculatePlatformFee(amount);
         var referralFee = 0;
         if (toUser.referredBy != null) {
-          referralFee := platformFee / 2;
+          referralFee := Utils.calculateReferralPayout(platformFee);
         };
         let netAmount = Nat.sub(amount, platformFee);
 
@@ -77,7 +79,7 @@ module {
 
   // UPDATE TRANSACTION
   // change status, update user balance and track referrals, update platform balance
-  public func updateTransaction(
+  public func finalizeDonateTx(
     transactions : Types.Transactions,
     userBalances : Types.UserBalances,
     platformBalance : Types.PlatformBalance,
@@ -93,11 +95,11 @@ module {
           return #err("Transaction already processed");
         };
 
+        // Update transaction status
         let updatedTransaction = {
           transaction with
           txStatus = status;
         };
-
         transactions.put(transactionId, updatedTransaction);
 
         switch (status) {
@@ -133,6 +135,178 @@ module {
           };
           case (#pending) {
             #err("Cannot update to pending status");
+          };
+        };
+      };
+    };
+  };
+
+  public func createContentUnlockTx(
+    transactions : Types.Transactions,
+    contents : Types.Contents,
+    users : Types.Users,
+    from : Principal,
+    contentId : Text,
+    amount : Nat,
+  ) : async Result.Result<Types.Transaction, Text> {
+
+    // Validate input
+    if (Principal.isAnonymous(from)) {
+      return #err("Anonymous principals cannot unlock content");
+    };
+
+    let sender = users.get(from);
+    let balance = await UserService.getAccountBalance(from);
+
+    // Get content and validate
+    switch (contents.get(contentId), sender) {
+      case (null, _) { return #err("Content not found") };
+      case (_, null) { return #err("Sender not found") };
+      case (?content, ?sender) {
+        // Check if content is already unlocked
+        let isUnlocked = Array.find<Principal>(
+          content.unlockedBy,
+          func(p) { Principal.equal(p, from) },
+        );
+        if (isUnlocked != null) {
+          return #err("Content already unlocked");
+        };
+
+        // Check sender balance
+        if (balance < amount) {
+          return #err("Insufficient ICP balance");
+        };
+
+        let platformFee = Utils.calculatePlatformFee(amount);
+        var referralFee = 0;
+
+        // Check if content creator has a referrer
+        switch (users.get(content.creatorId)) {
+          case (?creator) {
+            if (creator.referredBy != null) {
+              referralFee := Utils.calculateReferralPayout(platformFee);
+            };
+          };
+          case (null) { return #err("Content creator not found") };
+        };
+
+        let netAmount = Nat.sub(amount, platformFee);
+
+        // Generate transaction ID
+        let transactionId = Utils.generateUUID(from, contentId);
+
+        // Create transaction record
+        let newTransaction : Types.Transaction = {
+          id = transactionId;
+          from = sender.id;
+          to = content.creatorId;
+          amount = netAmount;
+          transactionType = #contentPurchase;
+          txStatus = #pending;
+          contentId = ?contentId;
+          supportComment = null;
+          platformFee = platformFee;
+          referralFee = ?referralFee;
+          timestamp = Time.now();
+        };
+
+        // Store transaction
+        transactions.put(transactionId, newTransaction);
+        #ok(newTransaction);
+      };
+    };
+  };
+
+  // Update content after successful transaction
+  public func finalizeContentUnlockTx(
+    transactions : Types.Transactions,
+    contents : Types.Contents,
+    users : Types.Users,
+    userBalances : Types.UserBalances,
+    platformBalance : Types.PlatformBalance,
+    transactionId : Text,
+  ) : async Result.Result<Types.Transaction, Text> {
+    switch (transactions.get(transactionId)) {
+      case (null) { #err("Transaction not found") };
+      case (?transaction) {
+        if (transaction.txStatus == #completed or transaction.txStatus == #failed) {
+          return #err("Transaction already processed");
+        };
+
+        switch (transaction.contentId) {
+          case (null) { return #err("Invalid content transaction") };
+          case (?contentId) {
+            try {
+              // Update transaction status
+              let updatedTransaction = {
+                transaction with
+                txStatus = #completed;
+              };
+              transactions.put(transactionId, updatedTransaction);
+
+              // Update creator's balance
+              switch (userBalances.get(transaction.to)) {
+                case (null) {
+                  let newBalance : Types.UserBalance = {
+                    id = transaction.to;
+                    balance = transaction.amount;
+                    donatedBalance = 0;
+                    referrerBalance = 0;
+                  };
+                  userBalances.put(transaction.to, newBalance);
+                };
+                case (?balance) {
+                  let updatedBalance = {
+                    balance with
+                    balance = balance.balance + transaction.amount;
+                  };
+                  userBalances.put(transaction.to, updatedBalance);
+                };
+              };
+
+              // Update platform balance
+              platformBalance.balance += (transaction.platformFee - Option.get(transaction.referralFee, 0));
+              platformBalance.totalFees += transaction.platformFee;
+              platformBalance.referralPayouts += Option.get(transaction.referralFee, 0);
+
+              // Handle referral payment if exists
+              switch (transaction.referralFee, contents.get(contentId)) {
+                case (null, _) {};
+                case (_, null) {};
+                case (?refFee, ?content) {
+                  switch (users.get(content.creatorId)) {
+                    case (?creator) {
+                      switch (creator.referredBy) {
+                        case (?referrer) {
+                          await handleReferralPayment(userBalances, referrer, refFee);
+                        };
+                        case (null) {};
+                      };
+                    };
+                    case (null) {};
+                  };
+                };
+              };
+
+              // Update content's unlockedBy array
+              switch (contents.get(contentId)) {
+                case (null) { return #err("Content not found") };
+                case (?content) {
+                  let updatedContent = {
+                    content with
+                    unlockedBy = Array.append(content.unlockedBy, [transaction.from]);
+                    updatedAt = ?Time.now();
+                  };
+                  contents.put(contentId, updatedContent);
+                };
+              };
+
+              #ok(updatedTransaction);
+            } catch (_e) {
+              // Revert transaction status if any update fails
+              transactions.put(transactionId, transaction);
+              #err("Failed to process transaction: " # Debug.trap("Error processing transaction"));
+            };
           };
         };
       };
@@ -235,22 +409,9 @@ module {
     };
   };
 
-  // UNLOCK CONTENT
-
   // WITHDRAW
 
   // GET SUPPORT GIVEN (DONATION LIST)
 
   // GET TRANSACTION LIST
-
-  // UTILS
-  private func _getPriceFromTier(tier : Types.ContentTier) : Nat {
-    switch (tier) {
-      case (#Free) { 0 };
-      case (#Tier1) { 30 };
-      case (#Tier2) { 15 };
-      case (#Tier3) { 5 };
-    };
-  };
-
 };
