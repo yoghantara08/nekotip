@@ -52,8 +52,6 @@ module {
   public type UserBalance = {
     id : Principal;
     balance : Nat;
-    donatedBalance : Nat;
-    referrerBalance : Nat;
   };
 
   // CONTENT TYPES

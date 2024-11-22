@@ -159,7 +159,7 @@ actor class NekoTip() = this {
 
   // COMPLETE DONATE TRANSACTION AFTER SUCCESSFULL TRANSFER
   public shared func finalizeDonateTx(transactionId : Text, status : Types.TxStatus) : async Result.Result<Types.Transaction, Text> {
-    return await TransactionService.finalizeDonateTx(transactions, userBalances, platformBalance, transactionId, status);
+    return await TransactionService.finalizeDonateTx(transactions, users, userBalances, platformBalance, transactionId, status);
   };
 
   // CREATE CONTENT UNLOCK TX
@@ -168,8 +168,8 @@ actor class NekoTip() = this {
   };
 
   // COMPLETE CONTENT UNLOCK TRANSACTION AFTER SUCCESSFULL TRANSFER
-  public shared func finalizeContentUnlockTx(transactionId : Text) : async Result.Result<Types.Transaction, Text> {
-    return await TransactionService.finalizeContentUnlockTx(transactions, contents, users, userBalances, platformBalance, transactionId);
+  public shared func finalizeContentUnlockTx(transactionId : Text, status : Types.TxStatus) : async Result.Result<Types.Transaction, Text> {
+    return await TransactionService.finalizeContentUnlockTx(transactions, contents, users, userBalances, platformBalance, transactionId, status);
   };
 
   public func getIcpUsdRate() : async Text {
