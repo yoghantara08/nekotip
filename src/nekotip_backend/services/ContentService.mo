@@ -4,7 +4,8 @@ import Text "mo:base/Text";
 import Result "mo:base/Result";
 import Array "mo:base/Array";
 import Iter "mo:base/Iter";
-import Utils "../Utils/Utils";
+
+import Utils "../utils/Utils";
 import Types "../types/Types";
 
 module {

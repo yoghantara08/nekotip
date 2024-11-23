@@ -5,9 +5,10 @@ import Time "mo:base/Time";
 import Array "mo:base/Array";
 import Result "mo:base/Result";
 import Buffer "mo:base/Buffer";
+
 import ledger "canister:icp_ledger_canister";
 import Types "../types/Types";
-import Utils "../Utils/Utils";
+import Utils "../utils/Utils";
 
 module {
   // LOGIN/REGISTER
