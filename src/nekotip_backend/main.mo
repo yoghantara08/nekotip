@@ -172,6 +172,32 @@ actor class NekoTip() = this {
     return await TransactionService.finalizeContentUnlockTx(transactions, contents, users, userBalances, platformBalance, transactionId, status);
   };
 
+  // WITHDRAW USER BALANCE
+  public shared (msg) func withdraw(amount : Nat64) : async Result.Result<Types.Transaction, Text> {
+    return await TransactionService.withdraw(transactions, userBalances, platformBalance, msg.caller, amount);
+  };
+
+  // GET RECEIVED DONATIONS LIST
+  public shared query (msg) func getReceivedDonations() : async [Types.Transaction] {
+    return TransactionService.getReceivedDonations(transactions, msg.caller);
+  };
+
+  // GET GIVEN DONATIONS LIST
+  public shared query (msg) func getGivenDonations() : async [Types.Transaction] {
+    return TransactionService.getGivenDonations(transactions, msg.caller);
+  };
+
+  // GET WITHDRAWALS LIST
+  public shared query (msg) func getWithdrawals() : async [Types.Transaction] {
+    return TransactionService.getWithdrawals(transactions, msg.caller);
+  };
+
+  // GET REFERRAL EARNINGS LISST
+  public shared query (msg) func getReferralEarnings() : async [Types.Transaction] {
+    return TransactionService.getReferralEarnings(transactions, msg.caller);
+  };
+
+  // GET ICP USD RATE
   public func getIcpUsdRate() : async Text {
     let host : Text = "api.coingecko.com";
     let url = "https://" # host # "/api/v3/simple/price?ids=internet-computer&vs_currencies=usd";
