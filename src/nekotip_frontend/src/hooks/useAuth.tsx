@@ -18,7 +18,7 @@ const useAuth = () => {
   const navigate = useNavigate();
 
   const { updateUser, referralCode } = useUser();
-  const { getActor } = useActor();
+  const { getAuthenticatedActor } = useActor();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,7 +34,6 @@ const useAuth = () => {
     setIsLoading(true);
     try {
       const authClient = await AuthClient.create();
-      const actor = await getActor();
 
       await authClient.login({
         identityProvider: INTERNET_IDENTITY_URL,
@@ -47,6 +46,7 @@ const useAuth = () => {
 
           const identity = authClient.getIdentity();
           const principal = identity.getPrincipal();
+          const authenticatedActor = await getAuthenticatedActor(identity);
 
           // Generate Deposit Address
           const accountIdentifier = AccountIdentifier.fromPrincipal({
@@ -57,7 +57,7 @@ const useAuth = () => {
           const depositAddressHex = accountIdentifier.toHex();
 
           // Authenticate user with the backend canister
-          const result = await actor.authenticateUser(
+          const result = await authenticatedActor.authenticateUser(
             `user_${principal.toString().slice(0, 8)}`,
             depositAddressHex,
             referralCode ? [referralCode] : [],
@@ -103,12 +103,17 @@ const useAuth = () => {
 
   // Check authentication session
   const checkSession = useCallback(async () => {
+    const authData = localStorage.getItem('ic-delegation');
+    if (!authData) {
+      console.log('AuthClient not initialized in localStorage');
+      return;
+    }
+
     const authClient = await AuthClient.create();
     const isAuthenticated = await authClient.isAuthenticated();
 
     if (!isAuthenticated) {
       logoutUser();
-      return;
     }
   }, [logoutUser]);
 
