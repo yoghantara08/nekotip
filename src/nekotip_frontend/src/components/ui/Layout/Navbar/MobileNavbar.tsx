@@ -1,7 +1,13 @@
 import React from 'react';
 
+import UserDropdown from './UserDropdown';
+
 const MobileNavbar = () => {
-  return <div>MobileNavbar</div>;
+  return (
+    <div>
+      <UserDropdown />
+    </div>
+  );
 };
 
 export default MobileNavbar;
