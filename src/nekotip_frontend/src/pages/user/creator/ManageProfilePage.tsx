@@ -1,7 +1,17 @@
-import React from 'react'
+import React from 'react';
+
+import Layout from '@/components/ui/Layout/Layout';
+import useUser from '@/hooks/useUser';
 
 const ManageProfilePage = () => {
-  return <div>ManageProfilePage</div>
-}
+  const { user } = useUser();
 
-export default ManageProfilePage
+  return (
+    <Layout title={'Profile'}>
+      <p>{user?.username}</p>
+      <p>{user?.depositAddress}</p>
+    </Layout>
+  );
+};
+
+export default ManageProfilePage;

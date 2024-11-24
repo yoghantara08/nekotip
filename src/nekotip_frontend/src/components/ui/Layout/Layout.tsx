@@ -17,9 +17,7 @@ const Layout = ({ children, className, title, fullWidth }: LayoutProps) => {
   }
   return (
     <>
-      <Helmet>
-        <title>{pageTitle}</title>
-      </Helmet>
+      <Helmet title={pageTitle}></Helmet>
       <div className="h-full w-full">
         <div
           className={cn(

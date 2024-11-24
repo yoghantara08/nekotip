@@ -10,39 +10,39 @@ import {
 } from '@headlessui/react';
 import { ChevronDown, User2Icon } from 'lucide-react';
 
-import useAuth from '@/hooks/useAuth';
+import { useAuthManager } from '@/hooks/useAuthManager';
 import useUser from '@/hooks/useUser';
 import { cn } from '@/lib/utils/cn';
 
 export const menuSections = [
   {
     items: [
-      { label: 'Profile', to: '/profile' },
-      { label: 'Wallet', to: '/wallet' },
-      { label: 'Content Management', to: '/content-management' },
+      { label: 'Profile', to: '/dashboard' },
+      { label: 'Wallet', to: '/dashboard/wallet' },
+      { label: 'Post Management', to: '/dashboard/content-management' },
     ],
     activeClassName: 'hover:bg-mainAccent',
   },
   {
     items: [
-      { label: 'Nekovault', to: '/nekovault' },
+      { label: 'Exclusive Content', to: '/dashboard/exclusive-content' },
       { label: 'Explore Creator', to: '/explore' },
-      { label: 'Discover', to: '/discover' },
+      { label: 'Discover', to: '/dashboard/discover' },
     ],
     activeClassName: 'hover:bg-secondaryAccent',
   },
   {
     items: [
-      { label: 'Support Given', to: '/support-given' },
-      { label: 'Followed Creators', to: '/followed-creators' },
+      { label: 'Support Given', to: '/dashboard/support-given' },
+      { label: 'Followed Creators', to: '/dashboard/following' },
     ],
     activeClassName: 'hover:bg-thirdAccent',
   },
   {
     items: [
-      { label: 'My Supporter', to: '/my-supporter' },
-      { label: 'My Followers', to: '/my-followers' },
-      { label: 'My Referrals', to: '/my-referrals' },
+      { label: 'My Supporter', to: '/dashboard/supporter' },
+      { label: 'My Followers', to: '/dashboard/followers' },
+      { label: 'My Referrals', to: '/dashboard/referrals' },
     ],
     activeClassName: 'hover:bg-mainAccent',
   },
@@ -54,7 +54,7 @@ export const menuSections = [
 
 const UserDropdown = () => {
   const { user } = useUser();
-  const { logoutUser } = useAuth();
+  const { logout } = useAuthManager();
 
   return (
     <Menu as="div" className="mt2 relative inline-block text-left">
@@ -90,7 +90,7 @@ const UserDropdown = () => {
           )}
         >
           {menuSections.map((section, sectionIndex) => (
-            <div key={sectionIndex} className="py-1">
+            <div key={sectionIndex} className="py-1 font-medium">
               {section.items.map((item, itemIndex) => (
                 <MenuItem key={itemIndex}>
                   {item.to ? (
@@ -105,7 +105,7 @@ const UserDropdown = () => {
                     </Link>
                   ) : (
                     <div
-                      onClick={logoutUser}
+                      onClick={logout}
                       className={cn(
                         'block cursor-pointer px-4 py-2 text-sm text-subtext hover:text-white',
                         section.activeClassName,

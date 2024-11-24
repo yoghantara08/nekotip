@@ -1,7 +1,9 @@
-import React from 'react'
+import React from 'react';
+
+import Layout from '@/components/ui/Layout/Layout';
 
 const ContentPage = () => {
-  return <div>ContentPage</div>
-}
+  return <Layout>ContentPage</Layout>;
+};
 
-export default ContentPage
+export default ContentPage;

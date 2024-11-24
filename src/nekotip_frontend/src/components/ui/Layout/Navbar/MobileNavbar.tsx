@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { User2Icon } from 'lucide-react';
 
-import useAuth from '@/hooks/useAuth';
+import { useAuthManager } from '@/hooks/useAuthManager';
 import useUser from '@/hooks/useUser';
 import { cn } from '@/lib/utils/cn';
 
@@ -13,7 +13,7 @@ import Drawer from '../../Drawer/Drawer';
 import { menuSections } from './UserDropdown';
 
 const MobileNavbar = () => {
-  const { isAuthenticated, handleLogin, logoutUser } = useAuth();
+  const { isAuthenticated, login, logout } = useAuthManager();
   const { user } = useUser();
 
   const [openMenu, setOpenMenu] = useState(false);
@@ -43,7 +43,7 @@ const MobileNavbar = () => {
             )}
           </div>
         ) : (
-          <Button onClick={handleLogin} size="small">
+          <Button onClick={login} size="small">
             Login
           </Button>
         )}
@@ -85,7 +85,7 @@ const MobileNavbar = () => {
               <div
                 key={itemIndex}
                 onClick={() => {
-                  logoutUser();
+                  logout();
                   setOpenMenu(false);
                 }}
                 className={cn(

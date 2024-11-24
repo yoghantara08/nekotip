@@ -2,11 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import Button from '@/components/ui/Button/Button';
-import useAuth from '@/hooks/useAuth';
+import { useAuthManager } from '@/hooks/useAuthManager';
 import useWindowSize from '@/hooks/useWindowSize';
 
 const HeroBanner = () => {
-  const { handleLogin } = useAuth();
+  const { login } = useAuthManager();
   const { isMobile } = useWindowSize();
 
   return (
@@ -32,7 +32,7 @@ const HeroBanner = () => {
           <Button
             size={isMobile ? 'small' : 'default'}
             className="md:w-[250px]"
-            onClick={handleLogin}
+            onClick={login}
           >
             Join Now
           </Button>

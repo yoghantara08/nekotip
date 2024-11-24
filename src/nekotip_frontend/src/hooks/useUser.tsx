@@ -1,85 +1,59 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { AuthClient } from '@dfinity/auth-client';
+import { Principal } from '@dfinity/principal';
 
-import { serializeUser } from '@/lib/utils';
 import { AppDispatch, RootState } from '@/store';
-import { setReferralCode, setUser } from '@/store/reducers/userSlice';
+import { setReferralCode } from '@/store/reducers/userSlice';
 
-import {
-  User,
-  UserUpdateData,
-} from '../../../declarations/nekotip_backend/nekotip_backend.did';
+import { _SERVICE } from '../../../declarations/nekotip_backend/nekotip_backend.did';
 
-import useActor from './useActor';
+import { useAuthManager } from './useAuthManager';
 
 const useUser = () => {
   const { user, referralCode } = useSelector((state: RootState) => state.user);
   const dispatch: AppDispatch = useDispatch();
 
-  const { getAuthenticatedActor } = useActor();
+  const { actor, isAuthenticated } = useAuthManager();
 
-  const updateUser = (user: User | null) => {
-    if (user) dispatch(setUser(serializeUser(user)));
-    return;
-  };
-
-  const updateUserProfile = async (updateData: UserUpdateData) => {
-    try {
-      const authClient = await AuthClient.create();
-      const isAuthenticated = await authClient.isAuthenticated();
-
-      if (!isAuthenticated) {
-        throw new Error('User not authenticated');
+  const fetchUser = useCallback(
+    async (principal: Principal, actor: _SERVICE) => {
+      try {
+        return await actor.getUserById(principal);
+      } catch (error) {
+        console.error('Failed to fetch user:', error);
+        throw error;
       }
-
-      const identity = authClient.getIdentity();
-      const actor = await getAuthenticatedActor(identity);
-      const result = await actor.updateUserProfile(updateData);
-
-      if ('ok' in result) {
-        updateUser(result.ok);
-      } else {
-        throw new Error(result.err);
-      }
-    } catch (error) {
-      console.error('Failed to update user profile:', error);
-      throw error;
-    }
-  };
+    },
+    [],
+  );
 
   const updateReferralCode = useCallback(
-    (code: string) => {
+    (code: string): void => {
       dispatch(setReferralCode(code));
     },
     [dispatch],
   );
 
-  const getICPBalance = async () => {
-    try {
-      const authClient = await AuthClient.create();
-      const isAuthenticated = await authClient.isAuthenticated();
-
-      if (!isAuthenticated) {
-        throw new Error('User not authenticated');
-      }
-
-      const identity = authClient.getIdentity();
-      const actor = await getAuthenticatedActor(identity);
-      const result = await actor.getAccountBalance();
-
-      return result ?? 0;
-    } catch (error) {
-      console.error(error);
+  const getICPBalance = useCallback(async () => {
+    if (!isAuthenticated || !actor) {
+      throw new Error(
+        !isAuthenticated ? 'User not authenticated' : 'Actor is unavailable',
+      );
     }
-  };
+
+    try {
+      return (await actor.getAccountBalance()) ?? 0;
+    } catch (error) {
+      console.error('Failed to fetch ICP balance:', error);
+      throw error;
+    }
+  }, [isAuthenticated, actor]);
 
   return {
     user,
     referralCode,
-    updateUser,
-    updateUserProfile,
+    fetchUser,
     updateReferralCode,
     getICPBalance,
   };

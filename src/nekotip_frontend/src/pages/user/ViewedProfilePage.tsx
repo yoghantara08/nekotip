@@ -1,7 +1,9 @@
-import React from 'react'
+import React from 'react';
+
+import Layout from '@/components/ui/Layout/Layout';
 
 const ViewedProfilePage = () => {
-  return <div>ViewedProfilePage</div>
-}
+  return <Layout>ViewedProfilePage</Layout>;
+};
 
-export default ViewedProfilePage
+export default ViewedProfilePage;
