@@ -1,14 +1,9 @@
 import React from 'react';
 
-import Login from '@/components/features/Login/Login';
 import Layout from '@/components/ui/Layout/Layout';
 
 const LandingPage = () => {
-  return (
-    <Layout>
-      <Login />
-    </Layout>
-  );
+  return <Layout>Landing Page</Layout>;
 };
 
 export default LandingPage;

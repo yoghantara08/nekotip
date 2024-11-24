@@ -27,10 +27,14 @@ export default {
         montserrat: ['Montserrat', 'sans-serif'],
         quicksand: ['Quicksand', 'sans-serif'],
       },
+      boxShadow: {
+        custom: '4px 4px 0px #5A534F',
+        hover: '2px 2px 0px #5A534F',
+      },
       colors: {
         bg: '#FFE4E1',
         mainAccent: '#FEC2C3',
-        secAccent: '#D9C3F2',
+        secondaryAccent: '#D9C3F2',
         thirdAccent: '#C3CFF2',
         subtext: '#4E4C47',
         caption: '#7A6858',

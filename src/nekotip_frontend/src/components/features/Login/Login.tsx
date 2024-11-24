@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Principal } from '@dfinity/principal';
 import BigNumber from 'bignumber.js';
 
+import Button from '@/components/ui/Button/Button';
 import useAuth from '@/hooks/useAuth';
 import useICPLedgerPayment from '@/hooks/useICPLedgerPayment';
 import useUser from '@/hooks/useUser';
@@ -52,7 +53,7 @@ const Login = () => {
           </div>
           <div className="text-2xl font-bold">Result: {result?.toString()}</div>
 
-          <button onClick={transfer}>Transfer</button>
+          <Button onClick={transfer}>Transfer</Button>
           <button onClick={logoutUser}>Logout</button>
         </>
       ) : (
