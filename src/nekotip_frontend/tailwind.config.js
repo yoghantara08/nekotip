@@ -23,7 +23,20 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      fontFamily: {
+        montserrat: ['Montserrat', 'sans-serif'],
+        quicksand: ['Quicksand', 'sans-serif'],
+      },
       colors: {
+        bg: '#FFE4E1',
+        mainAccent: '#FEC2C3',
+        secAccent: '#D9C3F2',
+        thirdAccent: '#C3CFF2',
+        subtext: '#4E4C47',
+        caption: '#7A6858',
+        border: '#3E3D39',
+        shadow: '#5A534F',
+
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -54,7 +67,7 @@ export default {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
         },
-        border: 'hsl(var(--border))',
+        // border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         chart: {
