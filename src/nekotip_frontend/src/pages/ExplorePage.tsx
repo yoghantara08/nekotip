@@ -1,7 +1,9 @@
-import React from 'react'
+import React from 'react';
+
+import Layout from '@/components/ui/Layout/Layout';
 
 const ExplorePage = () => {
-  return <div>ExplorePage</div>
-}
+  return <Layout>ExplorePage</Layout>;
+};
 
-export default ExplorePage
+export default ExplorePage;
