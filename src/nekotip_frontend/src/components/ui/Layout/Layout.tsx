@@ -8,7 +8,7 @@ import MobileNavbar from './Navbar/MobileNavbar';
 import Navbar from './Navbar/Navbar';
 import { LayoutProps } from './types';
 
-const Layout = ({ children, className, title }: LayoutProps) => {
+const Layout = ({ children, className, title, fullWidth }: LayoutProps) => {
   const { isMobile } = useWindowSize();
 
   let pageTitle: string = 'NekoTip';
@@ -31,7 +31,13 @@ const Layout = ({ children, className, title }: LayoutProps) => {
         >
           {isMobile ? <MobileNavbar /> : <Navbar />}
           <div className="mb-10 mt-6 flex w-full justify-center lg:mb-14 lg:mt-10">
-            <main className={cn('w-full max-w-[1280px] px-4', className)}>
+            <main
+              className={cn(
+                'w-full px-4',
+                !fullWidth && 'max-w-[1280px]',
+                className,
+              )}
+            >
               {children}
             </main>
           </div>

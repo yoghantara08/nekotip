@@ -11,8 +11,8 @@ const Navbar = () => {
   const { isAuthenticated, handleLogin } = useAuth();
 
   return (
-    <nav className="flex w-full justify-center border-b px-4">
-      <div className="flex h-[100px] w-full max-w-[1280px] items-center justify-between">
+    <nav className="flex w-full justify-center border-b">
+      <div className="flex h-[100px] w-full max-w-[1280px] items-center justify-between px-4">
         <div className="flex items-center gap-x-[60px]">
           <img
             alt="nekotip logo"

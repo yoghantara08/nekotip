@@ -22,7 +22,7 @@ const MobileNavbar = () => {
   const logoutSection = menuSections[menuSections.length - 1];
 
   return (
-    <nav className="flex h-[75px] items-center justify-between border-b px-4">
+    <nav className="flex h-[65px] items-center justify-between border-b px-4">
       <img
         alt="nekotip logo"
         src="/images/logo/nekotip-logo.svg"

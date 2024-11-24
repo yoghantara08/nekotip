@@ -85,7 +85,7 @@ const UserDropdown = () => {
       >
         <MenuItems
           className={cn(
-            'absolute right-0 mt-3 w-56 origin-top-right divide-y rounded-lg shadow-lg ring-1',
+            'absolute right-0 z-50 mt-3 w-56 origin-top-right divide-y rounded-lg shadow-lg ring-1',
             'divide-[#3E3D39] border-caption bg-[#FFE4E1] ring-caption',
           )}
         >
