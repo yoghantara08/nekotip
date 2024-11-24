@@ -8,60 +8,64 @@ import {
   MenuItems,
   Transition,
 } from '@headlessui/react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, User2Icon } from 'lucide-react';
 
 import useAuth from '@/hooks/useAuth';
 import useUser from '@/hooks/useUser';
 import { cn } from '@/lib/utils/cn';
 
+export const menuSections = [
+  {
+    items: [
+      { label: 'Profile', to: '/profile' },
+      { label: 'Wallet', to: '/wallet' },
+      { label: 'Content Management', to: '/content-management' },
+    ],
+    activeClassName: 'hover:bg-mainAccent',
+  },
+  {
+    items: [
+      { label: 'Nekovault', to: '/nekovault' },
+      { label: 'Explore Creator', to: '/explore' },
+      { label: 'Discover', to: '/discover' },
+    ],
+    activeClassName: 'hover:bg-secondaryAccent',
+  },
+  {
+    items: [
+      { label: 'Support Given', to: '/support-given' },
+      { label: 'Followed Creators', to: '/followed-creators' },
+    ],
+    activeClassName: 'hover:bg-thirdAccent',
+  },
+  {
+    items: [
+      { label: 'My Supporter', to: '/my-supporter' },
+      { label: 'My Followers', to: '/my-followers' },
+      { label: 'My Referrals', to: '/my-referrals' },
+    ],
+    activeClassName: 'hover:bg-mainAccent',
+  },
+  {
+    items: [{ label: 'Logout', to: undefined }],
+    activeClassName: 'hover:bg-shadow',
+  },
+];
+
 const UserDropdown = () => {
   const { user } = useUser();
   const { logoutUser } = useAuth();
-
-  const menuSections = [
-    {
-      items: [
-        { label: 'Profile', to: '/profile' },
-        { label: 'Wallet', to: '/wallet' },
-        { label: 'Content Management', to: '/content-management' },
-      ],
-      activeClassName: 'hover:bg-mainAccent',
-    },
-    {
-      items: [
-        { label: 'Nekovault', to: '/nekovault' },
-        { label: 'Explore Creator', to: '/explore' },
-        { label: 'Discover', to: '/discover' },
-      ],
-      activeClassName: 'hover:bg-secondaryAccent',
-    },
-    {
-      items: [
-        { label: 'Support Given', to: '/support-given' },
-        { label: 'Followed Creators', to: '/followed-creators' },
-      ],
-      activeClassName: 'hover:bg-thirdAccent',
-    },
-    {
-      items: [
-        { label: 'My Supporter', to: '/my-supporter' },
-        { label: 'My Followers', to: '/my-followers' },
-        { label: 'My Referrals', to: '/my-referrals' },
-      ],
-      activeClassName: 'hover:bg-mainAccent',
-    },
-    {
-      items: [{ label: 'Logout', to: undefined }],
-      activeClassName: 'hover:bg-shadow',
-    },
-  ];
 
   return (
     <Menu as="div" className="mt2 relative inline-block text-left">
       {/* Dropdown Button */}
       <MenuButton className={'flex items-center gap-3'}>
-        <div className="size-12 overflow-hidden rounded-full border bg-mainAccent">
-          <img src="/images/logo/nekotip.svg" alt="nekotip" />
+        <div className="flex size-12 items-center justify-center overflow-hidden rounded-full bg-mainAccent text-subtext">
+          {user?.profilePic ? (
+            <img src={user.profilePic} alt="nekotip" />
+          ) : (
+            <User2Icon className="size-7" />
+          )}
         </div>
         <div className="flex items-center gap-1 text-subtext">
           <div className="font-semibold">@{user?.username}</div>

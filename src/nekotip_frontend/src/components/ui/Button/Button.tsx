@@ -10,6 +10,7 @@ interface ButtonProps {
   onClick?: (() => void) | ((e: any) => void);
   variant?: 'main' | 'secondary' | 'third';
   type?: 'button' | 'submit' | 'reset';
+  size?: 'small' | 'default' | 'large';
 }
 
 const Button = ({
@@ -19,6 +20,7 @@ const Button = ({
   disabled = false,
   variant = 'main',
   type = 'button',
+  size = 'default',
 }: ButtonProps) => {
   return (
     <button
@@ -26,10 +28,11 @@ const Button = ({
       onClick={!disabled ? onClick : undefined}
       disabled={disabled}
       className={cn(
-        'shadow-custom hover:shadow-hover text-subtext relative z-10 !h-[48px] rounded-lg border px-[30px] font-semibold',
+        'relative z-10 h-[48px] rounded-lg border px-[30px] font-semibold text-subtext shadow-custom hover:shadow-hover',
         variant === 'main' && 'bg-mainAccent',
         variant === 'secondary' && 'bg-secondaryAccent',
         variant === 'third' && 'bg-thirdAccent',
+        size === 'small' && 'h-10 px-5 text-[14px]',
         className,
       )}
     >

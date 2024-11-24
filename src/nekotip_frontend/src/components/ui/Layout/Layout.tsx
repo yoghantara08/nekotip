@@ -23,7 +23,7 @@ const Layout = ({ children, className, title }: LayoutProps) => {
       <div className="h-full w-full">
         <div
           className={cn(
-            'relative mx-auto grid min-h-screen max-w-[1280px]',
+            'relative mx-auto grid min-h-screen',
             // "auto" is for the main tag
             // add "max-content" to the "grid-rows" class below for each div if want to add more "static" elements
             'grid-rows-[max-content_auto_max-content]',
@@ -31,7 +31,9 @@ const Layout = ({ children, className, title }: LayoutProps) => {
         >
           {isMobile ? <MobileNavbar /> : <Navbar />}
           <div className="mb-10 mt-6 flex w-full justify-center lg:mb-14 lg:mt-10">
-            <main className={cn('w-full px-4', className)}>{children}</main>
+            <main className={cn('w-full max-w-[1280px] px-4', className)}>
+              {children}
+            </main>
           </div>
           <Footer />
         </div>
