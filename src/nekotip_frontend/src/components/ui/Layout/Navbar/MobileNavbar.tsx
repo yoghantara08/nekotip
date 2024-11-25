@@ -23,12 +23,14 @@ const MobileNavbar = () => {
 
   return (
     <nav className="flex h-[65px] items-center justify-between border-b px-4">
-      <img
-        alt="nekotip logo"
-        src="/images/logo/nekotip-logo.svg"
-        loading="eager"
-        className="w-32"
-      ></img>
+      <Link to={'/'}>
+        <img
+          alt="nekotip logo"
+          src="/images/logo/nekotip-logo.svg"
+          loading="eager"
+          className="w-32"
+        ></img>
+      </Link>
 
       <div className="flex items-center gap-2">
         {isAuthenticated ? (
@@ -49,7 +51,11 @@ const MobileNavbar = () => {
         )}
       </div>
 
-      <Drawer isOpen={openMenu} onClose={() => setOpenMenu(false)} size="xl">
+      <Drawer
+        isOpen={openMenu}
+        onClose={() => setOpenMenu(false)}
+        containerClassName="h-[80%]"
+      >
         <div className="flex h-full flex-col">
           {/* Main menu sections */}
           <div className="flex-1 overflow-y-auto">

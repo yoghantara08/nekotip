@@ -28,7 +28,7 @@ const HeroBanner = () => {
           <h1>favorite creators</h1>
         </div>
 
-        <div className="mt-5 flex items-center justify-center gap-10 md:mt-9">
+        <div className="mt-5 flex items-center justify-center gap-6 md:mt-9 md:gap-10">
           <Button
             size={isMobile ? 'small' : 'default'}
             className="md:w-[250px]"
