@@ -3,12 +3,13 @@ import { Helmet } from 'react-helmet';
 import useWindowSize from '@/hooks/useWindowSize';
 import { cn } from '@/lib/utils/cn';
 
+import DashboardMenu from './DashboardMenu/DashboardMenu';
 import MobileNavbar from './Navbar/MobileNavbar';
 import Navbar from './Navbar/Navbar';
 import { LayoutProps } from './types';
 
 const LayoutDashboard = ({ children, className, title }: LayoutProps) => {
-  const { isMobile } = useWindowSize();
+  const { isTablet } = useWindowSize();
 
   let pageTitle: string = 'NekoTip';
   if (title) {
@@ -18,8 +19,11 @@ const LayoutDashboard = ({ children, className, title }: LayoutProps) => {
     <>
       <Helmet title={pageTitle}></Helmet>
       <div className="h-full w-full">
-        {isMobile ? <MobileNavbar /> : <Navbar dashboard />}
-        <main className={cn('w-full px-6', className)}>{children}</main>
+        {isTablet ? <MobileNavbar /> : <Navbar />}
+        <div className={cn('flex h-screen w-full gap-5', className)}>
+          {!isTablet && <DashboardMenu />}
+          <main className="p-7">{children}</main>
+        </div>
       </div>
     </>
   );

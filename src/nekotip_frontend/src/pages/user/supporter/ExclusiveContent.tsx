@@ -1,7 +1,13 @@
 import React from 'react';
 
+import LayoutDashboard from '@/components/ui/Layout/LayoutDashboard';
+
 const ExclusiveContent = () => {
-  return <div>ExclusiveContent</div>;
+  return (
+    <LayoutDashboard title="Exclusive Content">
+      ExclusiveContent
+    </LayoutDashboard>
+  );
 };
 
 export default ExclusiveContent;

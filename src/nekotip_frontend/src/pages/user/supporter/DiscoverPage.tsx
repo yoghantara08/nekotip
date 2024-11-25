@@ -1,7 +1,9 @@
-import React from 'react'
+import React from 'react';
+
+import LayoutDashboard from '@/components/ui/Layout/LayoutDashboard';
 
 const DiscoverPage = () => {
-  return <div>DiscoverPage</div>
-}
+  return <LayoutDashboard title="Discover">DiscoverPage</LayoutDashboard>;
+};
 
-export default DiscoverPage
+export default DiscoverPage;

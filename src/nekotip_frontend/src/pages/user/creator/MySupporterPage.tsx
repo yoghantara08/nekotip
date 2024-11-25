@@ -1,7 +1,9 @@
-import React from 'react'
+import React from 'react';
+
+import LayoutDashboard from '@/components/ui/Layout/LayoutDashboard';
 
 const MySupporterPage = () => {
-  return <div>MySupporterPage</div>
-}
+  return <LayoutDashboard title="Supporter">MySupporterPage</LayoutDashboard>;
+};
 
-export default MySupporterPage
+export default MySupporterPage;

@@ -8,16 +8,13 @@ import Button from '../../Button/Button';
 
 import UserDropdown from './UserDropdown';
 
-const Navbar = ({ dashboard }: { dashboard: boolean }) => {
+const Navbar = () => {
   const { isAuthenticated, login } = useAuthManager();
 
   return (
     <nav className="flex w-full justify-center border-b">
       <div
-        className={cn(
-          'flex h-[80px] w-full items-center justify-between px-4',
-          dashboard ? 'px-6' : 'max-w-[1280px]',
-        )}
+        className={cn('flex h-[80px] w-full items-center justify-between px-6')}
       >
         <div className="flex items-center gap-x-[60px]">
           <Link to={'/'}>

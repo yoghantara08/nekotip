@@ -9,7 +9,7 @@ import Navbar from './Navbar/Navbar';
 import { LayoutProps } from './types';
 
 const Layout = ({ children, className, title, fullWidth }: LayoutProps) => {
-  const { isMobile } = useWindowSize();
+  const { isTablet } = useWindowSize();
 
   let pageTitle: string = 'NekoTip';
   if (title) {
@@ -27,7 +27,7 @@ const Layout = ({ children, className, title, fullWidth }: LayoutProps) => {
             'grid-rows-[max-content_auto_max-content]',
           )}
         >
-          {isMobile ? <MobileNavbar /> : <Navbar dashboard={false} />}
+          {isTablet ? <MobileNavbar /> : <Navbar />}
           <div className="mb-10 mt-6 flex w-full justify-center lg:mb-14 lg:mt-10">
             <main
               className={cn(

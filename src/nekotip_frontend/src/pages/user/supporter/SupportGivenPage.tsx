@@ -1,7 +1,11 @@
-import React from 'react'
+import React from 'react';
+
+import LayoutDashboard from '@/components/ui/Layout/LayoutDashboard';
 
 const SupportGivenPage = () => {
-  return <div>SupportGivenPage</div>
-}
+  return (
+    <LayoutDashboard title="Support Given">SupportGivenPage</LayoutDashboard>
+  );
+};
 
-export default SupportGivenPage
+export default SupportGivenPage;

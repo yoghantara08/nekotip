@@ -1,7 +1,11 @@
-import React from 'react'
+import React from 'react';
+
+import LayoutDashboard from '@/components/ui/Layout/LayoutDashboard';
 
 const FollowedCreatorsPage = () => {
-  return <div>FollowedCreatorsPage</div>
-}
+  return (
+    <LayoutDashboard title="Following">FollowedCreatorsPage</LayoutDashboard>
+  );
+};
 
-export default FollowedCreatorsPage
+export default FollowedCreatorsPage;

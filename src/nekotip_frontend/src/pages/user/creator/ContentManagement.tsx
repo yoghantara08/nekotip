@@ -1,7 +1,11 @@
-import React from 'react'
+import React from 'react';
+
+import LayoutDashboard from '@/components/ui/Layout/LayoutDashboard';
 
 const ContentManagement = () => {
-  return <div>ContentManagement</div>
-}
+  return (
+    <LayoutDashboard title="Post Management">ContentManagement</LayoutDashboard>
+  );
+};
 
-export default ContentManagement
+export default ContentManagement;
