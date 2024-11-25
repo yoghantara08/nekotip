@@ -27,7 +27,7 @@ const Layout = ({ children, className, title, fullWidth }: LayoutProps) => {
             'grid-rows-[max-content_auto_max-content]',
           )}
         >
-          {isMobile ? <MobileNavbar /> : <Navbar />}
+          {isMobile ? <MobileNavbar /> : <Navbar dashboard={false} />}
           <div className="mb-10 mt-6 flex w-full justify-center lg:mb-14 lg:mt-10">
             <main
               className={cn(

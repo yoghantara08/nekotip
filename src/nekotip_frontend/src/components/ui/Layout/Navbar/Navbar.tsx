@@ -2,17 +2,23 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { useAuthManager } from '@/hooks/useAuthManager';
+import { cn } from '@/lib/utils/cn';
 
 import Button from '../../Button/Button';
 
 import UserDropdown from './UserDropdown';
 
-const Navbar = () => {
+const Navbar = ({ dashboard }: { dashboard: boolean }) => {
   const { isAuthenticated, login } = useAuthManager();
 
   return (
     <nav className="flex w-full justify-center border-b">
-      <div className="flex h-[90px] w-full max-w-[1280px] items-center justify-between px-4">
+      <div
+        className={cn(
+          'flex h-[80px] w-full items-center justify-between px-4',
+          dashboard ? 'px-6' : 'max-w-[1280px]',
+        )}
+      >
         <div className="flex items-center gap-x-[60px]">
           <Link to={'/'}>
             <img

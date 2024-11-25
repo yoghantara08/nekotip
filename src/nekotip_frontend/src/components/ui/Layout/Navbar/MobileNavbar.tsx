@@ -65,12 +65,12 @@ const MobileNavbar = () => {
                       to={item.to ?? ''}
                       onClick={() => setOpenMenu(false)}
                       className={cn(
-                        'block w-full px-4 py-3 text-base font-medium text-subtext',
+                        'flex w-full items-center gap-1.5 px-4 py-3 text-base font-medium text-subtext',
                         'transition-colors duration-150',
-
                         'border-b border-[#3E3D39]/10 last:border-0',
                       )}
                     >
+                      {item.icon}
                       {item.label}
                     </Link>
                   ))}

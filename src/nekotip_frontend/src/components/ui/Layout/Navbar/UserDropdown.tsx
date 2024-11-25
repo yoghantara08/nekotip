@@ -8,7 +8,21 @@ import {
   MenuItems,
   Transition,
 } from '@headlessui/react';
-import { ChevronDown, User2Icon } from 'lucide-react';
+import {
+  ChevronDown,
+  CircleFadingPlusIcon,
+  CircleUserRoundIcon,
+  CompassIcon,
+  EarthIcon,
+  HeartIcon,
+  ShoppingBagIcon,
+  SquareUserIcon,
+  User2Icon,
+  UserRoundPlusIcon,
+  UsersIcon,
+  UsersRoundIcon,
+  WalletIcon,
+} from 'lucide-react';
 
 import { useAuthManager } from '@/hooks/useAuthManager';
 import useUser from '@/hooks/useUser';
@@ -17,37 +31,65 @@ import { cn } from '@/lib/utils/cn';
 export const menuSections = [
   {
     items: [
-      { label: 'Profile', to: '/dashboard' },
-      { label: 'Wallet', to: '/dashboard/wallet' },
-      { label: 'Post Management', to: '/dashboard/content-management' },
+      { label: 'Profile', to: '/dashboard', icon: <CircleUserRoundIcon /> },
+      { label: 'Wallet', to: '/dashboard/wallet', icon: <WalletIcon /> },
+      {
+        label: 'Post Management',
+        to: '/dashboard/content-management',
+        icon: <CircleFadingPlusIcon />,
+      },
     ],
     activeClassName: 'hover:bg-mainAccent',
   },
   {
     items: [
-      { label: 'Exclusive Content', to: '/dashboard/exclusive-content' },
-      { label: 'Explore Creator', to: '/explore' },
-      { label: 'Discover', to: '/dashboard/discover' },
+      {
+        label: 'Exclusive Content',
+        to: '/dashboard/exclusive-content',
+        icon: <ShoppingBagIcon />,
+      },
+      { label: 'Explore Creator', to: '/explore', icon: <EarthIcon /> },
+      { label: 'Discover', to: '/dashboard/discover', icon: <CompassIcon /> },
     ],
     activeClassName: 'hover:bg-secondaryAccent',
   },
   {
     items: [
-      { label: 'Support Given', to: '/dashboard/support-given' },
-      { label: 'Followed Creators', to: '/dashboard/following' },
+      {
+        label: 'Support Given',
+        to: '/dashboard/support-given',
+        icon: <HeartIcon />,
+      },
+      {
+        label: 'Followed Creators',
+        to: '/dashboard/following',
+        icon: <SquareUserIcon />,
+      },
     ],
     activeClassName: 'hover:bg-thirdAccent',
   },
   {
     items: [
-      { label: 'My Supporter', to: '/dashboard/supporter' },
-      { label: 'My Followers', to: '/dashboard/followers' },
-      { label: 'My Referrals', to: '/dashboard/referrals' },
+      {
+        label: 'My Supporter',
+        to: '/dashboard/supporter',
+        icon: <UsersIcon />,
+      },
+      {
+        label: 'My Followers',
+        to: '/dashboard/followers',
+        icon: <UsersRoundIcon />,
+      },
+      {
+        label: 'My Referrals',
+        to: '/dashboard/referrals',
+        icon: <UserRoundPlusIcon />,
+      },
     ],
     activeClassName: 'hover:bg-mainAccent',
   },
   {
-    items: [{ label: 'Logout', to: undefined }],
+    items: [{ label: 'Logout', to: undefined, icon: undefined }],
     activeClassName: 'hover:bg-shadow',
   },
 ];
@@ -85,7 +127,7 @@ const UserDropdown = () => {
       >
         <MenuItems
           className={cn(
-            'absolute right-0 z-50 mt-3 w-56 origin-top-right divide-y rounded-lg shadow-lg ring-1',
+            'absolute right-0 z-50 mt-3 w-60 origin-top-right divide-y rounded-lg shadow-lg ring-1',
             'divide-[#3E3D39] border-caption bg-[#FFE4E1] ring-caption',
           )}
         >
@@ -97,17 +139,18 @@ const UserDropdown = () => {
                     <Link
                       to={item.to}
                       className={cn(
-                        'block px-4 py-2 text-sm text-subtext hover:text-white',
+                        'flex items-center gap-1.5 px-4 py-2 text-sm text-subtext hover:text-white',
                         section.activeClassName,
                       )}
                     >
+                      {item.icon}
                       {item.label}
                     </Link>
                   ) : (
                     <div
                       onClick={logout}
                       className={cn(
-                        'block cursor-pointer px-4 py-2 text-sm text-subtext hover:text-white',
+                        'block cursor-pointer px-4 py-2 text-center text-sm text-subtext hover:text-white',
                         section.activeClassName,
                       )}
                     >

@@ -8,11 +8,11 @@ import ContentPage from './pages/ContentPage';
 import ExplorePage from './pages/ExplorePage';
 import LandingPage from './pages/LandingPage';
 import ContentManagement from './pages/user/creator/ContentManagement';
-import ManageProfilePage from './pages/user/creator/ManageProfilePage';
 import MyFollowersPage from './pages/user/creator/MyFollowersPage';
 import MyReferrals from './pages/user/creator/MyReferralsPage';
 import MySupporterPage from './pages/user/creator/MySupporterPage';
 import WalletPage from './pages/user/creator/WalletPage';
+import ProfilePage from './pages/user/ProfilePage';
 import DiscoverPage from './pages/user/supporter/DiscoverPage';
 import ExclusiveContent from './pages/user/supporter/ExclusiveContent';
 import FollowedCreatorsPage from './pages/user/supporter/FollowedCreatorsPage';
@@ -63,7 +63,7 @@ function App() {
         <Route path="/dashboard/support-given" element={<SupportGivenPage />} />
 
         {/* Creator Dashboard */}
-        <Route path="/dashboard" element={<ManageProfilePage />} />
+        <Route path="/dashboard" element={<ProfilePage />} />
         <Route
           path="/dashboard/content-management"
           element={<ContentManagement />}
