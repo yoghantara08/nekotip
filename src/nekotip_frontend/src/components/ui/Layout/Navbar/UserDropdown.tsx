@@ -17,16 +17,15 @@ import {
   HeartIcon,
   ShoppingBagIcon,
   SquareUserIcon,
-  User2Icon,
   UserRoundPlusIcon,
   UsersIcon,
   UsersRoundIcon,
   WalletIcon,
 } from 'lucide-react';
 
-import { useAuthManager } from '@/hooks/useAuthManager';
 import useUser from '@/hooks/useUser';
 import { cn } from '@/lib/utils/cn';
+import { useAuthManager } from '@/store/AuthProvider';
 
 export const menuSections = [
   {
@@ -103,11 +102,13 @@ const UserDropdown = () => {
       {/* Dropdown Button */}
       <MenuButton className={'flex items-center gap-3'}>
         <div className="flex size-12 items-center justify-center overflow-hidden rounded-full bg-mainAccent text-subtext">
-          {user?.profilePic ? (
-            <img src={user.profilePic} alt="nekotip" />
-          ) : (
-            <User2Icon className="size-7" />
-          )}
+          <img
+            src={
+              user?.profilePic ? user.profilePic : '/images/user-default.svg'
+            }
+            alt="profilepic"
+            className={cn(user?.profilePic && 'h-full w-full object-cover')}
+          />
         </div>
         <div className="flex items-center gap-1 text-subtext">
           <div className="font-semibold">@{user?.username}</div>

@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import Button from '@/components/ui/Button/Button';
-import { useAuthManager } from '@/hooks/useAuthManager';
 import useWindowSize from '@/hooks/useWindowSize';
+import { useAuthManager } from '@/store/AuthProvider';
 
 const HeroBanner = () => {
   const { login } = useAuthManager();

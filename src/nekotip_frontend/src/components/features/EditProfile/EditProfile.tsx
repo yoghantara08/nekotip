@@ -57,12 +57,11 @@ const EditProfile = () => {
     <div className="mt-3 flex flex-col gap-6 xl:flex-row">
       <div className="rounded-lg border border-border px-5 py-4 shadow-custom">
         {/* PICTURE */}
-        <div className="flex flex-col gap-3 md:gap-6 xxl:flex-row">
-          <ChangeProfilePic />
-          <ChangeBannerProfile />
-        </div>
+        <ChangeProfilePic />
+        <ChangeBannerProfile />
+
         {/* PROFILE */}
-        <div className="mt-6 flex flex-col gap-4">
+        <div className="mt-4 flex flex-col gap-4">
           <div className="flex flex-col items-center gap-4 md:flex-row">
             <CustomInput
               containerClassName="w-full"
@@ -89,6 +88,10 @@ const EditProfile = () => {
             onChange={(e) => setBio(e.target.value)}
             maxLength={100}
           />
+        </div>
+      </div>
+      <div className="flex flex-col gap-6">
+        <div className="min-w-[300px] space-y-3 rounded-lg border border-border px-5 py-4 shadow-custom">
           {/* CATEGORY */}
           <p className="-mb-2 text-lg font-semibold text-subtext">Category</p>
           <CustomDropdown
@@ -104,21 +107,21 @@ const EditProfile = () => {
             }
             options={categoriesOptions}
             onItemClick={(item) => setCategory([item?.label ?? ''])}
+            className="w-full"
           />
-        </div>
-      </div>
-      <div className="flex flex-col gap-6">
-        {/* SOCIALS */}
-        <div className="grid min-h-[300px] grid-cols-2 gap-x-4 gap-y-2 rounded-lg border border-border px-5 py-4 shadow-custom">
-          {SOCIAL_PLATFORMS.map((platform) => (
-            <CustomInput
-              key={platform}
-              label={platform.charAt(0).toUpperCase() + platform.slice(1)}
-              value={socials[platform] ?? ''}
-              placeholder={`Your ${platform} link`}
-              onChange={(e) => handleSocialChange(platform, e.target.value)}
-            />
-          ))}
+          {/* SOCIALS */}
+          <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+            {SOCIAL_PLATFORMS.map((platform) => (
+              <CustomInput
+                key={platform}
+                label={platform.charAt(0).toUpperCase() + platform.slice(1)}
+                value={socials[platform] ?? ''}
+                placeholder={`Your ${platform} link`}
+                onChange={(e) => handleSocialChange(platform, e.target.value)}
+                inputClassName="text-sm md:text-lg"
+              />
+            ))}
+          </div>
         </div>
         <Button icon={<SaveIcon />} variant="secondary">
           Save Changes

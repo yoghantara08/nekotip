@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { useAuthManager } from '@/hooks/useAuthManager';
 import { cn } from '@/lib/utils/cn';
+import { useAuthManager } from '@/store/AuthProvider';
 
 import Button from '../../Button/Button';
 

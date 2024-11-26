@@ -9,7 +9,7 @@ const ChangeBannerProfile = () => {
   const { isMobile } = useWindowSize();
 
   return (
-    <div className="flex flex-col gap-2 md:gap-4">
+    <div className="mt-2 flex flex-col gap-2 md:gap-4">
       <h3 className="font-semibold text-subtext md:text-lg">Banner Picture</h3>
       <div className="flex h-24 w-full items-center justify-center overflow-hidden rounded-lg border md:h-32 md:min-w-[450px]">
         <img
@@ -20,7 +20,7 @@ const ChangeBannerProfile = () => {
       </div>
       <Button
         size={isMobile ? 'small' : 'default'}
-        className="w-fit xxl:mt-2 xxl:w-full"
+        className="mt-1 w-fit"
         shadow={false}
       >
         Upload Banner Picture

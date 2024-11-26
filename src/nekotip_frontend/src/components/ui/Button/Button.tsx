@@ -38,6 +38,8 @@ const Button = ({
         variant === 'secondary' && 'bg-secondaryAccent',
         variant === 'third' && 'bg-thirdAccent',
         size === 'small' && 'h-10 px-5 text-[14px]',
+        disabled &&
+          'cursor-not-allowed text-caption shadow-none hover:shadow-none',
         className,
       )}
     >

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-import { useAuthManager } from '@/hooks/useAuthManager';
 import { cn } from '@/lib/utils/cn';
+import { useAuthManager } from '@/store/AuthProvider';
 
 import Button from '../../Button/Button';
 import { menuSections } from '../Navbar/UserDropdown';
