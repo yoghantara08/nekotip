@@ -29,13 +29,12 @@ module {
 
   public type UserUpdateData = {
     username : ?Text;
+    name : ?Text;
     bio : ?Text;
     socials : ?Socials;
-    name : ?Text;
     profilePic : ?Text;
     bannerPic : ?Text;
     categories : ?[Text];
-    isCreator : ?Bool;
   };
 
   public type Socials = {

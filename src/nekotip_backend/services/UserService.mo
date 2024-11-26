@@ -67,6 +67,7 @@ module {
         let newUser : Types.User = {
           id = userId;
           username = username;
+          name = ?username;
           referralCode = newReferralCode;
           depositAddress = depositAddress;
           followers = [];
@@ -75,7 +76,6 @@ module {
           createdAt = Time.now();
           bio = null;
           socials = null;
-          name = null;
           profilePic = null;
           bannerPic = null;
           referredBy = null;
@@ -138,8 +138,8 @@ module {
         let bio = switch (updateData.bio) {
           case (null) { user.bio };
           case (?newBio) {
-            if (Text.size(newBio) > 500) {
-              return #err("Bio must be 500 characters or less");
+            if (Text.size(newBio) > 100) {
+              return #err("Bio must be 100 characters or less");
             };
             ?newBio;
           };

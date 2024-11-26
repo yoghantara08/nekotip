@@ -1,15 +1,13 @@
 import React from 'react';
 
+import EditProfile from '@/components/features/EditProfile/EditProfile';
 import LayoutDashboard from '@/components/ui/Layout/LayoutDashboard';
-import useUser from '@/hooks/useUser';
 
 const ProfilePage = () => {
-  const { user } = useUser();
-
   return (
     <LayoutDashboard title={'Profile'}>
-      <p>{user?.username}</p>
-      {/* <p>{user?.depositAddress}</p> */}
+      <h1 className="text-title text-3xl font-semibold">Edit Profile</h1>
+      <EditProfile />
     </LayoutDashboard>
   );
 };

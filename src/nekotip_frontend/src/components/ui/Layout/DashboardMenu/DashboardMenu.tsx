@@ -14,8 +14,8 @@ const DashboardMenu = () => {
   const dashboardMenu = menuSections.slice(0, -1);
 
   return (
-    <aside className="h-full border-r border-border/30">
-      <div className="flex flex-col divide-y divide-border/30">
+    <aside className="h-full border-r border-border">
+      <div className="flex flex-col divide-y divide-border">
         {dashboardMenu.map((section, sectionIndex) => (
           <div key={sectionIndex} className="space-y-1 p-2">
             {section.items.map((item, itemIndex) => (
@@ -41,7 +41,7 @@ const DashboardMenu = () => {
           </div>
         ))}
       </div>
-      <div className="mt-5 border-t border-border/30 px-3 pt-6">
+      <div className="mt-5 border-t border-border px-3 pt-6">
         <Button className="w-full px-0 shadow-none" onClick={logout}>
           Logout
         </Button>
