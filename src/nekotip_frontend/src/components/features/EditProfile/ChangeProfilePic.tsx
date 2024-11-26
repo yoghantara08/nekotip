@@ -83,6 +83,7 @@ const ChangeProfilePic = () => {
         isOpen={openModal}
         onClose={() => setOpenModal(false)}
         className="max-w-[450px]"
+        disableClose={loading}
       >
         <div className="flex flex-col items-center gap-4 p-5">
           <div className="size-36 overflow-hidden rounded-full bg-bg">
@@ -96,7 +97,6 @@ const ChangeProfilePic = () => {
             onChange={handleFileChange}
             value={selectedFile}
             error={uploadError}
-            maxSize={5} // 5MB
             accept="image/png,image/jpeg,image/gif"
             className="w-fit"
             handleRemove={resetUpload}
