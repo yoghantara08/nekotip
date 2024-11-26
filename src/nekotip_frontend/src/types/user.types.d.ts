@@ -27,33 +27,3 @@ export interface ISocials {
   discord: string | null;
   youtube: string | null;
 }
-export enum EnumCategory {
-  Animation = 'Animation',
-  Art = 'Art',
-  Blogging = 'Blogging',
-  ComicsAndCartoons = 'ComicsAndCartoons',
-  Commissions = 'Commissions',
-  Community = 'Community',
-  Cosplay = 'Cosplay',
-  DanceAndTheatre = 'DanceAndTheatre',
-  Design = 'Design',
-  DrawingAndPainting = 'DrawingAndPainting',
-  Education = 'Education',
-  FoodAndDrink = 'FoodAndDrink',
-  Gaming = 'Gaming',
-  HealthAndFitness = 'HealthAndFitness',
-  Lifestyle = 'Lifestyle',
-  Money = 'Money',
-  Music = 'Music',
-  News = 'News',
-  Other = 'Other',
-  Photography = 'Photography',
-  Podcast = 'Podcast',
-  ScienceAndTech = 'ScienceAndTech',
-  Social = 'Social',
-  Software = 'Software',
-  Streaming = 'Streaming',
-  Translator = 'Translator',
-  VideoAndFilm = 'VideoAndFilm',
-  Writing = 'Writing',
-}

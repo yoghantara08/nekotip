@@ -14,7 +14,7 @@ const DashboardMenu = () => {
   const dashboardMenu = menuSections.slice(0, -1);
 
   return (
-    <aside className="h-full border-r border-border">
+    <aside className="h-[calc(100vh-81px)] min-w-[220px] border-r border-border">
       <div className="flex flex-col divide-y divide-border">
         {dashboardMenu.map((section, sectionIndex) => (
           <div key={sectionIndex} className="space-y-1 p-2">

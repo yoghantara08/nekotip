@@ -32,7 +32,7 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
     return (
       <div
         className={cn(
-          'w-full text-lg font-medium text-subtext',
+          'w-full font-medium text-subtext md:text-lg',
           containerClassName,
         )}
       >

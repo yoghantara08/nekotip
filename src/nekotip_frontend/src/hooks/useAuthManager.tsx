@@ -110,7 +110,11 @@ export const useAuthManager = () => {
   const login = useCallback(async () => {
     setAuthState((prev) => ({ ...prev, isLoading: true }));
     try {
-      const authClient = await AuthClient.create();
+      const authClient = await AuthClient.create({
+        idleOptions: {
+          disableIdle: true,
+        },
+      });
       await authClient.login({
         identityProvider: INTERNET_IDENTITY_URL,
         maxTimeToLive: BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000), // 1 week
