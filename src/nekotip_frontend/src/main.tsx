@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { PersistGate } from 'redux-persist/integration/react';
 
+import { AuthProvider } from './store/AuthProvider';
 import App from './App';
 import { persistor, store } from './store';
 
@@ -17,7 +18,9 @@ if (rootElement) {
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <BrowserRouter>
-            <App />
+            <AuthProvider>
+              <App />
+            </AuthProvider>
           </BrowserRouter>
         </PersistGate>
       </Provider>

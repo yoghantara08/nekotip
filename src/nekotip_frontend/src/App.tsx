@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { Route, Routes, useSearchParams } from 'react-router-dom';
 
 import ProtectedRoute from './components/features/ProtectedRoute/ProtectedRoute';
-import { useAuthManager } from './hooks/useAuthManager';
 import useUser from './hooks/useUser';
 import ContentPage from './pages/ContentPage';
 import ExplorePage from './pages/ExplorePage';
@@ -18,6 +17,7 @@ import ExclusiveContent from './pages/user/supporter/ExclusiveContent';
 import FollowedCreatorsPage from './pages/user/supporter/FollowedCreatorsPage';
 import SupportGivenPage from './pages/user/supporter/SupportGivenPage';
 import ViewedProfilePage from './pages/user/ViewedProfilePage';
+import { useAuthManager } from './store/AuthProvider';
 
 function App() {
   const [searchParams] = useSearchParams();
