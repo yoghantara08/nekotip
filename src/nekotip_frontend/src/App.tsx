@@ -22,25 +22,19 @@ import { useAuthManager } from './store/AuthProvider';
 function App() {
   const [searchParams] = useSearchParams();
 
-  const { updateReferralCode, fetchUser } = useUser();
-  const { initializeAuth, isAuthenticated, principal, actor } =
-    useAuthManager();
+  const { updateReferralCode, referralCode } = useUser();
+  const { initializeAuth, isAuthenticated } = useAuthManager();
+
+  console.log(referralCode);
 
   // INITIALIZE AUTHENTICATION
   useEffect(() => {
     initializeAuth();
   }, [initializeAuth]);
 
-  // FETCH USER DATA
-  useEffect(() => {
-    if (isAuthenticated && principal && actor) {
-      fetchUser(principal, actor);
-    }
-  }, [actor, fetchUser, isAuthenticated, principal]);
-
   useEffect(() => {
     const referralCode = searchParams.get('referral');
-    updateReferralCode(referralCode ?? '');
+    if (referralCode) updateReferralCode(referralCode);
   }, [searchParams, updateReferralCode]);
 
   return (

@@ -26,13 +26,18 @@ const useUser = () => {
   const fetchUser = useCallback(
     async (principal: Principal, actor: _SERVICE) => {
       try {
-        return await actor.getUserById(principal);
+        const user = await actor.getUserById(principal);
+        if (user?.[0]) {
+          dispatch(setUser(serializeUser(user[0])));
+        } else {
+          console.log('No user found');
+        }
       } catch (error) {
         console.error('Failed to fetch user:', error);
         throw error;
       }
     },
-    [],
+    [dispatch],
   );
 
   const updateReferralCode = useCallback(

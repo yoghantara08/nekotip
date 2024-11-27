@@ -16,24 +16,24 @@ module {
     followers : [Principal];
     following : [Principal];
     referrals : [Principal];
+    categories : [Text];
+    socials : Socials;
     createdAt : Int;
 
     bio : ?Text;
-    socials : ?Socials;
     name : ?Text;
     profilePic : ?Text;
     bannerPic : ?Text;
     referredBy : ?Principal;
-    categories : ?[Text];
   };
 
   public type UserUpdateData = {
     username : ?Text;
     name : ?Text;
     bio : ?Text;
-    socials : ?Socials;
     profilePic : ?Text;
     bannerPic : ?Text;
+    socials : ?Socials;
     categories : ?[Text];
   };
 

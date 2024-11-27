@@ -64,22 +64,34 @@ module {
         // Generate referral code
         let newReferralCode = generateReferral(userId);
 
+        // INIT USER SOCIALS
+        let socials : Types.Socials = {
+          twitter = null;
+          instagram = null;
+          tiktok = null;
+          youtube = null;
+          discord = null;
+          twitch = null;
+          website = null;
+          facebook = null;
+        };
+
         let newUser : Types.User = {
           id = userId;
           username = username;
           name = ?username;
           referralCode = newReferralCode;
           depositAddress = depositAddress;
+          socials = socials;
           followers = [];
           following = [];
           referrals = [];
+          categories = [];
           createdAt = Time.now();
           bio = null;
-          socials = null;
           profilePic = null;
           bannerPic = null;
-          referredBy = null;
-          categories = null;
+          referredBy = referredBy;
         };
 
         // Add new user to the hashmap
@@ -148,7 +160,18 @@ module {
         // SOCIALS
         let socials = switch (updateData.socials) {
           case (null) { user.socials };
-          case (?newSocials) { ?newSocials };
+          case (?newSocials) {
+            {
+              twitter = newSocials.twitter;
+              instagram = newSocials.instagram;
+              tiktok = newSocials.tiktok;
+              youtube = newSocials.youtube;
+              discord = newSocials.discord;
+              twitch = newSocials.twitch;
+              website = newSocials.website;
+              facebook = newSocials.facebook;
+            };
+          };
         };
 
         // NAME
@@ -172,7 +195,7 @@ module {
         // CATEGORIES
         let categories = switch (updateData.categories) {
           case (null) { user.categories };
-          case (?newCategories) { ?newCategories };
+          case (?newCategories) { newCategories };
         };
 
         let updatedUser : Types.User = {

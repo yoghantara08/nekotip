@@ -16,7 +16,7 @@ interface CustomDropdownProps {
   triggerContent: React.ReactNode;
   options: DropdownItemType[];
   // eslint-disable-next-line no-unused-vars
-  onItemClick?: (item: DropdownItemType | null) => void;
+  onItemClick?: (item: DropdownItemType) => void;
   className?: string;
   menuClassName?: string;
 }
@@ -53,7 +53,9 @@ const CustomDropdown = ({
           {options.map((item, index) => (
             <MenuItem key={index}>
               <div
-                onClick={() => onItemClick && onItemClick(item)}
+                onClick={() => {
+                  if (onItemClick) onItemClick(item);
+                }}
                 className="flex cursor-pointer items-center gap-2 px-4 py-2 hover:bg-secondaryAccent"
               >
                 {item.icon && <span>{item.icon}</span>}

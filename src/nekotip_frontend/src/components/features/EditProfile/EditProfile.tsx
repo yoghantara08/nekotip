@@ -8,12 +8,14 @@ import { CustomInput } from '@/components/ui/Input/CustomInput';
 import { CustomTextarea } from '@/components/ui/Input/CustomTextarea';
 import { CATEGORIES } from '@/constant/common';
 import useUser from '@/hooks/useUser';
-import { ISocials } from '@/types/user.types';
+import { useAuthManager } from '@/store/AuthProvider';
+
+import { Socials } from '../../../../../declarations/nekotip_backend/nekotip_backend.did';
 
 import ChangeBannerProfile from './ChangeBannerProfile';
 import ChangeProfilePic from './ChangeProfilePic';
 
-const SOCIAL_PLATFORMS: Array<keyof ISocials> = [
+const SOCIAL_PLATFORMS: Array<keyof Socials> = [
   'twitter',
   'instagram',
   'tiktok',
@@ -25,32 +27,63 @@ const SOCIAL_PLATFORMS: Array<keyof ISocials> = [
 ];
 
 const EditProfile = () => {
-  const { user } = useUser();
+  const { user, updateUser } = useUser();
+  const { actor } = useAuthManager();
 
-  const [name, setName] = useState(user?.name ?? '');
-  const [username, setUsername] = useState(user?.username ?? '');
-  const [bio, setBio] = useState(user?.bio ?? '');
+  const [name, setName] = useState(user?.name);
+  const [username, setUsername] = useState(user?.username);
+  const [bio, setBio] = useState(user?.bio);
   const [category, setCategory] = useState<string[]>(user?.categories ?? []);
-  const [socials, setSocials] = useState<ISocials>({
-    twitter: user?.socials?.twitter ?? null,
-    instagram: user?.socials?.instagram ?? null,
-    tiktok: user?.socials?.tiktok ?? null,
-    youtube: user?.socials?.youtube ?? null,
-    twitch: user?.socials?.twitch ?? null,
-    facebook: user?.socials?.facebook ?? null,
-    discord: user?.socials?.discord ?? null,
-    website: user?.socials?.website ?? null,
+  const [socials, setSocials] = useState<Socials>({
+    twitter: user?.socials?.twitter ?? [],
+    instagram: user?.socials?.instagram ?? [],
+    tiktok: user?.socials?.tiktok ?? [],
+    youtube: user?.socials?.youtube ?? [],
+    twitch: user?.socials?.twitch ?? [],
+    facebook: user?.socials?.facebook ?? [],
+    discord: user?.socials?.discord ?? [],
+    website: user?.socials?.website ?? [],
   });
+  const [loading, setLoading] = useState(false);
 
   const categoriesOptions = CATEGORIES.map((category) => ({
     label: category,
   }));
 
-  const handleSocialChange = (platform: keyof ISocials, value: string) => {
+  const handleSocialChange = (platform: keyof Socials, value: string[]) => {
     setSocials((prev) => ({
       ...prev,
       [platform]: value || null,
     }));
+  };
+
+  const handleUpdateProfile = async () => {
+    try {
+      setLoading(true);
+      const categories: [] | [string[]] = category.length > 0 ? [category] : [];
+
+      if (actor) {
+        const result = await actor.updateUserProfile({
+          bio: bio ? [bio] : [],
+          categories: categories,
+          username: username ? [username] : [],
+          name: name ? [name] : [],
+          socials: [socials],
+          bannerPic: [],
+          profilePic: [],
+        });
+
+        if ('ok' in result) {
+          updateUser(result.ok);
+        } else {
+          console.error('Error updating profile', result.err);
+        }
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -66,7 +99,7 @@ const EditProfile = () => {
             <CustomInput
               containerClassName="w-full"
               label="Name"
-              value={name}
+              value={name ?? ''}
               placeholder={'Your name'}
               onChange={(e) => setName(e.target.value)}
             />
@@ -83,7 +116,7 @@ const EditProfile = () => {
           <CustomTextarea
             textareaClassName="md:h-[100px]"
             label="Bio"
-            value={bio}
+            value={bio ?? ''}
             placeholder={'Tell about yourself'}
             onChange={(e) => setBio(e.target.value)}
             maxLength={100}
@@ -106,7 +139,7 @@ const EditProfile = () => {
               </div>
             }
             options={categoriesOptions}
-            onItemClick={(item) => setCategory([item?.label ?? ''])}
+            onItemClick={(item) => setCategory([item.label])}
             className="w-full"
           />
           {/* SOCIALS */}
@@ -117,13 +150,18 @@ const EditProfile = () => {
                 label={platform.charAt(0).toUpperCase() + platform.slice(1)}
                 value={socials[platform] ?? ''}
                 placeholder={`Your ${platform} link`}
-                onChange={(e) => handleSocialChange(platform, e.target.value)}
+                onChange={(e) => handleSocialChange(platform, [e.target.value])}
                 inputClassName="text-sm md:text-lg"
               />
             ))}
           </div>
         </div>
-        <Button icon={<SaveIcon />} variant="secondary">
+        <Button
+          disabled={loading}
+          icon={<SaveIcon />}
+          variant="secondary"
+          onClick={handleUpdateProfile}
+        >
           Save Changes
         </Button>
       </div>

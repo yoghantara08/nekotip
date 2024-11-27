@@ -81,7 +81,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   // Initialize or update auth state
   const initializeAuth = useCallback(async () => {
     setAuthState((prev) => ({ ...prev, isLoading: true }));
-    const authClient = await AuthClient.create();
+    const authClient = await AuthClient.create({
+      idleOptions: {
+        disableIdle: true,
+      },
+    });
     if (await authClient.isAuthenticated()) {
       const identity = authClient.getIdentity();
       const principal = identity.getPrincipal();

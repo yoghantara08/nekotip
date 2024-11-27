@@ -1,3 +1,5 @@
+import { Socials } from '../../../declarations/nekotip_backend/nekotip_backend.did';
+
 /* eslint-disable no-unused-vars */
 export interface ISerializedUser {
   id: string;
@@ -7,7 +9,7 @@ export interface ISerializedUser {
   username: string;
   name: string | null;
   createdAt: number;
-  socials: ISocials | null;
+  socials: Socials | null;
   depositAddress: string;
   referredBy: string | null;
   bannerPic: string | null;
@@ -15,15 +17,4 @@ export interface ISerializedUser {
   followingCount: number;
   referralsCount: number;
   profilePic: string | null;
-}
-
-export interface ISocials {
-  tiktok: string | null;
-  twitch: string | null;
-  twitter: string | null;
-  instagram: string | null;
-  website: string | null;
-  facebook: string | null;
-  discord: string | null;
-  youtube: string | null;
 }
