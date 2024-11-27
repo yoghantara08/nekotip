@@ -1,5 +1,6 @@
 import React from 'react';
 
+import useWindowSize from '@/hooks/useWindowSize';
 import { cn } from '@/lib/utils/cn';
 
 interface ButtonProps {
@@ -26,6 +27,8 @@ const Button = ({
   shadow = true,
   icon,
 }: ButtonProps) => {
+  const { isMobile } = useWindowSize();
+
   return (
     <button
       type={type}
@@ -37,7 +40,7 @@ const Button = ({
         variant === 'main' && 'bg-mainAccent',
         variant === 'secondary' && 'bg-secondaryAccent',
         variant === 'third' && 'bg-thirdAccent',
-        size === 'small' && 'h-10 px-5 text-[14px]',
+        (size === 'small' || isMobile) && 'h-10 px-5 text-[14px]',
         disabled &&
           'cursor-not-allowed text-caption shadow-none hover:shadow-none',
         className,

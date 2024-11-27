@@ -25,11 +25,19 @@ export const serializeUser = (user: User): ISerializedUser => {
   };
 };
 
-export const getContentTierName = (tier: ContentTier): string => {
+export const getContentTierLabel = (tier: ContentTier): string => {
   if ('Free' in tier) return 'Free';
   if ('Tier1' in tier) return 'Tier 1 - 5$';
   if ('Tier2' in tier) return 'Tier 2 - 15$';
   if ('Tier3' in tier) return 'Tier 3 - 30$';
+  return 'Unknown';
+};
+
+export const getContentTierName = (tier: ContentTier): string => {
+  if ('Free' in tier) return 'Free';
+  if ('Tier1' in tier) return 'TIER 1 ';
+  if ('Tier2' in tier) return 'TIER 2 ';
+  if ('Tier3' in tier) return 'TIER 3 ';
   return 'Unknown';
 };
 
@@ -41,7 +49,7 @@ export const ContentTiers = {
 } as const;
 
 export const ContentTierOptions = Object.values(ContentTiers).map((value) => ({
-  label: getContentTierName(value),
+  label: getContentTierLabel(value),
   value,
 }));
 

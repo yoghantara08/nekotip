@@ -6,7 +6,7 @@ import { PlusIcon } from 'lucide-react';
 
 import Button from '@/components/ui/Button/Button';
 import useWindowSize from '@/hooks/useWindowSize';
-import { getContentTierName } from '@/lib/utils';
+import { getContentTierLabel } from '@/lib/utils';
 import { cn } from '@/lib/utils/cn';
 import { useAuthManager } from '@/store/AuthProvider';
 
@@ -55,9 +55,9 @@ const ContentManagement = () => {
       </div>
       <div
         className={cn(
-          'mt-3 w-full rounded-lg border border-border p-3 shadow-custom md:px-5 md:py-4',
+          'mt-3 w-fit rounded-lg border border-border p-3 shadow-custom md:px-5 md:py-4',
           contents.length === 0 &&
-            'flex min-h-[200px] items-center justify-center md:min-h-[500px]',
+            'flex min-h-[200px] w-full items-center justify-center md:min-h-[500px]',
         )}
       >
         {contents.length === 0 ? (
@@ -73,7 +73,7 @@ const ContentManagement = () => {
                 <ContentPreview
                   title={content.title}
                   description={content.description}
-                  tier={getContentTierName(content.tier)}
+                  tier={getContentTierLabel(content.tier)}
                   thumbnail={content.thumbnail}
                   likesCount={content.likesCount.toString()}
                   commentsCount={content.commentsCount.toString()}

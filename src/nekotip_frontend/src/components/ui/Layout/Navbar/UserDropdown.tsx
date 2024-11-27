@@ -43,7 +43,7 @@ export const menuSections = [
   {
     items: [
       {
-        label: 'Exclusive Content',
+        label: 'Purchased Content',
         to: '/dashboard/exclusive-content',
         icon: <ShoppingBagIcon />,
       },
@@ -101,11 +101,14 @@ const UserDropdown = () => {
     <Menu as="div" className="mt2 relative inline-block text-left">
       {/* Dropdown Button */}
       <MenuButton className={'flex items-center gap-3'}>
-        <div className="flex size-12 items-center justify-center overflow-hidden rounded-full bg-mainAccent text-subtext">
+        <div
+          className={cn(
+            'flex size-12 items-center justify-center overflow-hidden rounded-full text-subtext',
+            !user?.profilePic && 'bg-mainAccent',
+          )}
+        >
           <img
-            src={
-              user?.profilePic ? user.profilePic : '/images/user-default.svg'
-            }
+            src={user?.profilePic || '/images/user-default.svg'}
             alt="profilepic"
             className={cn(user?.profilePic && 'h-full w-full object-cover')}
           />

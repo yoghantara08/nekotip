@@ -18,7 +18,7 @@ const ContentPreview = ({
   title,
 }: ContentPreviewProps) => {
   return (
-    <div className="max-w-md cursor-pointer rounded-lg border bg-mainAccent text-subtext">
+    <div className="min-w-[300px] max-w-md cursor-pointer rounded-lg border bg-mainAccent text-subtext transition-all hover:shadow-hover">
       <img
         src={thumbnail}
         alt={title}
@@ -39,7 +39,7 @@ const ContentPreview = ({
               {commentsCount}
             </div>
           </div>
-          <p className="rounded-lg border bg-secondaryAccent px-2 py-1 text-sm font-medium">
+          <p className="rounded-lg border bg-thirdAccent px-2 py-1 text-sm font-medium">
             {tier}
           </p>
         </div>
