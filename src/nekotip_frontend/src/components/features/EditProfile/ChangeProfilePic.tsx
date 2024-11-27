@@ -98,7 +98,7 @@ const ChangeProfilePic = () => {
             value={selectedFile}
             error={uploadError}
             accept="image/png,image/jpeg,image/gif"
-            className="w-fit"
+            className="w-fit bg-transparent"
             handleRemove={resetUpload}
           />
           <Button

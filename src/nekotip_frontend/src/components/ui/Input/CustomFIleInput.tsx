@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils/cn';
 interface CustomFileInputProps {
   // eslint-disable-next-line no-unused-vars
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  text?: string;
+  placeholder?: string;
   value?: File | null;
   accept?: string;
   disabled?: boolean;
@@ -20,7 +20,7 @@ interface CustomFileInputProps {
 
 const CustomFileInput: React.FC<CustomFileInputProps> = ({
   onChange,
-  text = 'Select a file',
+  placeholder = 'Select a file',
   value,
   accept = 'image/*',
   disabled = false,
@@ -36,10 +36,10 @@ const CustomFileInput: React.FC<CustomFileInputProps> = ({
   };
 
   return (
-    <div className={cn('w-full', className)}>
+    <div className={cn('w-full bg-mainAccent', className)}>
       <div
         className={cn(
-          'relative flex items-center rounded-lg border',
+          'relative flex items-center rounded-lg border font-medium hover:shadow-hover',
           disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
           error && 'border-red-500',
         )}
@@ -72,7 +72,7 @@ const CustomFileInput: React.FC<CustomFileInputProps> = ({
               )}
             </div>
           ) : (
-            <span className="text-subtext">{error ? error : text}</span>
+            <span className="text-subtext">{error ? error : placeholder}</span>
           )}
         </div>
         <div

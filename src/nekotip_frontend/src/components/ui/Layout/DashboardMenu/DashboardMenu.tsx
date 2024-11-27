@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { cn } from '@/lib/utils/cn';
@@ -10,6 +10,17 @@ import { menuSections } from '../Navbar/UserDropdown';
 const DashboardMenu = () => {
   const { pathname } = useLocation();
   const { logout } = useAuthManager();
+
+  const [history, setHistory] = useState(
+    localStorage.getItem('lastPath') || pathname,
+  );
+
+  useEffect(() => {
+    if (pathname && pathname !== '/dashboard/creator-studio/post') {
+      setHistory(pathname);
+      localStorage.setItem('lastPath', pathname);
+    }
+  }, [pathname]);
 
   const dashboardMenu = menuSections.slice(0, -1);
 
@@ -24,7 +35,7 @@ const DashboardMenu = () => {
                 to={item.to ?? '#'}
                 className={cn(
                   'flex w-full items-center gap-2 rounded-xl px-4 py-3 text-base font-medium text-subtext',
-                  item.to === pathname &&
+                  item.to === history &&
                     [
                       'bg-mainAccent',
                       'bg-secondaryAccent',

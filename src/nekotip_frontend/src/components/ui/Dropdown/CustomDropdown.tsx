@@ -10,7 +10,11 @@ import {
 
 import { cn } from '@/lib/utils/cn';
 
-export type DropdownItemType = { label: string; icon?: React.ReactNode };
+export type DropdownItemType = {
+  label: string;
+  icon?: React.ReactNode;
+  value?: any;
+};
 
 interface CustomDropdownProps {
   triggerContent: React.ReactNode;

@@ -42,25 +42,27 @@ const ContentManagement = () => {
         <h1 className="text-2xl font-semibold text-title lg:text-3xl">
           Content Management
         </h1>
-        <Button
-          variant="secondary"
-          className="w-fit"
-          icon={<PlusIcon className="mr-1 size-5" />}
-          size={isMobile ? 'small' : 'default'}
-        >
-          Post New Content
-        </Button>
+        <Link to={'/dashboard/creator-studio/post'}>
+          <Button
+            variant="secondary"
+            className="w-fit"
+            icon={<PlusIcon className="mr-1 size-5" />}
+            size={isMobile ? 'small' : 'default'}
+          >
+            Post New Content
+          </Button>
+        </Link>
       </div>
       <div
         className={cn(
           'mt-3 w-full rounded-lg border border-border p-3 shadow-custom md:px-5 md:py-4',
           contents.length === 0 &&
-            'flex min-h-[500px] items-center justify-center',
+            'flex min-h-[200px] items-center justify-center md:min-h-[500px]',
         )}
       >
         {contents.length === 0 ? (
           <div className="mb-4 flex flex-col items-center space-y-3 text-subtext">
-            <p className="text-lg font-semibold">
+            <p className="text-center font-semibold md:text-lg">
               No content yet. Start creating your first exclusive post!
             </p>
           </div>

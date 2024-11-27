@@ -1,17 +1,12 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Principal } from '@dfinity/principal';
-
 import { serializeUser } from '@/lib/utils';
 import { AppDispatch, RootState } from '@/store';
 import { useAuthManager } from '@/store/AuthProvider';
 import { setReferralCode, setUser } from '@/store/reducers/userSlice';
 
-import {
-  _SERVICE,
-  User,
-} from '../../../declarations/nekotip_backend/nekotip_backend.did';
+import { User } from '../../../declarations/nekotip_backend/nekotip_backend.did';
 
 const useUser = () => {
   const { user, referralCode } = useSelector((state: RootState) => state.user);
@@ -22,23 +17,6 @@ const useUser = () => {
   const updateUser = (user: User) => {
     dispatch(setUser(serializeUser(user)));
   };
-
-  const fetchUser = useCallback(
-    async (principal: Principal, actor: _SERVICE) => {
-      try {
-        const user = await actor.getUserById(principal);
-        if (user?.[0]) {
-          dispatch(setUser(serializeUser(user[0])));
-        } else {
-          console.log('No user found');
-        }
-      } catch (error) {
-        console.error('Failed to fetch user:', error);
-        throw error;
-      }
-    },
-    [dispatch],
-  );
 
   const updateReferralCode = useCallback(
     (code: string): void => {
@@ -65,7 +43,6 @@ const useUser = () => {
   return {
     user,
     referralCode,
-    fetchUser,
     updateReferralCode,
     getICPBalance,
     updateUser,

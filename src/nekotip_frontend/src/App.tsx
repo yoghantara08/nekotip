@@ -6,6 +6,7 @@ import useUser from './hooks/useUser';
 import ContentPage from './pages/ContentPage';
 import ExplorePage from './pages/ExplorePage';
 import LandingPage from './pages/LandingPage';
+import CreatePostPage from './pages/user/creator/CreatePostPage';
 import CreatorStudioPage from './pages/user/creator/CreatorStudioPage';
 import MyFollowersPage from './pages/user/creator/MyFollowersPage';
 import MyReferrals from './pages/user/creator/MyReferralsPage';
@@ -22,10 +23,8 @@ import { useAuthManager } from './store/AuthProvider';
 function App() {
   const [searchParams] = useSearchParams();
 
-  const { updateReferralCode, referralCode } = useUser();
+  const { updateReferralCode } = useUser();
   const { initializeAuth, isAuthenticated } = useAuthManager();
-
-  console.log(referralCode);
 
   // INITIALIZE AUTHENTICATION
   useEffect(() => {
@@ -61,6 +60,10 @@ function App() {
         <Route
           path="/dashboard/creator-studio"
           element={<CreatorStudioPage />}
+        />
+        <Route
+          path="/dashboard/creator-studio/post"
+          element={<CreatePostPage />}
         />
         <Route path="/dashboard/wallet" element={<WalletPage />} />
         <Route path="/dashboard/supporter" element={<MySupporterPage />} />

@@ -27,11 +27,23 @@ export const serializeUser = (user: User): ISerializedUser => {
 
 export const getContentTierName = (tier: ContentTier): string => {
   if ('Free' in tier) return 'Free';
-  if ('Tier1' in tier) return 'Tier 1';
-  if ('Tier2' in tier) return 'Tier 2';
-  if ('Tier3' in tier) return 'Tier 3';
+  if ('Tier1' in tier) return 'Tier 1 - 5$';
+  if ('Tier2' in tier) return 'Tier 2 - 15$';
+  if ('Tier3' in tier) return 'Tier 3 - 30$';
   return 'Unknown';
 };
+
+export const ContentTiers = {
+  Free: { Free: null },
+  Tier1: { Tier1: null },
+  Tier2: { Tier2: null },
+  Tier3: { Tier3: null },
+} as const;
+
+export const ContentTierOptions = Object.values(ContentTiers).map((value) => ({
+  label: getContentTierName(value),
+  value,
+}));
 
 export const getOptionalValue = <T>(field: [] | [T]): T | null =>
   field[0] ?? null;
