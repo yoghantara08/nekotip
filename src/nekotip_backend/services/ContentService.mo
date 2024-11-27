@@ -18,7 +18,6 @@ module {
     tier : Types.ContentTier,
     thumbnail : Text,
     contentImages : [Text],
-    categories : [Text],
   ) : Result.Result<Types.Content, Text> {
     // Check for anonymous caller
     if (Principal.isAnonymous(caller)) {
@@ -26,7 +25,7 @@ module {
     };
 
     // Validate title
-    if (Text.size(title) > 3 or Text.size(title) > 100) {
+    if (Text.size(title) < 3 or Text.size(title) > 100) {
       return #err("Title must be between 3 and 100 characters");
     };
 
@@ -52,18 +51,6 @@ module {
       };
     };
 
-    // Validate categories
-    if (categories.size() == 0 or categories.size() > 3) {
-      return #err("Must have between 1 and 3 categories");
-    };
-
-    // Validate each category
-    for (category in categories.vals()) {
-      if (category == "" or Text.size(category) > 50) {
-        return #err("Invalid category name");
-      };
-    };
-
     let contentId = Utils.generateUUID(caller, description);
 
     let newContent : Types.Content = {
@@ -74,7 +61,6 @@ module {
       tier = tier;
       thumbnail = thumbnail;
       contentImages = contentImages;
-      categories = categories;
       likes = [];
       comments = [];
       unlockedBy = [caller];
@@ -338,7 +324,6 @@ module {
       description = content.description;
       tier = content.tier;
       thumbnail = content.thumbnail;
-      categories = content.categories;
       likesCount = content.likes.size();
       commentsCount = content.comments.size();
     };

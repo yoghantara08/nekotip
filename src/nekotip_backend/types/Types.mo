@@ -62,7 +62,6 @@ module {
     tier : ContentTier;
     thumbnail : Text;
     contentImages : [Text];
-    categories : [Text];
     likes : [Principal];
     comments : [Comment];
     unlockedBy : [Principal];
@@ -93,7 +92,6 @@ module {
     description : Text;
     tier : ContentTier;
     thumbnail : Text;
-    categories : [Text];
     likesCount : Nat;
     commentsCount : Nat;
   };

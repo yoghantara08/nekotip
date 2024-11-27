@@ -106,9 +106,8 @@ actor class NekoTip() = this {
     tier : Types.ContentTier,
     thumbnail : Text,
     contentImages : [Text],
-    categories : [Text],
   ) : async Result.Result<Types.Content, Text> {
-    return ContentService.postContent(contents, msg.caller, title, description, tier, thumbnail, contentImages, categories);
+    return ContentService.postContent(contents, msg.caller, title, description, tier, thumbnail, contentImages);
   };
 
   // GET ALL CONTENT PREVIEWS (Timeline/Feed/Discover)
