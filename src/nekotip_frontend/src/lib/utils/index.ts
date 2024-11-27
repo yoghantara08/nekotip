@@ -1,6 +1,9 @@
 import { ISerializedUser } from '@/types/user.types';
 
-import { User } from '../../../../declarations/nekotip_backend/nekotip_backend.did';
+import {
+  ContentTier,
+  User,
+} from '../../../../declarations/nekotip_backend/nekotip_backend.did';
 
 export const serializeUser = (user: User): ISerializedUser => {
   return {
@@ -20,6 +23,14 @@ export const serializeUser = (user: User): ISerializedUser => {
     referralsCount: user.referrals.length,
     profilePic: getOptionalValue(user.profilePic),
   };
+};
+
+export const getContentTierName = (tier: ContentTier): string => {
+  if ('Free' in tier) return 'Free';
+  if ('Tier1' in tier) return 'Tier 1';
+  if ('Tier2' in tier) return 'Tier 2';
+  if ('Tier3' in tier) return 'Tier 3';
+  return 'Unknown';
 };
 
 export const getOptionalValue = <T>(field: [] | [T]): T | null =>

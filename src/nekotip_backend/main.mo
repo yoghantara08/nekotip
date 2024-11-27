@@ -116,6 +116,11 @@ actor class NekoTip() = this {
     return ContentService.getAllContentPreviews(contents);
   };
 
+  // GET CREATOR CONTENT PREVIEWS
+  public shared query func getCreatorContentPreview(creatorId : Principal) : async [Types.ContentPreview] {
+    return ContentService.getCreatorContentPreview(contents, creatorId);
+  };
+
   // GET CREATOR CONTENT LIST
   public shared (msg) func getCreatorContentList(creatorId : Principal) : async [Result.Result<Types.Content, Types.ContentPreview>] {
     return ContentService.getCreatorContent(contents, msg.caller, creatorId);

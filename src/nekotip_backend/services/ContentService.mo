@@ -20,9 +20,48 @@ module {
     contentImages : [Text],
     categories : [Text],
   ) : Result.Result<Types.Content, Text> {
-
+    // Check for anonymous caller
     if (Principal.isAnonymous(caller)) {
       return #err("Anonymous principals cannot post content");
+    };
+
+    // Validate title
+    if (Text.size(title) > 3 or Text.size(title) > 100) {
+      return #err("Title must be between 3 and 100 characters");
+    };
+
+    // Validate description
+    if (description == "" or Text.size(description) > 1000) {
+      return #err("Description must be between 1 and 1000 characters");
+    };
+
+    // Validate thumbnail
+    if (thumbnail == "" or not _isValidUrl(thumbnail)) {
+      return #err("Invalid thumbnail URL");
+    };
+
+    // Validate content images
+    if (contentImages.size() > 10) {
+      return #err("Maximum of 10 content images allowed");
+    };
+
+    // Validate individual content images
+    for (image in contentImages.vals()) {
+      if (image == "" or not _isValidUrl(image)) {
+        return #err("Invalid content image URL");
+      };
+    };
+
+    // Validate categories
+    if (categories.size() == 0 or categories.size() > 3) {
+      return #err("Must have between 1 and 3 categories");
+    };
+
+    // Validate each category
+    for (category in categories.vals()) {
+      if (category == "" or Text.size(category) > 50) {
+        return #err("Invalid category name");
+      };
     };
 
     let contentId = Utils.generateUUID(caller, description);
@@ -38,7 +77,7 @@ module {
       categories = categories;
       likes = [];
       comments = [];
-      unlockedBy = [];
+      unlockedBy = [caller];
       createdAt = Time.now();
       updatedAt = null;
     };
@@ -57,6 +96,30 @@ module {
         },
       )
     );
+  };
+
+  public func getCreatorContentPreview(
+    contents : Types.Contents,
+    creatorId : Principal,
+  ) : [Types.ContentPreview] {
+    // Filter contents by creator
+    let creatorContents = Iter.filter(
+      contents.vals(),
+      func(content : Types.Content) : Bool {
+        content.creatorId == creatorId;
+      },
+    );
+
+    // Convert to content previews
+    let contentPreviews = Iter.map(
+      creatorContents,
+      func(content : Types.Content) : Types.ContentPreview {
+        toContentPreview(content);
+      },
+    );
+
+    // Convert to array and return
+    Iter.toArray(contentPreviews);
   };
 
   // Get content details with access control
@@ -289,5 +352,19 @@ module {
         Array.find<Principal>(content.unlockedBy, func(p) { Principal.equal(p, user) }) != null;
       };
     };
+  };
+
+  // Helper function to validate URLs (basic implementation)
+  private func _isValidUrl(url : Text) : Bool {
+    // Basic URL validation
+    if (url == "") return false;
+
+    // Check for http or https protocol
+    let hasValidProtocol = Text.startsWith(url, #text("http://")) or Text.startsWith(url, #text("https://"));
+
+    // Check for basic domain structure
+    let hasDomain = Text.contains(url, #text("."));
+
+    return hasValidProtocol and hasDomain;
   };
 };

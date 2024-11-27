@@ -6,7 +6,7 @@ import useUser from './hooks/useUser';
 import ContentPage from './pages/ContentPage';
 import ExplorePage from './pages/ExplorePage';
 import LandingPage from './pages/LandingPage';
-import ContentManagement from './pages/user/creator/ContentManagement';
+import CreatorStudioPage from './pages/user/creator/CreatorStudioPage';
 import MyFollowersPage from './pages/user/creator/MyFollowersPage';
 import MyReferrals from './pages/user/creator/MyReferralsPage';
 import MySupporterPage from './pages/user/creator/MySupporterPage';
@@ -59,8 +59,8 @@ function App() {
         {/* Creator Dashboard */}
         <Route path="/dashboard" element={<ProfilePage />} />
         <Route
-          path="/dashboard/content-management"
-          element={<ContentManagement />}
+          path="/dashboard/creator-studio"
+          element={<CreatorStudioPage />}
         />
         <Route path="/dashboard/wallet" element={<WalletPage />} />
         <Route path="/dashboard/supporter" element={<MySupporterPage />} />

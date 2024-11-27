@@ -10,11 +10,11 @@ import {
 } from '@headlessui/react';
 import {
   ChevronDown,
-  CircleFadingPlusIcon,
   CircleUserRoundIcon,
   CompassIcon,
   EarthIcon,
   HeartIcon,
+  PaletteIcon,
   ShoppingBagIcon,
   SquareUserIcon,
   UserRoundPlusIcon,
@@ -33,9 +33,9 @@ export const menuSections = [
       { label: 'Profile', to: '/dashboard', icon: <CircleUserRoundIcon /> },
       { label: 'Wallet', to: '/dashboard/wallet', icon: <WalletIcon /> },
       {
-        label: 'Post Management',
-        to: '/dashboard/content-management',
-        icon: <CircleFadingPlusIcon />,
+        label: 'Creator Studio',
+        to: '/dashboard/creator-studio',
+        icon: <PaletteIcon />,
       },
     ],
     activeClassName: 'hover:bg-mainAccent',
