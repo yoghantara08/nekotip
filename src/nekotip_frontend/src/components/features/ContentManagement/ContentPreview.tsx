@@ -7,6 +7,7 @@ interface ContentPreviewProps {
   thumbnail: string;
   likesCount: string;
   commentsCount: string;
+  createdAt: string;
 }
 
 const ContentPreview = ({
@@ -16,17 +17,19 @@ const ContentPreview = ({
   thumbnail,
   tier,
   title,
+  createdAt,
 }: ContentPreviewProps) => {
   return (
-    <div className="min-w-[300px] max-w-md cursor-pointer rounded-lg border bg-mainAccent text-subtext transition-all hover:shadow-hover">
+    <div className="bg-offWhite min-w-[300px] max-w-md cursor-pointer rounded-lg border text-subtext transition-all hover:shadow-hover">
       <img
         src={thumbnail}
         alt={title}
-        className="h-40 w-full rounded-t-lg object-cover"
+        className="h-40 w-full rounded-t-lg bg-mainAccent object-cover"
       />
       <div className="p-4">
         <h2 className="text-lg font-semibold text-title">{title}</h2>
         <p className="text-sm text-caption">{description}</p>
+        <p className="text-sm text-caption">{createdAt}</p>
 
         <div className="mt-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -39,7 +42,10 @@ const ContentPreview = ({
               {commentsCount}
             </div>
           </div>
-          <p className="rounded-lg border bg-thirdAccent px-2 py-1 text-sm font-medium">
+          <p className="bg- flex items-center rounded-lg border px-3 py-1 text-sm font-medium">
+            {tier !== 'Free' && (
+              <img src="/images/icp.svg" alt="" className="size-5" />
+            )}
             {tier}
           </p>
         </div>

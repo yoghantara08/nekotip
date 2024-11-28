@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { Principal } from '@dfinity/principal';
+
 import { serializeUser } from '@/lib/utils';
 import { AppDispatch, RootState } from '@/store';
 import { useAuthManager } from '@/store/AuthProvider';
@@ -25,6 +27,40 @@ const useUser = () => {
     [dispatch],
   );
 
+  const getUserById = async (userId: string) => {
+    if (!actor) {
+      return;
+    }
+
+    try {
+      const result = await actor.getUserById(Principal.fromText(userId));
+
+      if (result) {
+        return result[0];
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching creator content:', error);
+    }
+  };
+
+  const getUserByUsername = async (username: string) => {
+    if (!actor) {
+      return;
+    }
+
+    try {
+      const result = await actor.getUserByUsername(username);
+
+      if (result) {
+        return result[0];
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching creator content:', error);
+    }
+  };
+
   const getICPBalance = useCallback(async () => {
     if (!isAuthenticated || !actor) {
       throw new Error(
@@ -43,6 +79,8 @@ const useUser = () => {
   return {
     user,
     referralCode,
+    getUserById,
+    getUserByUsername,
     updateReferralCode,
     getICPBalance,
     updateUser,

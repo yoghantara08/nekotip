@@ -2,12 +2,12 @@ import React from 'react';
 
 import LayoutDashboard from '@/components/ui/Layout/LayoutDashboard';
 
-const ExclusiveContent = () => {
+const ExclusiveContentPage = () => {
   return (
     <LayoutDashboard title="Exclusive Content">
-      ExclusiveContent
+      ExclusiveContentPage
     </LayoutDashboard>
   );
 };
 
-export default ExclusiveContent;
+export default ExclusiveContentPage;

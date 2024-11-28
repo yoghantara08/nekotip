@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
-import { Principal } from '@dfinity/principal';
 import { HeartIcon } from 'lucide-react';
 
 import Button from '@/components/ui/Button/Button';
 import Layout from '@/components/ui/Layout/Layout';
 import useContent from '@/hooks/useContent';
+import useUser from '@/hooks/useUser';
 import { getContentTierName } from '@/lib/utils';
 import { useAuthManager } from '@/store/AuthProvider';
 
@@ -20,6 +20,7 @@ const ContentPage = () => {
   const { contentId } = useParams();
   const { actor } = useAuthManager();
   const { toggleLike, loadingLike } = useContent();
+  const { getUserById } = useUser();
 
   const [content, setContent] = useState<Content>();
   const [contentPreview, setContentPreview] = useState<ContentPreview | null>();
@@ -35,7 +36,7 @@ const ContentPage = () => {
       try {
         const result = await actor?.getContentDetails(contentId);
 
-        if (result) {
+        if (result && !content) {
           if ('ok' in result) {
             setContent(result.ok);
           } else if ('err' in result) {
@@ -47,30 +48,14 @@ const ContentPage = () => {
       }
     };
 
-    const fetchCreator = async () => {
-      if (!actor) {
-        return;
-      }
-
-      try {
-        const result = await actor.getUserById(
-          content?.creatorId || Principal.fromText(''),
-        );
-
-        if (result) {
-          setCreator(result[0]);
-        }
-      } catch (error) {
-        console.error('Error fetching creator content:', error);
-      }
-    };
-
     fetchContentDetails();
 
-    if (content) {
-      fetchCreator();
+    if (content && !creator) {
+      getUserById(content.creatorId.toText()).then((result) => {
+        if (result) setCreator(result);
+      });
     }
-  }, [actor, content, contentId]);
+  }, [actor, content, contentId, creator, getUserById]);
 
   if (content && creator) {
     return (
@@ -86,7 +71,10 @@ const ContentPage = () => {
           </div>
 
           <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-x-3">
+            <Link
+              to={`/creator/${creator.username}`}
+              className="flex items-center gap-x-3"
+            >
               <img
                 src={creator.profilePic[0] || '/images/user-default.svg'}
                 alt={creator.username}
@@ -96,7 +84,7 @@ const ContentPage = () => {
                 <p className="text-xl">{creator.name}</p>
                 <p className="text-caption">@{creator.username}</p>
               </div>
-            </div>
+            </Link>
             <Button
               shadow={false}
               icon={<HeartIcon className="mr-2 size-4 md:size-5" />}

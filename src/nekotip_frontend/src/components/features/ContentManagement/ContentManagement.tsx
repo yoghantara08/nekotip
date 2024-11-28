@@ -6,7 +6,7 @@ import { PlusIcon } from 'lucide-react';
 
 import Button from '@/components/ui/Button/Button';
 import useWindowSize from '@/hooks/useWindowSize';
-import { getContentTierLabel } from '@/lib/utils';
+import { formatNSToDate, getContentTierLabel } from '@/lib/utils';
 import { cn } from '@/lib/utils/cn';
 import { useAuthManager } from '@/store/AuthProvider';
 
@@ -77,6 +77,7 @@ const ContentManagement = () => {
                   thumbnail={content.thumbnail}
                   likesCount={content.likesCount.toString()}
                   commentsCount={content.commentsCount.toString()}
+                  createdAt={formatNSToDate(content.createdAt)}
                 />
               </Link>
             ))}

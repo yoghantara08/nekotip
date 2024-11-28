@@ -14,7 +14,7 @@ import MySupporterPage from './pages/user/creator/MySupporterPage';
 import WalletPage from './pages/user/creator/WalletPage';
 import ProfilePage from './pages/user/ProfilePage';
 import DiscoverPage from './pages/user/supporter/DiscoverPage';
-import ExclusiveContent from './pages/user/supporter/ExclusiveContent';
+import ExclusiveContentPage from './pages/user/supporter/ExclusiveContentPage';
 import FollowedCreatorsPage from './pages/user/supporter/FollowedCreatorsPage';
 import SupportGivenPage from './pages/user/supporter/SupportGivenPage';
 import ViewedProfilePage from './pages/user/ViewedProfilePage';
@@ -41,7 +41,7 @@ function App() {
       {/* Public Routes */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/explore" element={<ExplorePage />} />
-      <Route path="/creator/:creatorId" element={<ViewedProfilePage />} />
+      <Route path="/creator/:username" element={<ViewedProfilePage />} />
       <Route path="/creator/content/:contentId" element={<ContentPage />} />
 
       {/* Protected Routes = Authenticated */}
@@ -50,7 +50,7 @@ function App() {
         <Route path="/dashboard/discover" element={<DiscoverPage />} />
         <Route
           path="/dashboard/exclusive-content"
-          element={<ExclusiveContent />}
+          element={<ExclusiveContentPage />}
         />
         <Route path="/dashboard/following" element={<FollowedCreatorsPage />} />
         <Route path="/dashboard/support-given" element={<SupportGivenPage />} />
