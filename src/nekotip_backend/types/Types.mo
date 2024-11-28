@@ -94,6 +94,7 @@ module {
     thumbnail : Text;
     likesCount : Nat;
     commentsCount : Nat;
+    unlockedBy : [Principal];
     createdAt : Int;
   };
 

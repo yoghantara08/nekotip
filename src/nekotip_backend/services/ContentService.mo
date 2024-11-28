@@ -327,6 +327,7 @@ module {
       likesCount = content.likes.size();
       commentsCount = content.comments.size();
       createdAt = content.createdAt;
+      unlockedBy = content.unlockedBy;
     };
   };
 
