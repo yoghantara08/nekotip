@@ -42,7 +42,7 @@ const SupportMessage = ({ support }: { support: Transaction }) => {
           <span>{convertToICP(parseInt(support.amount.toString()))} ICP</span>
         </div>
         <p>{formatNSToDate(support.timestamp)}</p>
-        <p className="mt-2 border px-3 py-2 text-sm font-medium shadow-hover md:text-base">
+        <p className="mt-2 text-wrap break-all border px-3 py-2 text-sm font-medium shadow-hover md:text-base">
           {support.supportComment}
         </p>
       </div>

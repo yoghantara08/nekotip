@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Button from '@/components/ui/Button/Button';
@@ -38,22 +38,22 @@ const ProfileHomePanel = ({ viewedUser }: { viewedUser: User }) => {
     ([, value]) => value.length > 0,
   );
 
-  useEffect(() => {
-    const fetchSupporters = async () => {
-      try {
-        if (!actor) return;
-        const result = await actor.getReceivedDonations(viewedUser.id);
+  const fetchSupporters = useCallback(async () => {
+    try {
+      if (!actor) return;
+      const result = await actor.getReceivedDonations(viewedUser.id);
 
-        if (result && supporters.length === 0) {
-          setSupporters(result);
-        }
-      } catch (error) {
-        console.error(error);
+      if (result) {
+        setSupporters(result);
       }
-    };
+    } catch (error) {
+      console.error(error);
+    }
+  }, [actor, viewedUser.id]);
 
+  useEffect(() => {
     fetchSupporters();
-  }, [actor, supporters.length, viewedUser.id]);
+  }, [actor, fetchSupporters, viewedUser.id]);
 
   return (
     <div className="flex flex-col justify-between gap-6 md:flex-row">
@@ -74,7 +74,7 @@ const ProfileHomePanel = ({ viewedUser }: { viewedUser: User }) => {
         >
           Send Support
         </Button>
-        <div className="mt-7 flex flex-wrap gap-6 md:mt-9">
+        <div className="mt-7 space-y-4 md:mt-9">
           {supporters.length > 0 &&
             supporters.map((support) => (
               <SupportMessage key={support.id} support={support} />
@@ -115,6 +115,8 @@ const ProfileHomePanel = ({ viewedUser }: { viewedUser: User }) => {
         isOpen={openDonateModal}
         onClose={() => setOpenDonateModal(false)}
         supportComment={supportComment}
+        fetchSupporters={fetchSupporters}
+        setSupportComment={setSupportComment}
       />
     </div>
   );

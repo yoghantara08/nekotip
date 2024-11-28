@@ -1,10 +1,11 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import Button from '@/components/ui/Button/Button';
 import { CustomInput } from '@/components/ui/Input/CustomInput';
 import ModalCustom from '@/components/ui/Modal/ModalCustom';
 import useICPLedgerPayment from '@/hooks/useICPLedgerPayment';
-import { convertToE8s } from '@/lib/utils';
+import useUser from '@/hooks/useUser';
+import { convertToE8s, convertToICP } from '@/lib/utils';
 import { useAuthManager } from '@/store/AuthProvider';
 
 import { User } from '../../../../../declarations/nekotip_backend/nekotip_backend.did';
@@ -14,6 +15,8 @@ interface DonateModalProps {
   supportComment: string;
   isOpen: boolean;
   onClose: () => void;
+  fetchSupporters: () => Promise<void>;
+  setSupportComment: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const DonateModal = ({
@@ -21,17 +24,29 @@ const DonateModal = ({
   onClose,
   supportComment,
   to,
+  fetchSupporters,
+  setSupportComment,
 }: DonateModalProps) => {
   const { actor } = useAuthManager();
   const { transferICP } = useICPLedgerPayment();
+  const { getICPBalance } = useUser();
+
   const [amount, setAmount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [balance, setBalance] = useState('0');
+
+  useEffect(() => {
+    getICPBalance().then((result) => {
+      setBalance(convertToICP(parseInt(result.toString())).toString());
+    });
+  }, [getICPBalance]);
 
   const resetModal = useCallback(() => {
     setAmount(0);
     setIsLoading(false);
     onClose();
-  }, [onClose]);
+    setSupportComment('');
+  }, [onClose, setSupportComment]);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
@@ -47,6 +62,7 @@ const DonateModal = ({
       alert('Donation amount must be greater than 0');
       return false;
     }
+
     return true;
   };
 
@@ -80,6 +96,7 @@ const DonateModal = ({
 
           if ('ok' in updateBalanceResult) {
             alert('Donation successful!');
+            await fetchSupporters();
             resetModal();
             return;
           } else {
@@ -105,15 +122,19 @@ const DonateModal = ({
       isOpen={isOpen}
       onClose={resetModal}
       className="max-w-[600px]"
+      disableClose={isLoading}
     >
       <div className="space-y-4 p-4">
         <div>
           <label
             htmlFor="donationAmount"
-            className="mb-2 block text-lg font-medium text-subtext"
+            className="block text-lg font-medium text-subtext"
           >
             Donation Amount (ICP)
           </label>
+          {balance && (
+            <p className="mb-3 text-subtext">Your balance: {balance} ICP</p>
+          )}
           <CustomInput
             id="donationAmount"
             type="number"
@@ -128,7 +149,7 @@ const DonateModal = ({
         <div className="mt-4 flex justify-end space-x-2">
           <Button
             onClick={handleDonation}
-            disabled={isLoading || amount <= 0}
+            disabled={isLoading || amount <= 0 || amount > parseFloat(balance)}
             variant="secondary"
             className="w-full"
           >

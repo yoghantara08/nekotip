@@ -64,7 +64,7 @@ const ExclusiveContentPreview = ({
           )}
         >
           <button
-            className="flex items-center gap-2 rounded-lg bg-offWhite px-4 py-2 font-medium text-subtext"
+            className="flex items-center gap-2 rounded-lg bg-bg px-4 py-2 font-medium text-subtext hover:bg-mainAccent"
             onClick={onOpenUnlockModal}
           >
             <LockIcon className="size-5" />
