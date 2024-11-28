@@ -46,7 +46,7 @@ const ContentManagement = () => {
         className={cn(
           'mt-3 w-full rounded-lg border border-border p-3 shadow-custom md:px-5 md:py-4',
           contents.length === 0 &&
-            'flex min-h-[200px] w-full items-center justify-center md:min-h-[500px]',
+            'flex min-h-[200px] max-w-[600px] items-center justify-center md:min-h-[300px]',
         )}
       >
         {contents.length === 0 ? (

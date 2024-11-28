@@ -61,7 +61,7 @@ const PurchasedContentPage = () => {
         className={cn(
           'mt-3 min-h-28 w-full rounded-lg border p-5 font-medium text-subtext shadow-custom',
           purchasedContents.length === 0 &&
-            'flex min-h-[200px] w-full items-center justify-center md:min-h-[500px]',
+            'flex min-h-[200px] max-w-[600px] items-center justify-center md:min-h-[300px]',
         )}
       >
         {isLoading ? (
