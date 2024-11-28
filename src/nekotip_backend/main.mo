@@ -135,6 +135,11 @@ actor class NekoTip() = this {
     return ContentService.getContentDetails(contents, msg.caller, contentId);
   };
 
+  // GET PURCHASED CONTENT PREVIEWS LIST
+  public shared (msg) func getPurchasedContentPreviews() : async [Types.ContentPreview] {
+    return ContentService.getPurchasedContentPreviews(transactions, contents, msg.caller);
+  };
+
   // LIKE/UNLIKE CONTENT (TOGGLE LIKE)
   public shared (msg) func toggleLike(contentId : Text) : async Result.Result<Types.Content, Text> {
     return ContentService.toggleLike(contents, msg.caller, contentId);

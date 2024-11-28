@@ -84,6 +84,7 @@ module {
     );
   };
 
+  // Get all creator content previews
   public func getCreatorContentPreview(
     contents : Types.Contents,
     creatorId : Principal,
@@ -106,6 +107,41 @@ module {
 
     // Convert to array and return
     Iter.toArray(contentPreviews);
+  };
+
+  // Get purchased content list
+  public func getPurchasedContentPreviews(
+    transactions : Types.Transactions,
+    contents : Types.Contents,
+    user : Principal,
+  ) : [Types.ContentPreview] {
+    let purchasedContentIds = Array.mapFilter<Types.Transaction, Text>(
+      Iter.toArray(transactions.vals()),
+      func(tx) {
+        if (
+          tx.from == user and
+          tx.transactionType == #contentPurchase and
+          tx.txStatus == #completed
+        ) {
+          switch (tx.contentId) {
+            case (null) { null };
+            case (?id) { ?id };
+          };
+        } else {
+          null;
+        };
+      },
+    );
+
+    Array.mapFilter<Text, Types.ContentPreview>(
+      purchasedContentIds,
+      func(contentId) {
+        switch (contents.get(contentId)) {
+          case (null) { null };
+          case (?content) { ?toContentPreview(content) };
+        };
+      },
+    );
   };
 
   // Get content details with access control
