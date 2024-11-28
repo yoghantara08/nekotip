@@ -5,7 +5,7 @@ import { Principal } from '@dfinity/principal';
 import { UserRoundCheckIcon, UserRoundPlusIcon } from 'lucide-react';
 
 import ExclusiveContentPanel from '@/components/features/ViewedProfile/ExclusiveContentPanel';
-import HomePanel from '@/components/features/ViewedProfile/HomePanel';
+import ProfileHomePanel from '@/components/features/ViewedProfile/ProfileHomePanel';
 import Layout from '@/components/ui/Layout/Layout';
 import useUser from '@/hooks/useUser';
 import { cn } from '@/lib/utils/cn';
@@ -143,7 +143,7 @@ const ViewedProfilePage = () => {
                   </button>
                 ))}
               </div>
-              {menu === 'Home' && <HomePanel user={viewedUser} />}
+              {menu === 'Home' && <ProfileHomePanel viewedUser={viewedUser} />}
               {menu === 'Exclusive Contents' && (
                 <ExclusiveContentPanel creatorId={viewedUser.id} />
               )}

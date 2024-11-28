@@ -86,3 +86,13 @@ export const formatNSToDate = (nanoseconds: bigint): string => {
   };
   return date.toLocaleDateString('en-GB', options);
 };
+
+// Convert ICP to e8s (smallest unit)
+export const convertToE8s = (icp: number) => {
+  return Math.floor(icp * 10 ** 8);
+};
+
+// Convert e8s back to ICP for display
+export const convertToICP = (e8s: number) => {
+  return e8s / 10 ** 8;
+};
