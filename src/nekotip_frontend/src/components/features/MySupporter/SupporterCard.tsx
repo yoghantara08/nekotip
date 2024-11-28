@@ -27,7 +27,7 @@ const SupporterCard = ({ supporter }: SupporterCardProps) => {
   return (
     <div className="flex flex-col gap-2 rounded-md border p-3 font-medium text-subtext md:flex-row md:gap-4">
       <img
-        src="/images/user-default.svg"
+        src={profile.profilePic[0] ?? '/images/user-default.svg'}
         alt="profilepicture"
         className="size-12 rounded-full border"
       />
