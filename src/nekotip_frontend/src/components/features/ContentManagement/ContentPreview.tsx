@@ -1,4 +1,4 @@
-import { HeartIcon, MessageSquareIcon } from 'lucide-react';
+import { MessageSquareIcon, ThumbsUpIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils/cn';
 
@@ -28,7 +28,7 @@ const ContentPreview = ({
   return (
     <div
       className={cn(
-        'bg-offWhite min-w-[300px] max-w-md cursor-pointer rounded-lg border text-subtext transition-all hover:shadow-hover',
+        'min-w-[300px] max-w-md cursor-pointer rounded-lg border bg-offWhite text-subtext transition-all hover:shadow-hover',
         className,
       )}
     >
@@ -45,7 +45,7 @@ const ContentPreview = ({
         <div className="mt-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
-              <HeartIcon className="size-5" />
+              <ThumbsUpIcon className="size-5" />
               {likesCount}
             </div>
             <div className="flex items-center gap-1">

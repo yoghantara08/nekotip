@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-import { HeartIcon } from 'lucide-react';
+import { ThumbsUpIcon } from 'lucide-react';
 
 import Button from '@/components/ui/Button/Button';
 import Layout from '@/components/ui/Layout/Layout';
-import useContent from '@/hooks/useContent';
 import useUser from '@/hooks/useUser';
 import { getContentTierName } from '@/lib/utils';
 import { useAuthManager } from '@/store/AuthProvider';
@@ -19,12 +18,31 @@ import {
 const ContentPage = () => {
   const { contentId } = useParams();
   const { actor } = useAuthManager();
-  const { toggleLike, loadingLike } = useContent();
   const { getUserById } = useUser();
 
   const [content, setContent] = useState<Content>();
   const [contentPreview, setContentPreview] = useState<ContentPreview | null>();
   const [creator, setCreator] = useState<User | undefined>(undefined);
+  const [likesCount, setLikesCount] = useState(0);
+  const [loadingLike, setLoadingLike] = useState(false);
+  const [errorFetching, setErrorFetching] = useState(false);
+
+  const toggleLike = async (contentId: string) => {
+    try {
+      setLoadingLike(true);
+      if (actor) {
+        const result = await actor.toggleLike(contentId);
+
+        if ('ok' in result) {
+          setLikesCount(result.ok.likes.length);
+        }
+      }
+    } catch (error) {
+      console.error('Error liking content:', error);
+    } finally {
+      setLoadingLike(false);
+    }
+  };
 
   useEffect(() => {
     const fetchContentDetails = async () => {
@@ -39,8 +57,13 @@ const ContentPage = () => {
         if (result && !content) {
           if ('ok' in result) {
             setContent(result.ok);
+            setLikesCount(result.ok.likes.length);
           } else if ('err' in result) {
-            setContentPreview(result.err[0] || null);
+            if (result.err[0]) {
+              setContentPreview(result.err[0]);
+            } else {
+              setErrorFetching(true);
+            }
           }
         }
       } catch (error) {
@@ -55,7 +78,7 @@ const ContentPage = () => {
         if (result) setCreator(result);
       });
     }
-  }, [actor, content, contentId, creator, getUserById]);
+  }, [actor, content, contentId, contentPreview, creator, getUserById]);
 
   if (content && creator) {
     return (
@@ -87,11 +110,11 @@ const ContentPage = () => {
             </Link>
             <Button
               shadow={false}
-              icon={<HeartIcon className="mr-2 size-4 md:size-5" />}
+              icon={<ThumbsUpIcon className="mr-2 size-4 md:size-5" />}
               onClick={() => toggleLike(content.id)}
               disabled={loadingLike}
             >
-              {content.likes.length} Like
+              {likesCount} Like
             </Button>
           </div>
 
@@ -119,6 +142,14 @@ const ContentPage = () => {
         <p className="text-2xl font-semibold text-title">
           You dont have access to this exclusive content!
         </p>
+      </Layout>
+    );
+  }
+
+  if (errorFetching) {
+    return (
+      <Layout>
+        <p className="text-2xl font-semibold text-title">Content not found!</p>
       </Layout>
     );
   }

@@ -44,7 +44,7 @@ export const menuSections = [
     items: [
       {
         label: 'Purchased Content',
-        to: '/dashboard/exclusive-content',
+        to: '/dashboard/purchased-content',
         icon: <ShoppingBagIcon />,
       },
       { label: 'Explore Creator', to: '/explore', icon: <EarthIcon /> },

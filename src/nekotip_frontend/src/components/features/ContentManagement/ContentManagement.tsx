@@ -44,7 +44,7 @@ const ContentManagement = () => {
       </div>
       <div
         className={cn(
-          'mt-3 w-fit rounded-lg border border-border p-3 shadow-custom md:px-5 md:py-4',
+          'mt-3 w-full rounded-lg border border-border p-3 shadow-custom md:px-5 md:py-4',
           contents.length === 0 &&
             'flex min-h-[200px] w-full items-center justify-center md:min-h-[500px]',
         )}

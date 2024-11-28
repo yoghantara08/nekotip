@@ -14,8 +14,8 @@ import MySupporterPage from './pages/user/creator/MySupporterPage';
 import WalletPage from './pages/user/creator/WalletPage';
 import ProfilePage from './pages/user/ProfilePage';
 import DiscoverPage from './pages/user/supporter/DiscoverPage';
-import ExclusiveContentPage from './pages/user/supporter/ExclusiveContentPage';
 import FollowedCreatorsPage from './pages/user/supporter/FollowedCreatorsPage';
+import PurchasedContentPage from './pages/user/supporter/PurchasedContentPage';
 import SupportGivenPage from './pages/user/supporter/SupportGivenPage';
 import ViewedProfilePage from './pages/user/ViewedProfilePage';
 import { useAuthManager } from './store/AuthProvider';
@@ -49,8 +49,8 @@ function App() {
         {/* Supporter Dashboard */}
         <Route path="/dashboard/discover" element={<DiscoverPage />} />
         <Route
-          path="/dashboard/exclusive-content"
-          element={<ExclusiveContentPage />}
+          path="/dashboard/purchased-content"
+          element={<PurchasedContentPage />}
         />
         <Route path="/dashboard/following" element={<FollowedCreatorsPage />} />
         <Route path="/dashboard/support-given" element={<SupportGivenPage />} />

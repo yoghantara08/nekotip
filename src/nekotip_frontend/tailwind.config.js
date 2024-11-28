@@ -42,6 +42,7 @@ export default {
         border: '#3E3D3950',
         shadow: '#5A534F',
         offWhite: '#FFFBFA',
+
         FFE4E1: '#FFE4E1',
         FEC2C3: '#FEC2C3',
         D9C3F2: '#D9C3F2',

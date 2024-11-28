@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { HeartIcon, LockIcon, MessageSquareIcon } from 'lucide-react';
+import { LockIcon, MessageSquareIcon, ThumbsUpIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils/cn';
 
@@ -46,7 +46,7 @@ const ExclusiveContentPreview = ({
     <div
       onClick={handleContentClick}
       className={cn(
-        'bg-offWhite min-w-[300px] max-w-md overflow-hidden rounded-lg border text-subtext',
+        'min-w-[300px] max-w-md overflow-hidden rounded-lg border bg-offWhite text-subtext',
         (tier === 'Free' || isUnlocked) && 'cursor-pointer hover:shadow-hover',
         className,
       )}
@@ -64,7 +64,7 @@ const ExclusiveContentPreview = ({
           )}
         >
           <button
-            className="bg-offWhite flex items-center gap-2 rounded-lg px-4 py-2 font-medium text-subtext"
+            className="flex items-center gap-2 rounded-lg bg-offWhite px-4 py-2 font-medium text-subtext"
             onClick={onOpenUnlockModal}
           >
             <LockIcon className="size-5" />
@@ -79,7 +79,7 @@ const ExclusiveContentPreview = ({
         <div className="mt-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
-              <HeartIcon className="size-5" />
+              <ThumbsUpIcon className="size-5" />
               {likesCount}
             </div>
             <div className="flex items-center gap-1">
@@ -87,7 +87,16 @@ const ExclusiveContentPreview = ({
               {commentsCount}
             </div>
           </div>
-          <p className="bg- flex items-center rounded-lg border px-3 py-1 text-sm font-medium">
+          <p
+            className={cn(
+              'bg- flex items-center rounded-lg border px-3 py-1 text-sm font-medium',
+              tier === 'Free'
+                ? 'bg-thirdAccent'
+                : isUnlocked
+                  ? 'bg-mainAccent'
+                  : '',
+            )}
+          >
             {tier === 'Free' ? 'Free' : isUnlocked ? 'Unlocked' : tier}
           </p>
         </div>

@@ -21,8 +21,6 @@ const ExclusiveContentPanel = ({ creatorId }: { creatorId: Principal }) => {
     }
   }, [actor, creatorId]);
 
-  console.log(contents);
-
   return (
     <div className="flex flex-wrap gap-5">
       {contents.map((content) => (
