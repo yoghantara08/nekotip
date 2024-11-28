@@ -282,6 +282,16 @@ module {
 
   };
 
+  // GET USER BY USERNAME
+  public func getUserByUsername(users : Types.Users, username : Text) : ?Types.User {
+    for ((principal, user) in users.entries()) {
+      if (user.username == username) {
+        return ?user;
+      };
+    };
+    return null;
+  };
+
   // GET FOLLOWERS
   public func getFollowers(users : Types.Users, userId : Principal) : [Types.User] {
     switch (users.get(userId)) {

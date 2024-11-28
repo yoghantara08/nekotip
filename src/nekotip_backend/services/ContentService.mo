@@ -326,6 +326,7 @@ module {
       thumbnail = content.thumbnail;
       likesCount = content.likes.size();
       commentsCount = content.comments.size();
+      createdAt = content.createdAt;
     };
   };
 

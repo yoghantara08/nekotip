@@ -73,6 +73,11 @@ actor class NekoTip() = this {
     return users.get(userId);
   };
 
+  // GET USER BY USERNAME
+  public query func getUserByUsername(username : Text) : async ?Types.User {
+    return UserService.getUserByUsername(users, username);
+  };
+
   // FOLLOW/UNFOLLOW USER
   public shared (msg) func toggleFollow(targetFollow : Principal) : async Result.Result<Text, Text> {
     return UserService.toggleFollow(users, msg.caller, targetFollow);
@@ -182,8 +187,8 @@ actor class NekoTip() = this {
   };
 
   // GET RECEIVED DONATIONS LIST
-  public shared query (msg) func getReceivedDonations() : async [Types.Transaction] {
-    return TransactionService.getReceivedDonations(transactions, msg.caller);
+  public shared query func getReceivedDonations(userId : Principal) : async [Types.Transaction] {
+    return TransactionService.getReceivedDonations(transactions, userId);
   };
 
   // GET GIVEN DONATIONS LIST
