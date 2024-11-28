@@ -88,7 +88,9 @@ const ViewedProfilePage = () => {
                 ))}
               </div>
               {menu === 'Home' && <HomePanel user={user} />}
-              {menu === 'Exclusive Contents' && <ExclusiveContentPanel />}
+              {menu === 'Exclusive Contents' && (
+                <ExclusiveContentPanel creatorId={user.id} />
+              )}
             </section>
           </main>
         </div>

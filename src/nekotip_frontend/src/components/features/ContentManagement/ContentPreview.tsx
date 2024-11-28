@@ -1,5 +1,7 @@
 import { HeartIcon, MessageSquareIcon } from 'lucide-react';
 
+import { cn } from '@/lib/utils/cn';
+
 interface ContentPreviewProps {
   title: string;
   description: string;
@@ -8,6 +10,8 @@ interface ContentPreviewProps {
   likesCount: string;
   commentsCount: string;
   createdAt: string;
+  isUnlocked?: boolean;
+  className?: string;
 }
 
 const ContentPreview = ({
@@ -18,9 +22,16 @@ const ContentPreview = ({
   tier,
   title,
   createdAt,
+  isUnlocked,
+  className,
 }: ContentPreviewProps) => {
   return (
-    <div className="bg-offWhite min-w-[300px] max-w-md cursor-pointer rounded-lg border text-subtext transition-all hover:shadow-hover">
+    <div
+      className={cn(
+        'bg-offWhite min-w-[300px] max-w-md cursor-pointer rounded-lg border text-subtext transition-all hover:shadow-hover',
+        className,
+      )}
+    >
       <img
         src={thumbnail}
         alt={title}
@@ -43,10 +54,7 @@ const ContentPreview = ({
             </div>
           </div>
           <p className="bg- flex items-center rounded-lg border px-3 py-1 text-sm font-medium">
-            {tier !== 'Free' && (
-              <img src="/images/icp.svg" alt="" className="size-5" />
-            )}
-            {tier}
+            {tier === 'Free' ? 'Free' : isUnlocked ? 'Unlocked' : tier}
           </p>
         </div>
       </div>

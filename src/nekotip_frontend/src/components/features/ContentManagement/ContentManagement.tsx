@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Principal } from '@dfinity/principal';
 import { PlusIcon } from 'lucide-react';
 
 import Button from '@/components/ui/Button/Button';
 import useWindowSize from '@/hooks/useWindowSize';
+import { fetchCreatorContentPreview } from '@/lib/services/contentService';
 import { formatNSToDate, getContentTierLabel } from '@/lib/utils';
 import { cn } from '@/lib/utils/cn';
 import { useAuthManager } from '@/store/AuthProvider';
@@ -21,19 +21,8 @@ const ContentManagement = () => {
   const [contents, setContents] = useState([] as ContentPreviewType[]);
 
   useEffect(() => {
-    const fetchContent = async () => {
-      try {
-        const contents = await actor?.getCreatorContentPreview(
-          principal ?? Principal.fromText(''),
-        );
-
-        setContents(contents ?? []);
-      } catch (error) {
-        console.error('Error fetching content:', error);
-      }
-    };
-
-    fetchContent();
+    if (actor && principal)
+      fetchCreatorContentPreview(actor, principal, setContents);
   }, [actor, principal]);
 
   return (
