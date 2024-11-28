@@ -174,7 +174,7 @@ const CreatePostForm = () => {
           <CustomFileInput
             onChange={handleThumbnailChange}
             placeholder="Upload thumbnail"
-            className="max-w-[300px]"
+            containerClassName="max-w-[300px]"
           />
 
           {thumbnailPreview && (

@@ -62,7 +62,7 @@ const ChangeBannerProfile = () => {
         <h3 className="font-semibold text-subtext md:text-lg">
           Banner Picture
         </h3>
-        <div className="flex h-24 w-full items-center justify-center overflow-hidden rounded-lg border md:h-48 md:min-w-[450px] md:max-w-[900px]">
+        <div className="flex h-24 w-full items-center justify-center overflow-hidden rounded-t-lg border md:h-full md:min-w-[450px] md:max-w-[900px]">
           <img
             src={user?.bannerPic ?? '/images/default-banner.png'}
             alt="profile"
@@ -87,7 +87,7 @@ const ChangeBannerProfile = () => {
         disableClose={loading}
       >
         <div className="flex flex-col items-center gap-4 p-5">
-          <div className="w-full bg-bg md:w-[350px]">
+          <div className="h-full w-full overflow-hidden rounded-t-lg border bg-bg md:w-[400px]">
             <img
               src={preview || user?.bannerPic || '/images/default-banner.png'}
               alt="bannerpic"
@@ -99,7 +99,8 @@ const ChangeBannerProfile = () => {
             value={selectedFile}
             error={uploadError}
             accept="image/png,image/jpeg,image/gif"
-            className="w-fit !bg-transparent"
+            containerClassName="w-fit"
+            className="!bg-transparent"
             handleRemove={resetUpload}
           />
           <Button

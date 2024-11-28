@@ -16,6 +16,7 @@ interface CustomFileInputProps {
   error?: string;
   maxSize?: number;
   handleRemove?: () => void;
+  containerClassName?: string;
 }
 
 const CustomFileInput: React.FC<CustomFileInputProps> = ({
@@ -25,6 +26,7 @@ const CustomFileInput: React.FC<CustomFileInputProps> = ({
   accept = 'image/*',
   disabled = false,
   multiple = false,
+  containerClassName,
   className,
   error,
   handleRemove,
@@ -36,12 +38,13 @@ const CustomFileInput: React.FC<CustomFileInputProps> = ({
   };
 
   return (
-    <div className={cn('w-full bg-mainAccent', className)}>
+    <div className={cn('w-full', containerClassName)}>
       <div
         className={cn(
-          'relative flex items-center rounded-lg border font-medium hover:shadow-hover',
+          'relative flex items-center rounded-lg border bg-mainAccent font-medium hover:shadow-hover',
           disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
           error && 'border-red-500',
+          className,
         )}
         onClick={!disabled ? handleButtonClick : undefined}
       >
