@@ -12,8 +12,9 @@ import UserService "services/UserService";
 import ContentService "services/ContentService";
 import TransactionService "services/TransactionService";
 import Types "types/Types";
+import Ledger "canister:icp_ledger_canister";
 
-actor class NekoTip() = this {
+actor NekoTip {
   private var users : Types.Users = HashMap.HashMap(0, Principal.equal, Principal.hash);
   private var contents : Types.Contents = HashMap.HashMap(0, Text.equal, Text.hash);
   private var transactions : Types.Transactions = HashMap.HashMap(0, Text.equal, Text.hash);
@@ -27,6 +28,14 @@ actor class NekoTip() = this {
     var balance : Nat = 0;
     var totalFees : Nat = 0;
     var referralPayouts : Nat = 0;
+  };
+
+  public func getPlatformICPBalance() : async Nat {
+    let canisterAccount = {
+      owner = Principal.fromActor(NekoTip);
+      subaccount = null;
+    };
+    return await Ledger.icrc1_balance_of(canisterAccount);
   };
 
   // PREUPGRADE & POSTUPGRADE
@@ -46,6 +55,10 @@ actor class NekoTip() = this {
     contentsEntries := [];
     transactionsEntries := [];
     userBalancesEntries := [];
+  };
+
+  public shared (msg) func whoami() : async Principal {
+    msg.caller;
   };
 
   // USERS ENDPOINT ======================================
@@ -192,7 +205,7 @@ actor class NekoTip() = this {
   };
 
   // WITHDRAW USER BALANCE
-  public shared (msg) func withdraw(amount : Nat64) : async Result.Result<Types.Transaction, Text> {
+  public shared (msg) func withdraw(amount : Nat) : async Result.Result<Types.Transaction, Text> {
     return await TransactionService.withdraw(transactions, userBalances, platformBalance, msg.caller, amount);
   };
 
@@ -214,6 +227,19 @@ actor class NekoTip() = this {
   // GET REFERRAL EARNINGS LISST
   public shared query (msg) func getReferralEarnings() : async [Types.Transaction] {
     return TransactionService.getReferralEarnings(transactions, msg.caller);
+  };
+
+  // GET PLATFORM BALANCE
+  public func getPlatformBalance() : async Nat {
+    platformBalance.balance;
+  };
+
+  public func getPlatformTotalFees() : async Nat {
+    platformBalance.totalFees;
+  };
+
+  public func getPlatformReferralPayouts() : async Nat {
+    platformBalance.referralPayouts;
   };
 
   // GET ICP USD RATE

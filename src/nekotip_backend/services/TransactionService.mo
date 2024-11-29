@@ -11,6 +11,7 @@ import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
 import Order "mo:base/Order";
 import Int "mo:base/Int";
+import Debug "mo:base/Debug";
 
 import IcpLedger "canister:icp_ledger_canister";
 import UserService "UserService";
@@ -330,7 +331,7 @@ module {
     userBalances : Types.UserBalances,
     platformBalance : Types.PlatformBalance,
     userId : Principal,
-    amount : Nat64,
+    amount : Nat,
   ) : async Result.Result<Types.Transaction, Text> {
     // Validate amount
     if (amount == 0) {
@@ -343,7 +344,7 @@ module {
     };
 
     // Check maximum withdrawal amount
-    let maxWithdrawal : Nat64 = 1_000_000_000_000; // 10,000 ICP
+    let maxWithdrawal : Nat = 1_000_000_000_000; // 10,000 ICP
     if (amount > maxWithdrawal) {
       return #err("Withdrawal amount exceeds maximum limit");
     };
@@ -356,24 +357,24 @@ module {
     };
 
     // Check withdrawal frequency (e.g., last withdrawal timestamp)
-    let lastWithdrawal = getLastWithdrawal(userId, transactions);
-    switch (lastWithdrawal) {
-      case (?tx) {
-        let timeSinceLastWithdrawal = Time.now() - tx.timestamp;
-        let minimumTimeBetweenWithdrawals = 1_800_000_000_000; // 30 minutes in nanoseconds
-        if (timeSinceLastWithdrawal < minimumTimeBetweenWithdrawals) {
-          return #err("Please wait before making another withdrawal");
-        };
-      };
-      case (null) {};
-    };
+    // let lastWithdrawal = getLastWithdrawal(userId, transactions);
+    // switch (lastWithdrawal) {
+    //   case (?tx) {
+    //     let timeSinceLastWithdrawal = Time.now() - tx.timestamp;
+    //     let minimumTimeBetweenWithdrawals = 1_800_000_000_000; // 30 minutes in nanoseconds
+    //     if (timeSinceLastWithdrawal < minimumTimeBetweenWithdrawals) {
+    //       return #err("Please wait before making another withdrawal");
+    //     };
+    //   };
+    //   case (null) {};
+    // };
 
     // Check if user has sufficient balance
     switch (userBalances.get(userId)) {
       case (null) { #err("User has no balance") };
       case (?balance) {
         let totalAmount = amount + 10_000;
-        if (balance.balance < Nat64.toNat(totalAmount)) {
+        if (balance.balance < totalAmount) {
           return #err("Insufficient balance (including transaction fees)");
         };
 
@@ -382,7 +383,7 @@ module {
           id = txId;
           from = userId;
           to = userId;
-          amount = Nat64.toNat(amount);
+          amount = amount;
           transactionType = #withdrawal;
           txStatus = #pending;
           contentId = null;
@@ -402,7 +403,7 @@ module {
           let balanceResult = updateUserBalance(
             userBalances,
             userId,
-            Nat64.toNat(totalAmount),
+            totalAmount,
             #sub,
           );
 
@@ -420,7 +421,7 @@ module {
               // 2. Substract from platform balance
               let platformBalanceResult = updatePlatformBalance(
                 platformBalance,
-                Nat64.toNat(totalAmount),
+                totalAmount,
                 0,
                 null,
                 #sub,
@@ -432,7 +433,7 @@ module {
                   ignore updateUserBalance(
                     userBalances,
                     userId,
-                    Nat64.toNat(totalAmount),
+                    totalAmount,
                     #add,
                   );
 
@@ -445,7 +446,7 @@ module {
                 };
                 case (#ok()) {
                   // 3. Only proceed with transfer after all balance updates are successful
-                  let transferResult = await transfer(amount, userId);
+                  let transferResult = await transfer(Nat64.fromNat(amount), userId);
 
                   switch (transferResult) {
                     case (#ok(_blockIndex)) {
@@ -455,6 +456,7 @@ module {
                         txStatus = #completed;
                       };
                       transactions.put(txId, completedTx);
+                      Debug.print(debug_show (transferResult));
                       #ok(completedTx);
                     };
                     case (#err(e)) {
@@ -464,14 +466,14 @@ module {
                       ignore updateUserBalance(
                         userBalances,
                         userId,
-                        Nat64.toNat(totalAmount),
+                        totalAmount,
                         #add,
                       );
 
                       // Rollback platform balance (add back the balance)
                       ignore updatePlatformBalance(
                         platformBalance,
-                        Nat64.toNat(totalAmount),
+                        totalAmount,
                         0,
                         null,
                         #add,
@@ -494,13 +496,13 @@ module {
           ignore updateUserBalance(
             userBalances,
             userId,
-            Nat64.toNat(totalAmount),
+            totalAmount,
             #add,
           );
 
           ignore updatePlatformBalance(
             platformBalance,
-            Nat64.toNat(totalAmount),
+            totalAmount,
             0,
             null,
             #add,
@@ -660,8 +662,8 @@ module {
     updateType : { #add; #sub },
   ) : Result.Result<(), Text> {
     let referralPayout = switch (referralFee) {
-      case (?amount) amount;
-      case (null) 0;
+      case (null) { 0 };
+      case (?amount) { amount };
     };
     let totalAfterReferralPayout = Nat.sub(total, referralPayout);
 
@@ -688,56 +690,63 @@ module {
       platformBalance.totalFees := newTotalFees;
       platformBalance.referralPayouts := newReferralPayouts;
     } else if (updateType == #sub) {
-      // Rollback operation
-      let revertedBalance = Nat.sub(platformBalance.balance, totalAfterReferralPayout);
-      let revertedTotalFees = Nat.sub(platformBalance.totalFees, total);
-      let revertedReferralPayouts = Nat.sub(platformBalance.referralPayouts, referralPayout);
+      let newBalance = Nat.sub(platformBalance.balance, totalAfterReferralPayout);
+      let newTotalFees = Nat.sub(platformBalance.totalFees, platformFee);
+      let newReferralPayouts = Nat.sub(platformBalance.referralPayouts, referralPayout);
 
       // Check for underflow
       if (
-        revertedBalance > platformBalance.balance or
-        revertedTotalFees > platformBalance.totalFees or
-        revertedReferralPayouts > platformBalance.referralPayouts
+        newBalance > platformBalance.balance or
+        newTotalFees > platformBalance.totalFees or
+        newReferralPayouts > platformBalance.referralPayouts
       ) {
-        return #err("Underflow detected during rollback");
+        return #err("Underflow detected during substaction");
       };
 
-      platformBalance.balance := revertedBalance;
-      platformBalance.totalFees := revertedTotalFees;
-      platformBalance.referralPayouts := revertedReferralPayouts;
+      platformBalance.balance := newBalance;
+      platformBalance.totalFees := newTotalFees;
+      platformBalance.referralPayouts := newReferralPayouts;
     };
 
     #ok();
   };
 
   // Helper function to get user's last withdrawal transaction
-  private func getLastWithdrawal(userId : Principal, transactions : Types.Transactions) : ?Types.Transaction {
-    var lastWithdrawal : ?Types.Transaction = null;
-    var lastTimestamp : Int = 0;
+  // private func getLastWithdrawal(userId : Principal, transactions : Types.Transactions) : ?Types.Transaction {
+  //   var lastWithdrawal : ?Types.Transaction = null;
+  //   var lastTimestamp : Int = 0;
 
-    for ((_, tx) in transactions.entries()) {
-      if (tx.from == userId and tx.transactionType == #withdrawal and tx.txStatus == #completed) {
-        if (tx.timestamp > lastTimestamp) {
-          lastTimestamp := tx.timestamp;
-          lastWithdrawal := ?tx;
-        };
-      };
-    };
-    lastWithdrawal;
-  };
+  //   for ((_, tx) in transactions.entries()) {
+  //     if (tx.from == userId and tx.transactionType == #withdrawal and tx.txStatus == #completed) {
+  //       if (tx.timestamp > lastTimestamp) {
+  //         lastTimestamp := tx.timestamp;
+  //         lastWithdrawal := ?tx;
+  //       };
+  //     };
+  //   };
+  //   lastWithdrawal;
+  // };
 
   // ICP transfer function
   private func transfer(amount : Nat64, to : Principal) : async Result.Result<IcpLedger.BlockIndex, Text> {
-    let transferArgs : IcpLedger.TransferArgs = {
-      memo = 0;
-      amount = { e8s = amount };
-      fee = { e8s = 10_000 };
-      from_subaccount = null;
-      to = Principal.toLedgerAccount(to, null);
-      created_at_time = null;
-    };
-
     try {
+      let accountIdentifier = await IcpLedger.account_identifier({
+        owner = to;
+        subaccount = null;
+      });
+
+      let transferArgs : IcpLedger.TransferArgs = {
+        to = accountIdentifier;
+        memo = 0;
+        amount = { e8s = amount };
+        fee = { e8s = 10_000 };
+        from_subaccount = null;
+        created_at_time = null;
+      };
+
+      Debug.print(debug_show ({ e8s = amount }));
+      Debug.print(debug_show (accountIdentifier));
+
       let transferResult = await IcpLedger.transfer(transferArgs);
       switch (transferResult) {
         case (#Err(transferError)) {
