@@ -4,7 +4,7 @@ import { Gift, Shield, Users, Zap } from 'lucide-react';
 
 const WhyNekoTip = () => {
   return (
-    <div className="my-10 flex w-full justify-center">
+    <div className="my-10 mt-6 flex w-full justify-center md:mt-10">
       <section className="w-full max-w-[1280px] px-4 py-7 md:py-12">
         <h1 className="mb-6 text-center text-2xl font-bold text-title md:mb-12 lg:text-3xl">
           Why Choose NekoTip?

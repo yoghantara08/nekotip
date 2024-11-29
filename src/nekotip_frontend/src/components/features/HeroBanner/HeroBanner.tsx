@@ -15,7 +15,7 @@ const HeroBanner = () => {
         <p className="mb-4 text-center font-montserrat text-sm font-medium text-subtext md:mb-5 md:text-xl">
           A secure way to connect and support
         </p>
-        <div className="flex flex-col items-center text-center text-4xl font-semibold sm:text-5xl md:text-7xl">
+        <div className="flex flex-col items-center text-center text-4xl font-semibold xs:text-5xl md:text-7xl">
           <div className="flex items-center gap-3 md:gap-5">
             <h1>Empower</h1>
             <img
