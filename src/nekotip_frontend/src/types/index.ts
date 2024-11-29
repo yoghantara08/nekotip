@@ -18,3 +18,10 @@ export interface ISerializedUser {
   referralsCount: number;
   profilePic: string | null;
 }
+
+export enum EnumContentTier {
+  Free = 'FREE',
+  Tier1 = 'TIER 1',
+  Tier2 = 'TIER 2',
+  Tier3 = 'TIER 3',
+}

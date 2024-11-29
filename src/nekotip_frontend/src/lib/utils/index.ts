@@ -1,4 +1,6 @@
-import { ISerializedUser } from '@/types/user.types';
+import BigNumber from 'bignumber.js';
+
+import { EnumContentTier, ISerializedUser } from '@/types';
 
 import {
   ContentTier,
@@ -26,18 +28,18 @@ export const serializeUser = (user: User): ISerializedUser => {
 };
 
 export const getContentTierLabel = (tier: ContentTier): string => {
-  if ('Free' in tier) return 'Free';
-  if ('Tier1' in tier) return 'Tier 1 - 5$';
-  if ('Tier2' in tier) return 'Tier 2 - 15$';
-  if ('Tier3' in tier) return 'Tier 3 - 30$';
+  if ('Free' in tier) return 'FREE';
+  if ('Tier1' in tier) return 'TIER 1 - 5$';
+  if ('Tier2' in tier) return 'TIER 2 - 15$';
+  if ('Tier3' in tier) return 'TIER 3 - 30$';
   return 'Unknown';
 };
 
 export const getContentTierName = (tier: ContentTier): string => {
-  if ('Free' in tier) return 'Free';
-  if ('Tier1' in tier) return 'TIER 1 ';
-  if ('Tier2' in tier) return 'TIER 2 ';
-  if ('Tier3' in tier) return 'TIER 3 ';
+  if ('Free' in tier) return EnumContentTier.Free;
+  if ('Tier1' in tier) return EnumContentTier.Tier1;
+  if ('Tier2' in tier) return EnumContentTier.Tier2;
+  if ('Tier3' in tier) return EnumContentTier.Tier3;
   return 'Unknown';
 };
 
@@ -47,6 +49,21 @@ export const ContentTiers = {
   Tier2: { Tier2: null },
   Tier3: { Tier3: null },
 } as const;
+
+export const getDollarValueFromTier = (tier: string) => {
+  switch (tier) {
+    case EnumContentTier.Free:
+      return 0;
+    case EnumContentTier.Tier1:
+      return 5;
+    case EnumContentTier.Tier2:
+      return 15;
+    case EnumContentTier.Tier3:
+      return 30;
+    default:
+      return 0;
+  }
+};
 
 export const ContentTierOptions = Object.values(ContentTiers).map((value) => ({
   label: getContentTierLabel(value),
@@ -95,4 +112,30 @@ export const convertToE8s = (icp: number) => {
 // Convert e8s back to ICP for display
 export const convertToICP = (e8s: number) => {
   return e8s / 10 ** 8;
+};
+
+export const convertUsdToIcp = (
+  usdAmount: number | string,
+  icpPrice: number,
+  decimals: number = 4,
+): number => {
+  const amount = new BigNumber(usdAmount);
+  const price = new BigNumber(icpPrice);
+
+  const icpAmount = amount.dividedBy(price);
+
+  return Number(icpAmount.toFixed(decimals));
+};
+
+export const convertIcpToUsd = (
+  icpAmount: number | string,
+  icpPrice: number,
+  decimals: number = 2,
+): number => {
+  const amount = new BigNumber(icpAmount);
+  const price = new BigNumber(icpPrice);
+
+  const usdAmount = amount.multipliedBy(price);
+
+  return Number(usdAmount.toFixed(decimals));
 };

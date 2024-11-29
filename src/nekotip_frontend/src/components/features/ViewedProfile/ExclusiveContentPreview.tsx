@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { LockIcon, MessageSquareIcon, ThumbsUpIcon } from 'lucide-react';
 
+import { formatNSToDate } from '@/lib/utils';
 import { cn } from '@/lib/utils/cn';
+import { EnumContentTier } from '@/types';
+
+import UnlockContentModal from './UnlockContentModal';
 
 interface ExclusiveContentPreviewProps {
   contentId: string;
@@ -16,7 +20,6 @@ interface ExclusiveContentPreviewProps {
   createdAt: string;
   isUnlocked?: boolean;
   className?: string;
-  onOpenUnlockModal?: () => void;
 }
 
 const ExclusiveContentPreview = ({
@@ -30,15 +33,14 @@ const ExclusiveContentPreview = ({
   createdAt,
   isUnlocked,
   className,
-  onOpenUnlockModal,
 }: ExclusiveContentPreviewProps) => {
   const navigate = useNavigate();
 
+  const [openModal, setOpenModal] = useState(false);
+
   const handleContentClick = () => {
-    if (tier === 'Free' || isUnlocked) {
+    if (tier === 'FREE' || isUnlocked) {
       navigate(`/creator/content/${contentId}`);
-    } else if (onOpenUnlockModal) {
-      onOpenUnlockModal();
     }
   };
 
@@ -47,7 +49,8 @@ const ExclusiveContentPreview = ({
       onClick={handleContentClick}
       className={cn(
         'min-w-[300px] max-w-md overflow-hidden rounded-lg border bg-offWhite text-subtext',
-        (tier === 'Free' || isUnlocked) && 'cursor-pointer hover:shadow-hover',
+        (tier === EnumContentTier.Free || isUnlocked) &&
+          'cursor-pointer hover:shadow-hover',
         className,
       )}
     >
@@ -60,12 +63,12 @@ const ExclusiveContentPreview = ({
         <div
           className={cn(
             'absolute inset-0 hidden items-center justify-center bg-black/60',
-            tier !== 'Free' && !isUnlocked && 'flex',
+            tier !== EnumContentTier.Free && !isUnlocked && 'flex',
           )}
         >
           <button
             className="flex items-center gap-2 rounded-lg bg-bg px-4 py-2 font-medium text-subtext hover:bg-mainAccent"
-            onClick={onOpenUnlockModal}
+            onClick={() => setOpenModal(true)}
           >
             <LockIcon className="size-5" />
             <span>Unlock</span>
@@ -75,7 +78,9 @@ const ExclusiveContentPreview = ({
       <div className="p-4">
         <h2 className="text-lg font-semibold text-title">{title}</h2>
         <p className="text-sm text-caption">{description}</p>
-        <p className="text-sm text-caption">{createdAt}</p>
+        <p className="text-sm text-caption">
+          {formatNSToDate(BigInt(createdAt))}
+        </p>
         <div className="mt-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
@@ -90,17 +95,30 @@ const ExclusiveContentPreview = ({
           <p
             className={cn(
               'bg- flex items-center rounded-lg border px-3 py-1 text-sm font-medium',
-              tier === 'Free'
+              tier === EnumContentTier.Free
                 ? 'bg-thirdAccent'
                 : isUnlocked
                   ? 'bg-mainAccent'
                   : '',
             )}
           >
-            {tier === 'Free' ? 'Free' : isUnlocked ? 'Unlocked' : tier}
+            {tier === EnumContentTier.Free
+              ? EnumContentTier.Free
+              : isUnlocked
+                ? 'Unlocked'
+                : tier}
           </p>
         </div>
       </div>
+
+      <UnlockContentModal
+        contentId={contentId}
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+        tier={tier}
+        thumbnail={thumbnail}
+        title={title}
+      />
     </div>
   );
 };

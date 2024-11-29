@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Button from '@/components/ui/Button/Button';
 import { CustomInput } from '@/components/ui/Input/CustomInput';
 import ModalCustom from '@/components/ui/Modal/ModalCustom';
-import useICPLedgerPayment from '@/hooks/useICPLedgerPayment';
+import useICP from '@/hooks/useICP';
 import useUser from '@/hooks/useUser';
 import { convertToE8s, convertToICP } from '@/lib/utils';
 import { useAuthManager } from '@/store/AuthProvider';
@@ -28,7 +28,7 @@ const DonateModal = ({
   setSupportComment,
 }: DonateModalProps) => {
   const { actor } = useAuthManager();
-  const { transferICP } = useICPLedgerPayment();
+  const { transferICP } = useICP();
   const { getICPBalance } = useUser();
 
   const [amount, setAmount] = useState<number>(0);

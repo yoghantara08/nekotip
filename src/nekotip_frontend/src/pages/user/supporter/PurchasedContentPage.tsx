@@ -2,27 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 import ExclusiveContentPreview from '@/components/features/ViewedProfile/ExclusiveContentPreview';
 import LayoutDashboard from '@/components/ui/Layout/LayoutDashboard';
+import { getContentTierName } from '@/lib/utils';
 import { cn } from '@/lib/utils/cn';
 import { useAuthManager } from '@/store/AuthProvider';
 
 import { ContentPreview as ContentPreviewType } from '../../../../../declarations/nekotip_backend/nekotip_backend.did';
-
-const dummy = {
-  contentId: 'content-123',
-  title: 'Exclusive Insights on Blockchain Technology',
-  description:
-    'Dive into the latest trends and insights in blockchain and crypto developments.',
-  tier: 'Premium',
-  thumbnail: 'https://via.placeholder.com/300x200?text=Exclusive+Content',
-  likesCount: '256',
-  commentsCount: '42',
-  createdAt: '2024-11-28T10:30:00Z',
-  isUnlocked: false,
-  className: 'content-preview-card',
-  onOpenUnlockModal: () => {
-    console.log('Unlock modal opened for contentId: content-123');
-  },
-};
 
 const PurchasedContentPage = () => {
   const { actor } = useAuthManager();
@@ -43,7 +27,7 @@ const PurchasedContentPage = () => {
           setPurchasedContents(result);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         setIsLoading(false);
       }
@@ -73,14 +57,15 @@ const PurchasedContentPage = () => {
             {purchasedContents.map((content) => (
               <ExclusiveContentPreview
                 key={content.id}
-                contentId={dummy.contentId}
-                title={dummy.title}
-                description={dummy.description}
-                tier={dummy.tier}
-                thumbnail={dummy.thumbnail}
-                likesCount={dummy.likesCount}
-                commentsCount={dummy.commentsCount}
-                createdAt={dummy.createdAt}
+                contentId={content.id}
+                title={content.title}
+                description={content.description}
+                tier={getContentTierName(content.tier)}
+                thumbnail={content.thumbnail}
+                likesCount={content.likesCount.toString()}
+                commentsCount={content.commentsCount.toString()}
+                createdAt={content.createdAt.toString()}
+                isUnlocked
               />
             ))}
           </div>

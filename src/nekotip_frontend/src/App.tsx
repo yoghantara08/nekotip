@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Route, Routes, useSearchParams } from 'react-router-dom';
 
 import ProtectedRoute from './components/features/ProtectedRoute/ProtectedRoute';
+import useICP from './hooks/useICP';
 import useUser from './hooks/useUser';
 import ContentPage from './pages/ContentPage';
 import ExplorePage from './pages/ExplorePage';
@@ -25,11 +26,29 @@ function App() {
 
   const { updateReferralCode } = useUser();
   const { initializeAuth, isAuthenticated } = useAuthManager();
+  const { fetchIcpUsdPrice, icpPrice } = useICP();
 
   // INITIALIZE AUTHENTICATION
   useEffect(() => {
     initializeAuth();
   }, [initializeAuth]);
+
+  // FETCH ICP PRICE
+  useEffect(() => {
+    const loadPrice = async () => {
+      try {
+        await fetchIcpUsdPrice();
+      } catch (error) {
+        console.error('Failed to fetch ICP price:', error);
+      }
+    };
+
+    loadPrice();
+
+    const intervalId = setInterval(loadPrice, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [fetchIcpUsdPrice, icpPrice]);
 
   useEffect(() => {
     const referralCode = searchParams.get('referral');
