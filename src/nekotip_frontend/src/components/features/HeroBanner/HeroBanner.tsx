@@ -37,7 +37,7 @@ const HeroBanner = () => {
             Join Now
           </Button>
 
-          <Link to="/explore">
+          <Link to="/creator">
             <Button
               size={isMobile ? 'small' : 'default'}
               variant={'secondary'}

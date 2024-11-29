@@ -59,7 +59,7 @@ function App() {
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={<LandingPage />} />
-      <Route path="/explore" element={<ExplorePage />} />
+      <Route path="/creator" element={<ExplorePage />} />
       <Route path="/creator/:username" element={<ViewedProfilePage />} />
       <Route path="/creator/content/:contentId" element={<ContentPage />} />
 

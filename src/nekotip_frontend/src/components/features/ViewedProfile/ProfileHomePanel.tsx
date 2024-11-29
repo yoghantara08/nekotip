@@ -88,7 +88,7 @@ const ProfileHomePanel = ({ viewedUser }: { viewedUser: User }) => {
             <span>{viewedUser.bio[0] || 'This user has no bio yet.'}</span>
           </div>
           <Link
-            to={`/explore/${viewedUser.categories.toLocaleString().toLowerCase()}`}
+            to={`/creator/${viewedUser.categories.toLocaleString().toLowerCase()}`}
             className="mt-4 block w-fit rounded-lg border px-4 py-2 font-medium hover:bg-mainAccent/30"
           >
             {viewedUser.categories}

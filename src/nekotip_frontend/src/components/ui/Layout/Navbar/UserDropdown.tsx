@@ -47,7 +47,7 @@ export const menuSections = [
         to: '/dashboard/purchased-content',
         icon: <ShoppingBagIcon />,
       },
-      { label: 'Explore Creator', to: '/explore', icon: <EarthIcon /> },
+      { label: 'Explore Creator', to: '/creator', icon: <EarthIcon /> },
       { label: 'Discover', to: '/dashboard/discover', icon: <CompassIcon /> },
     ],
     activeClassName: 'hover:bg-secondaryAccent',

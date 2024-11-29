@@ -30,3 +30,25 @@ export const CATEGORIES = [
   'News',
   'Other',
 ];
+
+export const EXPLORE_CATEGORIES = [
+  'All',
+  'Cosplay',
+  'Streaming',
+  'Gaming',
+  'Art',
+  'Entertainment',
+  'Commisions',
+  'Music',
+  'Writing',
+  'Cooking',
+  'Tech',
+  'Fashion',
+  'Photography',
+  'Travel',
+  'DIY',
+  'Education',
+  'Lifestyle',
+  'News',
+  'Other',
+];

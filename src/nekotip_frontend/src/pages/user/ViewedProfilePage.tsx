@@ -123,7 +123,7 @@ const ViewedProfilePage = () => {
                   </span>
                 </div>
                 <Link
-                  to={`/explore/${viewedUser.categories.toLocaleString().toLowerCase()}`}
+                  to={`/creator/${viewedUser.categories.toLocaleString().toLowerCase()}`}
                   className="mt-2 block w-fit rounded-lg border px-4 py-2 text-sm font-medium hover:bg-mainAccent/30"
                 >
                   {viewedUser.categories}
