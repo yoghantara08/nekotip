@@ -33,6 +33,7 @@ interface AuthState {
   principal: Principal | null;
   actor: _SERVICE | null;
   isLoading: boolean;
+  authClient: AuthClient | null;
 }
 
 interface AuthContextType extends AuthState {
@@ -60,6 +61,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     principal: null,
     actor: null,
     isLoading: false,
+    authClient: null,
   });
 
   // Create actor instance
@@ -96,6 +98,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         principal,
         actor,
         isLoading: false,
+        authClient,
       });
       dispatch(setIsAuthenticated(true));
     } else {
@@ -105,6 +108,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         principal: null,
         actor: anonymousActor,
         isLoading: false,
+        authClient,
       });
       dispatch(setUser(null));
       dispatch(setIsAuthenticated(false));
@@ -123,6 +127,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         principal: null,
         actor: anonymousActor,
         isLoading: false,
+        authClient,
       });
       dispatch(setUser(null));
       dispatch(setIsAuthenticated(false));
@@ -167,6 +172,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
               principal,
               actor,
               isLoading: false,
+              authClient,
             });
             dispatch(setUser(serializeUser(result.ok)));
             dispatch(setIsAuthenticated(true));

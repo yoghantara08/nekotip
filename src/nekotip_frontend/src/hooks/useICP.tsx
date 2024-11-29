@@ -7,7 +7,7 @@ import { AccountIdentifier, LedgerCanister } from '@dfinity/ledger-icp';
 import { Principal } from '@dfinity/principal';
 import axios from 'axios';
 
-import { DFX_NETWORK } from '@/constant/common';
+import { BACKEND_CANISTER_ID, DFX_NETWORK } from '@/constant/common';
 import { RootState } from '@/store';
 import { setIcpPrice } from '@/store/reducers/userSlice';
 
@@ -23,7 +23,6 @@ const useICP = () => {
   );
 
   const transferICP = async (
-    recipientPrincipal: Principal, // Destination canister
     amount: bigint, // Amount in e8s (1 ICP = 100,000,000 e8s)
   ) => {
     try {
@@ -49,7 +48,7 @@ const useICP = () => {
       });
 
       const accountIdentifier = AccountIdentifier.fromPrincipal({
-        principal: recipientPrincipal,
+        principal: Principal.fromText(BACKEND_CANISTER_ID),
         subAccount: undefined,
       });
 
@@ -65,6 +64,7 @@ const useICP = () => {
         amount: amount,
         fee: transactionFee,
         memo: 0n, // Optional memo field
+        fromSubAccount: undefined,
       });
 
       console.log('Transfer result:', transferResult);

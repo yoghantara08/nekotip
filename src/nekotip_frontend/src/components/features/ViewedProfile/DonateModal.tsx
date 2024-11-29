@@ -81,11 +81,8 @@ const DonateModal = ({
       ]);
 
       if ('ok' in donateTxResult) {
-        // Transfer ICP to the user's canister
-        const transferResult = await transferICP(
-          donateTxResult.ok.to,
-          amountInE8s,
-        );
+        // Transfer ICP to the canister account
+        const transferResult = await transferICP(amountInE8s);
 
         if (transferResult) {
           // Finalize donation transaction

@@ -62,10 +62,7 @@ const UnlockContentModal: React.FC<UnlockContentModalProps> = ({
 
       if ('ok' in unlockTxResult) {
         // Transfer ICP to the user's canister
-        const transferResult = await transferICP(
-          unlockTxResult.ok.to,
-          amountInE8s,
-        );
+        const transferResult = await transferICP(amountInE8s);
 
         if (transferResult) {
           // Finalize unlock content transaction
