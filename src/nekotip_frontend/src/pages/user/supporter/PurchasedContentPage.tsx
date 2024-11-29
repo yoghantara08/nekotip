@@ -64,7 +64,7 @@ const PurchasedContentPage = () => {
                 thumbnail={content.thumbnail}
                 likesCount={content.likesCount.toString()}
                 commentsCount={content.commentsCount.toString()}
-                createdAt={content.createdAt.toString()}
+                createdAt={content.createdAt}
                 isUnlocked
               />
             ))}

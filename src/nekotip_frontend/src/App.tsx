@@ -43,9 +43,9 @@ function App() {
       }
     };
 
-    loadPrice();
+    if (!icpPrice || icpPrice === 0) loadPrice();
 
-    const intervalId = setInterval(loadPrice, 5000);
+    const intervalId = setInterval(loadPrice, 30000);
 
     return () => clearInterval(intervalId);
   }, [fetchIcpUsdPrice, icpPrice]);

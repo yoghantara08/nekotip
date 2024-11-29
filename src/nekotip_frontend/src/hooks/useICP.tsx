@@ -21,7 +21,6 @@ const useICP = () => {
   const [lastFetchTimestamp, setLastFetchTimestamp] = useState<number | null>(
     null,
   );
-  const [lastFetched, setLastFetched] = useState<number>(0);
 
   const transferICP = async (
     recipientPrincipal: Principal, // Destination canister
@@ -108,9 +107,6 @@ const useICP = () => {
   );
 
   const fetchIcpUsdPrice = async () => {
-    const now = Date.now();
-    if (now - lastFetched < 60000 && icpPrice) return icpPrice;
-
     try {
       console.log('Fetching ICP price');
 
@@ -121,7 +117,6 @@ const useICP = () => {
 
       dispatch(setIcpPrice(price));
 
-      setLastFetched(now);
       return price;
     } catch (error) {
       console.error('Failed to fetch ICP price', error);

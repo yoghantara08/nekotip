@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Principal } from '@dfinity/principal';
 
 import { fetchCreatorContentPreview } from '@/lib/services/contentService';
-import { formatNSToDate, getContentTierName } from '@/lib/utils';
+import { getContentTierName } from '@/lib/utils';
 import { useAuthManager } from '@/store/AuthProvider';
 
 import { ContentPreview as ContentPreviewType } from '../../../../../declarations/nekotip_backend/nekotip_backend.did';
@@ -38,7 +38,7 @@ const ExclusiveContentPanel = ({ creatorId }: { creatorId: Principal }) => {
             thumbnail={content.thumbnail}
             likesCount={content.likesCount.toString()}
             commentsCount={content.commentsCount.toString()}
-            createdAt={formatNSToDate(content.createdAt)}
+            createdAt={content.createdAt}
             isUnlocked={isUnlocked}
           />
         );

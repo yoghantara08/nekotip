@@ -17,7 +17,7 @@ interface ExclusiveContentPreviewProps {
   thumbnail: string;
   likesCount: string;
   commentsCount: string;
-  createdAt: string;
+  createdAt: bigint;
   isUnlocked?: boolean;
   className?: string;
 }

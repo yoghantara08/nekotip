@@ -75,7 +75,7 @@ const ViewedProfilePage = () => {
         <div className="w-full rounded-lg border text-subtext shadow-custom">
           <div className="relative">
             <img
-              src={viewedUser?.bannerPic[0] || '/images/default-banner.png'}
+              src={viewedUser?.bannerPic[0] || '/images/banner-default.svg'}
               alt="banner"
               className="h-[200px] w-full rounded-t-lg object-cover"
             />

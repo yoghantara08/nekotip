@@ -50,7 +50,7 @@ const MySupporterPage = () => {
         ) : supporters.length === 0 ? (
           <span className="text-lg">You don't have any supporter yet</span>
         ) : (
-          <div className="flex flex-wrap gap-5">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 xxl:grid-cols-4">
             {supporters.map((support) => (
               <SupporterCard key={support.id} supporter={support} />
             ))}

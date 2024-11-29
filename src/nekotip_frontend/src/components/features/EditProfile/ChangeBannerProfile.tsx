@@ -64,7 +64,7 @@ const ChangeBannerProfile = () => {
         </h3>
         <div className="flex h-24 w-full items-center justify-center overflow-hidden rounded-t-lg border md:h-full md:min-w-[450px] md:max-w-[900px]">
           <img
-            src={user?.bannerPic ?? '/images/default-banner.png'}
+            src={user?.bannerPic ?? '/images/banner-default.svg'}
             alt="profile"
             className="h-auto w-full object-cover"
           />
@@ -89,7 +89,7 @@ const ChangeBannerProfile = () => {
         <div className="flex flex-col items-center gap-4 p-5">
           <div className="h-full w-full overflow-hidden rounded-t-lg border bg-bg md:w-[400px]">
             <img
-              src={preview || user?.bannerPic || '/images/default-banner.png'}
+              src={preview || user?.bannerPic || '/images/banner-default.svg'}
               alt="bannerpic"
               className="h-full w-full object-cover"
             />
