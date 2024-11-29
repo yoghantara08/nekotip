@@ -30,14 +30,6 @@ actor NekoTip {
     var referralPayouts : Nat = 0;
   };
 
-  public func getPlatformICPBalance() : async Nat {
-    let canisterAccount = {
-      owner = Principal.fromActor(NekoTip);
-      subaccount = null;
-    };
-    return await Ledger.icrc1_balance_of(canisterAccount);
-  };
-
   // PREUPGRADE & POSTUPGRADE
   system func preupgrade() {
     usersEntries := Iter.toArray(users.entries());
@@ -57,10 +49,6 @@ actor NekoTip {
     userBalancesEntries := [];
   };
 
-  public shared (msg) func whoami() : async Principal {
-    msg.caller;
-  };
-
   // USERS ENDPOINT ======================================
   // AUTHENTICATE USER
   public shared (msg) func authenticateUser(
@@ -69,6 +57,11 @@ actor NekoTip {
     referralCode : ?Text,
   ) : async Result.Result<Types.User, Text> {
     return UserService.authenticateUser(users, msg.caller, username, depositAddress, referralCode);
+  };
+
+  // GET CALLER PRINCIPAL
+  public shared (msg) func whoami() : async Principal {
+    msg.caller;
   };
 
   // UPDATE USER PROFILE
@@ -230,6 +223,14 @@ actor NekoTip {
   };
 
   // GET PLATFORM BALANCE
+  public func getPlatformICPBalance() : async Nat {
+    let canisterAccount = {
+      owner = Principal.fromActor(NekoTip);
+      subaccount = null;
+    };
+    return await Ledger.icrc1_balance_of(canisterAccount);
+  };
+
   public func getPlatformBalance() : async Nat {
     platformBalance.balance;
   };
