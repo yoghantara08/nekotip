@@ -10,23 +10,22 @@ import {
 } from '@headlessui/react';
 import {
   ChevronDown,
-  CircleFadingPlusIcon,
   CircleUserRoundIcon,
   CompassIcon,
   EarthIcon,
   HeartIcon,
+  PaletteIcon,
   ShoppingBagIcon,
   SquareUserIcon,
-  User2Icon,
   UserRoundPlusIcon,
   UsersIcon,
   UsersRoundIcon,
   WalletIcon,
 } from 'lucide-react';
 
-import { useAuthManager } from '@/hooks/useAuthManager';
 import useUser from '@/hooks/useUser';
 import { cn } from '@/lib/utils/cn';
+import { useAuthManager } from '@/store/AuthProvider';
 
 export const menuSections = [
   {
@@ -34,9 +33,9 @@ export const menuSections = [
       { label: 'Profile', to: '/dashboard', icon: <CircleUserRoundIcon /> },
       { label: 'Wallet', to: '/dashboard/wallet', icon: <WalletIcon /> },
       {
-        label: 'Post Management',
-        to: '/dashboard/content-management',
-        icon: <CircleFadingPlusIcon />,
+        label: 'Creator Studio',
+        to: '/dashboard/creator-studio',
+        icon: <PaletteIcon />,
       },
     ],
     activeClassName: 'hover:bg-mainAccent',
@@ -44,8 +43,8 @@ export const menuSections = [
   {
     items: [
       {
-        label: 'Exclusive Content',
-        to: '/dashboard/exclusive-content',
+        label: 'Purchased Content',
+        to: '/dashboard/purchased-content',
         icon: <ShoppingBagIcon />,
       },
       { label: 'Explore Creator', to: '/explore', icon: <EarthIcon /> },
@@ -102,12 +101,17 @@ const UserDropdown = () => {
     <Menu as="div" className="mt2 relative inline-block text-left">
       {/* Dropdown Button */}
       <MenuButton className={'flex items-center gap-3'}>
-        <div className="flex size-12 items-center justify-center overflow-hidden rounded-full bg-mainAccent text-subtext">
-          {user?.profilePic ? (
-            <img src={user.profilePic} alt="nekotip" />
-          ) : (
-            <User2Icon className="size-7" />
+        <div
+          className={cn(
+            'flex size-12 items-center justify-center overflow-hidden rounded-full text-subtext',
+            !user?.profilePic && 'bg-mainAccent',
           )}
+        >
+          <img
+            src={user?.profilePic || '/images/user-default.svg'}
+            alt="profilepic"
+            className={cn(user?.profilePic && 'h-full w-full object-cover')}
+          />
         </div>
         <div className="flex items-center gap-1 text-subtext">
           <div className="font-semibold">@{user?.username}</div>

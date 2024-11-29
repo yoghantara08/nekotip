@@ -16,26 +16,25 @@ module {
     followers : [Principal];
     following : [Principal];
     referrals : [Principal];
+    categories : [Text];
+    socials : Socials;
     createdAt : Int;
 
     bio : ?Text;
-    socials : ?Socials;
     name : ?Text;
     profilePic : ?Text;
     bannerPic : ?Text;
     referredBy : ?Principal;
-    categories : ?[Text];
   };
 
   public type UserUpdateData = {
     username : ?Text;
-    bio : ?Text;
-    socials : ?Socials;
     name : ?Text;
+    bio : ?Text;
     profilePic : ?Text;
     bannerPic : ?Text;
+    socials : ?Socials;
     categories : ?[Text];
-    isCreator : ?Bool;
   };
 
   public type Socials = {
@@ -63,7 +62,6 @@ module {
     tier : ContentTier;
     thumbnail : Text;
     contentImages : [Text];
-    categories : [Text];
     likes : [Principal];
     comments : [Comment];
     unlockedBy : [Principal];
@@ -94,9 +92,10 @@ module {
     description : Text;
     tier : ContentTier;
     thumbnail : Text;
-    categories : [Text];
     likesCount : Nat;
     commentsCount : Nat;
+    unlockedBy : [Principal];
+    createdAt : Int;
   };
 
   // TRANSACTION TYPES

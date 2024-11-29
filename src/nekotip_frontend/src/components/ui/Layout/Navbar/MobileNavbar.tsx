@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 
 import { User2Icon } from 'lucide-react';
 
-import { useAuthManager } from '@/hooks/useAuthManager';
 import useUser from '@/hooks/useUser';
 import { cn } from '@/lib/utils/cn';
+import { useAuthManager } from '@/store/AuthProvider';
 
 import Button from '../../Button/Button';
 import Drawer from '../../Drawer/Drawer';

@@ -16,6 +16,7 @@ interface ModalProps {
   children: ReactNode;
   title?: string;
   className?: string;
+  disableClose?: boolean;
 }
 
 const ModalCustom: React.FC<ModalProps> = ({
@@ -24,10 +25,15 @@ const ModalCustom: React.FC<ModalProps> = ({
   children,
   title,
   className,
+  disableClose,
 }) => {
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className={'relative z-50'} onClose={onClose}>
+      <Dialog
+        as="div"
+        className={'relative z-50'}
+        onClose={!disableClose ? onClose : () => {}}
+      >
         <TransitionChild
           as={Fragment}
           enter="ease-out duration-300"
@@ -55,14 +61,14 @@ const ModalCustom: React.FC<ModalProps> = ({
                 onClick={(e) => e.stopPropagation()}
                 className={cn(
                   'mx-[15px] my-4 w-full transform overflow-hidden rounded-2xl transition-all',
-                  'bg-cardBackground border border-border/60 shadow-custom',
+                  'bg-cardBackground border border-border/60 bg-bg shadow-custom',
                   className,
                 )}
               >
                 {title ? (
                   <div
                     className={cn(
-                      'flex h-[60px] items-center justify-between border-b border-border/60 px-6 md:h-[72px]',
+                      'flex h-[60px] items-center justify-between border-b border-border/60 px-6 text-title md:h-[72px]',
                     )}
                   >
                     <div className="text-base font-semibold md:text-2xl">
@@ -71,7 +77,7 @@ const ModalCustom: React.FC<ModalProps> = ({
 
                     <CircleXIcon
                       className="h-6 w-6 cursor-pointer stroke-[1.5px] text-subtext hover:text-black md:h-7 md:w-7"
-                      onClick={onClose}
+                      onClick={!disableClose ? onClose : () => {}}
                     />
                   </div>
                 ) : (
@@ -80,10 +86,10 @@ const ModalCustom: React.FC<ModalProps> = ({
                       'absolute right-5 top-5 z-20 h-6 w-6 cursor-pointer text-subtext hover:text-black',
                       'md:h-7 md:w-7',
                     )}
-                    onClick={onClose}
+                    onClick={!disableClose ? onClose : () => {}}
                   />
                 )}
-                <div className="bg-bg">{children}</div>
+                {children}
               </DialogPanel>
             </TransitionChild>
           </div>

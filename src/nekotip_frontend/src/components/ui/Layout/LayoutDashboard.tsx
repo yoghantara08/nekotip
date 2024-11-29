@@ -20,9 +20,9 @@ const LayoutDashboard = ({ children, className, title }: LayoutProps) => {
       <Helmet title={pageTitle}></Helmet>
       <div className="h-full w-full">
         {isTablet ? <MobileNavbar /> : <Navbar />}
-        <div className={cn('flex h-screen w-full gap-5', className)}>
+        <div className={cn('flex h-full w-full')}>
           {!isTablet && <DashboardMenu />}
-          <main className="p-7">{children}</main>
+          <main className={cn('mb-4 p-4 lg:p-7', className)}>{children}</main>
         </div>
       </div>
     </>

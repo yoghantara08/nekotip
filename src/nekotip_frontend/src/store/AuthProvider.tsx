@@ -1,4 +1,12 @@
-import { useCallback, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,9 +33,23 @@ interface AuthState {
   principal: Principal | null;
   actor: _SERVICE | null;
   isLoading: boolean;
+  authClient: AuthClient | null;
 }
 
-export const useAuthManager = () => {
+interface AuthContextType extends AuthState {
+  isAuthenticated: boolean;
+  login: () => Promise<void>;
+  logout: () => Promise<void>;
+  initializeAuth: () => Promise<void>;
+}
+
+// Create the context with a default value
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Provider component
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { isAuthenticated, referralCode } = useSelector(
@@ -39,6 +61,7 @@ export const useAuthManager = () => {
     principal: null,
     actor: null,
     isLoading: false,
+    authClient: null,
   });
 
   // Create actor instance
@@ -59,7 +82,12 @@ export const useAuthManager = () => {
 
   // Initialize or update auth state
   const initializeAuth = useCallback(async () => {
-    const authClient = await AuthClient.create();
+    setAuthState((prev) => ({ ...prev, isLoading: true }));
+    const authClient = await AuthClient.create({
+      idleOptions: {
+        disableIdle: true,
+      },
+    });
     if (await authClient.isAuthenticated()) {
       const identity = authClient.getIdentity();
       const principal = identity.getPrincipal();
@@ -70,6 +98,7 @@ export const useAuthManager = () => {
         principal,
         actor,
         isLoading: false,
+        authClient,
       });
       dispatch(setIsAuthenticated(true));
     } else {
@@ -79,6 +108,7 @@ export const useAuthManager = () => {
         principal: null,
         actor: anonymousActor,
         isLoading: false,
+        authClient,
       });
       dispatch(setUser(null));
       dispatch(setIsAuthenticated(false));
@@ -97,6 +127,7 @@ export const useAuthManager = () => {
         principal: null,
         actor: anonymousActor,
         isLoading: false,
+        authClient,
       });
       dispatch(setUser(null));
       dispatch(setIsAuthenticated(false));
@@ -110,7 +141,11 @@ export const useAuthManager = () => {
   const login = useCallback(async () => {
     setAuthState((prev) => ({ ...prev, isLoading: true }));
     try {
-      const authClient = await AuthClient.create();
+      const authClient = await AuthClient.create({
+        idleOptions: {
+          disableIdle: true,
+        },
+      });
       await authClient.login({
         identityProvider: INTERNET_IDENTITY_URL,
         maxTimeToLive: BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000), // 1 week
@@ -137,6 +172,7 @@ export const useAuthManager = () => {
               principal,
               actor,
               isLoading: false,
+              authClient,
             });
             dispatch(setUser(serializeUser(result.ok)));
             dispatch(setIsAuthenticated(true));
@@ -156,18 +192,35 @@ export const useAuthManager = () => {
     }
   }, [createActor, dispatch, logout, navigate, referralCode]);
 
-  return useMemo(
-    () => ({
-      identity: authState.identity,
-      principal: authState.principal,
-      actor: authState.actor,
-      isAuthenticated,
-      isLoading: authState.isLoading,
+  // Initialize auth on mount
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
 
+  // Memoize the context value
+  const contextValue = useMemo(
+    () => ({
+      ...authState,
+      isAuthenticated,
       login,
       logout,
       initializeAuth,
     }),
     [authState, isAuthenticated, login, logout, initializeAuth],
   );
+
+  return (
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+  );
+};
+
+// Custom hook to use the auth context
+export const useAuthManager = () => {
+  const context = useContext(AuthContext);
+
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+
+  return context;
 };
