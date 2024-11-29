@@ -103,6 +103,11 @@ actor class NekoTip() = this {
     return await UserService.getAccountBalance(msg.caller);
   };
 
+  // GET CREDIT BALANCE
+  public shared (msg) func getCreditBalance() : async Types.UserBalance {
+    return UserService.getCreditBalance(userBalances, msg.caller);
+  };
+
   // CONTENT ENDPOINT ======================================
   // POST CONTENT
   public shared (msg) func postContent(

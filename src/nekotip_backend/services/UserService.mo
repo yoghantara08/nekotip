@@ -357,6 +357,16 @@ module {
     return balance;
   };
 
+  // GET CREDIT BALANCE
+  public func getCreditBalance(userBalances : Types.UserBalances, userId : Principal) : Types.UserBalance {
+    switch (userBalances.get(userId)) {
+      case (null) {
+        { balance = 0; id = userId };
+      };
+      case (?balance) { balance };
+    };
+  };
+
   // UTILS
   private func generateReferral(principal : Principal) : Text {
     let principalText = Principal.toText(principal);
