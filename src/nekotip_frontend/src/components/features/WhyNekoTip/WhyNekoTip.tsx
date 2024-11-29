@@ -4,9 +4,9 @@ import { Gift, Shield, Users, Zap } from 'lucide-react';
 
 const WhyNekoTip = () => {
   return (
-    <div className="flex w-full justify-center">
+    <div className="my-10 flex w-full justify-center">
       <section className="w-full max-w-[1280px] px-4 py-7 md:py-12">
-        <h1 className="mb-6 text-center text-xl font-bold text-subtext lg:text-2xl">
+        <h1 className="mb-6 text-center text-2xl font-bold text-title md:mb-12 lg:text-3xl">
           Why Choose NekoTip?
         </h1>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
