@@ -44,6 +44,7 @@ export default {
         FEC2C3: '#FEC2C3',
         D9C3F2: '#D9C3F2',
         C3CFF2: '#C3CFF2',
+        F0AAAB: '#F0AAAB',
         '4E4C47': '#4E4C47',
         '7A6858': '#7A6858',
         '3E3D39': '#3E3D39',
