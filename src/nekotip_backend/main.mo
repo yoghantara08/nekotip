@@ -12,7 +12,6 @@ import UserService "services/UserService";
 import ContentService "services/ContentService";
 import TransactionService "services/TransactionService";
 import Types "types/Types";
-import Ledger "canister:icp_ledger_canister";
 
 actor NekoTip {
   private var users : Types.Users = HashMap.HashMap(0, Principal.equal, Principal.hash);
@@ -223,13 +222,6 @@ actor NekoTip {
   };
 
   // GET PLATFORM BALANCE
-  public func getPlatformICPBalance() : async Nat {
-    let canisterAccount = {
-      owner = Principal.fromActor(NekoTip);
-      subaccount = null;
-    };
-    return await Ledger.icrc1_balance_of(canisterAccount);
-  };
 
   public func getPlatformBalance() : async Nat {
     platformBalance.balance;
