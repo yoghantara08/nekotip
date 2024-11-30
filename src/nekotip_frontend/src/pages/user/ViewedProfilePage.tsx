@@ -77,7 +77,7 @@ const ViewedProfilePage = () => {
             <img
               src={viewedUser?.bannerPic[0] || '/images/banner-default.svg'}
               alt="banner"
-              className="h-[200px] w-full rounded-t-lg object-cover"
+              className="h-[225px] w-full rounded-t-lg object-cover"
             />
             <img
               src={viewedUser?.profilePic[0] || '/images/user-default.svg'}
@@ -122,12 +122,14 @@ const ViewedProfilePage = () => {
                     {viewedUser.bio[0] || 'This user has no bio yet.'}
                   </span>
                 </div>
-                <Link
-                  to={`/creator/${viewedUser.categories.toLocaleString().toLowerCase()}`}
-                  className="mt-2 block w-fit rounded-lg border px-4 py-2 text-sm font-medium hover:bg-mainAccent/30"
-                >
-                  {viewedUser.categories}
-                </Link>
+                {viewedUser.categories.length !== 0 && (
+                  <Link
+                    to={`/creator/${viewedUser.categories.toLocaleString().toLowerCase()}`}
+                    className="mt-2 block w-fit rounded-lg border px-4 py-2 text-sm font-medium hover:bg-mainAccent/30"
+                  >
+                    {viewedUser.categories}
+                  </Link>
+                )}
               </div>
               <div className="flex w-fit items-center gap-4">
                 {MENU_PROFILE.map((item, index) => (

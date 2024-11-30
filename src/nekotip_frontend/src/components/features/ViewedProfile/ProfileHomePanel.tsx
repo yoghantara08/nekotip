@@ -56,7 +56,7 @@ const ProfileHomePanel = ({ viewedUser }: { viewedUser: User }) => {
   }, [actor, fetchSupporters, viewedUser.id]);
 
   return (
-    <div className="flex flex-col justify-between gap-6 md:flex-row">
+    <div className="flex flex-col justify-between md:flex-row md:gap-6">
       <div className="w-full">
         <CustomTextarea
           placeholder="Support message"
@@ -87,25 +87,31 @@ const ProfileHomePanel = ({ viewedUser }: { viewedUser: User }) => {
           <div className="mt-2 text-caption">
             <span>{viewedUser.bio[0] || 'This user has no bio yet.'}</span>
           </div>
-          <Link
-            to={`/creator/${viewedUser.categories.toLocaleString().toLowerCase()}`}
-            className="mt-4 block w-fit rounded-lg border px-4 py-2 font-medium hover:bg-mainAccent/30"
-          >
-            {viewedUser.categories}
-          </Link>
+          {viewedUser.categories.length !== 0 && (
+            <Link
+              to={`/creator/${viewedUser.categories.toLocaleString().toLowerCase()}`}
+              className="mt-4 block w-fit rounded-lg border px-4 py-2 font-medium hover:bg-mainAccent/30"
+            >
+              {viewedUser.categories}
+            </Link>
+          )}
         </div>
 
         <div>
           <h3 className="text-lg font-semibold text-title">Socials & Links</h3>
           <div className="mt-3 space-y-2">
-            {validSocials.map(([key, value]) => (
-              <div
-                key={key}
-                className="flex items-center gap-2 rounded-md border px-4 py-2"
-              >
-                {key}: {value[0]}
-              </div>
-            ))}
+            {validSocials.length > 0 ? (
+              validSocials.map(([key, value]) => (
+                <div
+                  key={key}
+                  className="flex items-center gap-2 rounded-md border px-4 py-2"
+                >
+                  {key}: {value[0]}
+                </div>
+              ))
+            ) : (
+              <>No socials</>
+            )}
           </div>
         </div>
       </div>

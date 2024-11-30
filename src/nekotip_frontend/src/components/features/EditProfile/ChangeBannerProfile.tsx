@@ -66,7 +66,7 @@ const ChangeBannerProfile = () => {
           <img
             src={user?.bannerPic ?? '/images/banner-default.svg'}
             alt="profile"
-            className="h-auto w-full object-cover"
+            className="max-h-[200px] w-full object-cover"
           />
         </div>
         <Button

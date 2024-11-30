@@ -23,26 +23,30 @@ const ExclusiveContentPanel = ({ creatorId }: { creatorId: Principal }) => {
 
   return (
     <div className="flex flex-wrap gap-5">
-      {contents.map((content) => {
-        const isUnlocked = content.unlockedBy.some(
-          (userId) => userId.toText() === principal?.toText(),
-        );
+      {contents.length > 0 ? (
+        contents.map((content) => {
+          const isUnlocked = content.unlockedBy.some(
+            (userId) => userId.toText() === principal?.toText(),
+          );
 
-        return (
-          <ExclusiveContentPreview
-            key={content.id.toString()}
-            contentId={content.id}
-            title={content.title}
-            description={content.description}
-            tier={getContentTierName(content.tier)}
-            thumbnail={content.thumbnail}
-            likesCount={content.likesCount.toString()}
-            commentsCount={content.commentsCount.toString()}
-            createdAt={content.createdAt}
-            isUnlocked={isUnlocked}
-          />
-        );
-      })}
+          return (
+            <ExclusiveContentPreview
+              key={content.id.toString()}
+              contentId={content.id}
+              title={content.title}
+              description={content.description}
+              tier={getContentTierName(content.tier)}
+              thumbnail={content.thumbnail}
+              likesCount={content.likesCount.toString()}
+              commentsCount={content.commentsCount.toString()}
+              createdAt={content.createdAt}
+              isUnlocked={isUnlocked}
+            />
+          );
+        })
+      ) : (
+        <>This creator no exclusive content</>
+      )}
     </div>
   );
 };
