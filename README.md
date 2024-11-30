@@ -47,25 +47,67 @@
 
 ---
 
-## 🛠️ Installation  
+## 🛠️ Prerequisites
 
-### Prerequisites  
-- DFX (Dfinity SDK): Install via [Dfinity Documentation](https://smartcontracts.org/docs/quickstart/quickstart.html).  
-- Node.js (18+ recommended)(https://nodejs.org/).  
+Ensure you have the following installed:
 
-### Steps  
-1. **Clone the repository**:  
+- **DFX (Dfinity SDK)** - [Installation Guide](https://internetcomputer.org/docs/current/developer-docs/getting-started/install)
+- **Node.js** (Latest LTS version) - [Download](https://nodejs.org/)
+- **Pinata Account** - [Sign Up](https://pinata.cloud/)
+
+## 🚀 Installation
+
+1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/nekotip.git
+   git clone https://github.com/yoghantara08/nekotip.git
    cd nekotip
-2. Install dependencies:
    ```
+
+2. Install project dependencies:
+   ```bash
    npm install
-3. Start the Internet Computer Local Network
    ```
+
+## 🔐 Environment Setup
+
+### Pinata Configuration
+
+1. Log in to [Pinata](https://pinata.cloud/)
+2. Navigate to **API Keys**
+3. Create a new API key:
+   - Provide a descriptive name
+   - Set appropriate permissions
+4. Copy the generated **JWT Token**
+5. Go to **Gateways** and note your domain
+
+### Environment Variables
+
+Create a `.env` file in the `nekotip_frontend` directory:
+
+```bash
+VITE_PINATA_JWT=<your-pinata-jwt>
+VITE_GATEWAY_URL=<your-pinata-domain>
+```
+
+## 💻 Local Development
+
+1. Start the Internet Computer Local Network:
+   ```bash
    dfx start --clean --background
-4. Deploy ICP Ledger Locally
    ```
+
+2. Deploy the ICP Ledger:
+   ```bash
    npm run deploy-ledger
-   or
-   Manually follow the instructions in deploy_icp_ledger.sh
+   # Alternative: Follow instructions in deploy_icp_ledger.sh
+   ```
+
+3. Deploy project canisters:
+   ```bash
+   dfx deploy
+   ```
+
+4. Launch development server:
+   ```bash
+   npm start
+   ```
