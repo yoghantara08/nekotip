@@ -1,4 +1,4 @@
-# 🐾 NekoTip - Blockchain-Based Fan-to-Creator Donation Platform  
+# `NekoTip`
 
 **NekoTip** is a decentralized platform built on the **Internet Computer Protocol (ICP)**. It empowers fans to support their favorite creators securely through donations and unlock exclusive content. With a built-in referral program, NekoTip creates a rewarding ecosystem for both fans and creators.
 
