@@ -6,7 +6,7 @@
   <img src="https://amethyst-wrong-bobolink-547.mypinata.cloud/ipfs/QmeNwVtZTFs3aVsoqBkwrRMaQR3iBsgTE4CuRvV2rsPwVf" width="100%">
 </p>
 
-**Video Demonstration**: [](#)
+**Video Demonstration**: [https://youtu.be/V3OTgcy7Gc4](https://youtu.be/V3OTgcy7Gc4)
 
 **Mainnet Deployment**: [https://4eamd-wiaaa-aaaal-artgq-cai.icp0.io/](https://4eamd-wiaaa-aaaal-artgq-cai.icp0.io/)
 
@@ -36,7 +36,6 @@
 - **Motoko**
 - **ICP Ledger**
 - **Internet Identity**
-- **Http Outcalls**
 
 ### Frontend Technologies 
 - **React.js**
