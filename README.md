@@ -6,6 +6,10 @@
   <img src="https://amethyst-wrong-bobolink-547.mypinata.cloud/ipfs/QmeNwVtZTFs3aVsoqBkwrRMaQR3iBsgTE4CuRvV2rsPwVf" width="100%">
 </p>
 
+**Video Demonstration**: [](#)
+
+**Mainnet Deployment**: [https://4eamd-wiaaa-aaaal-artgq-cai.icp0.io/](https://4eamd-wiaaa-aaaal-artgq-cai.icp0.io/)
+
 ---
 
 ## 🚀 Features  
