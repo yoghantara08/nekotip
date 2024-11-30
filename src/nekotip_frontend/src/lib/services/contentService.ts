@@ -17,3 +17,16 @@ export const fetchCreatorContentPreview = async (
     console.error('Error fetching content:', error);
   }
 };
+
+export const fetchAllContentPreview = async (
+  actor: _SERVICE,
+  setContents: any,
+) => {
+  try {
+    const contents = await actor.getAllContentPreviews();
+
+    setContents(contents ?? []);
+  } catch (error) {
+    console.error('Error fetching content:', error);
+  }
+};

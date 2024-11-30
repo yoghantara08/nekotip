@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { LockIcon, MessageSquareIcon, ThumbsUpIcon } from 'lucide-react';
 
+import useUser from '@/hooks/useUser';
 import { formatNSToDate } from '@/lib/utils';
 import { cn } from '@/lib/utils/cn';
 import { EnumContentTier } from '@/types';
+
+import { User } from '../../../../../declarations/nekotip_backend/nekotip_backend.did';
 
 import UnlockContentModal from './UnlockContentModal';
 
@@ -20,6 +23,7 @@ interface ExclusiveContentPreviewProps {
   createdAt: bigint;
   isUnlocked?: boolean;
   className?: string;
+  creatorId?: string;
 }
 
 const ExclusiveContentPreview = ({
@@ -33,16 +37,29 @@ const ExclusiveContentPreview = ({
   createdAt,
   isUnlocked,
   className,
+  creatorId,
 }: ExclusiveContentPreviewProps) => {
   const navigate = useNavigate();
+  const { getUserById } = useUser();
 
   const [openModal, setOpenModal] = useState(false);
+  const [creator, setCreator] = useState<User>();
 
   const handleContentClick = () => {
     if (tier === 'FREE' || isUnlocked) {
       navigate(`/creator/content/${contentId}`);
+    } else {
+      navigate(`/creator/${creator?.username}`);
     }
   };
+
+  useEffect(() => {
+    if (!creator && creatorId) {
+      getUserById(creatorId).then((result) => {
+        if (result) setCreator(result);
+      });
+    }
+  }, [creator, creatorId, getUserById]);
 
   return (
     <div
@@ -56,7 +73,7 @@ const ExclusiveContentPreview = ({
     >
       <div className="relative">
         <img
-          src={thumbnail}
+          src={thumbnail ?? '/images/banner-default.svg'}
           alt={title}
           className={cn('h-40 w-full rounded-t-md bg-mainAccent object-cover')}
         />
@@ -77,10 +94,32 @@ const ExclusiveContentPreview = ({
       </div>
       <div className="p-4">
         <h2 className="text-lg font-semibold text-title">{title}</h2>
-        <p className="text-sm text-caption">{description}</p>
-        <p className="text-sm text-caption">
-          {formatNSToDate(BigInt(createdAt))}
-        </p>
+        {creatorId && (
+          <div className="mb-3 mt-2 flex items-center gap-2">
+            <img
+              src={creator?.profilePic[0] ?? '/images/user-default.svg'}
+              alt="profilepic"
+              className="size-16 rounded-full"
+            />
+
+            <div>
+              <p className="font-semibold">@{creator?.username}</p>
+              <p className="text-sm text-caption">
+                {formatNSToDate(BigInt(createdAt))}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!creatorId && (
+          <>
+            <p className="text-sm text-caption">{description}</p>
+            <p className="text-sm text-caption">
+              {formatNSToDate(BigInt(createdAt))}
+            </p>
+          </>
+        )}
+
         <div className="mt-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">

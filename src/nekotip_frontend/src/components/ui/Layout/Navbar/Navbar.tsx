@@ -33,7 +33,6 @@ const Navbar = () => {
             <li className="hover:text-black">
               <Link to="/creator">Explore Creator</Link>
             </li>
-            <li className="cursor-pointer hover:text-black">Support</li>
           </ul>
         </div>
 
