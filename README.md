@@ -114,3 +114,20 @@ VITE_GATEWAY_URL=<your-pinata-domain>
    ```bash
    npm start
    ```
+---
+
+## 📅 Future Plans  
+
+We’re excited to keep improving NekoTip! Here’s what’s in store for future updates:  
+
+1. **Enhanced User Experience and Design**  
+   - Continuously improving the design and interface for a more seamless and engaging user experience.  
+
+2. **Wallet and Withdrawal Features**  
+   - Secure wallet integration and withdrawal functionality for creators to manage their funds effortlessly.  
+
+3. **Leaderboard with NFT Badges**  
+   - Introducing a leaderboard to celebrate top contributors with exclusive NFT badges as rewards.  
+
+4. **Community Interaction Features**  
+   - Adding tools for fans to engage directly with creators, fostering stronger connections.  
